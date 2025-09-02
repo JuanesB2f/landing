@@ -1,0 +1,55 @@
+/**
+ * Middleware de autenticación
+ * Sistema adaptado para usar profiles + auth.users de Supabase
+ */
+
+export default defineNuxtRouteMiddleware(async (to: any) => {
+  // Solo ejecutar en el cliente
+  if (typeof window !== 'undefined') {
+    // Rutas públicas que no requieren autenticación
+    const publicRoutes = ['/', '/login', '/register', '/about', '/shop', '/shop/category/*']
+    const isPublicRoute = publicRoutes.some(route => {
+      if (route.endsWith('*')) {
+        return to.path.startsWith(route.slice(0, -1))
+      }
+      return to.path === route
+    })
+    
+    // Si es una ruta pública, permitir acceso
+    if (isPublicRoute) {
+      return
+    }
+    
+    // Para rutas protegidas, verificar autenticación
+    const { $supabase } = useNuxtApp()
+    
+    try {
+      // Verificar sesión de Supabase
+      const { data: { session }, error } = await $supabase.auth.getSession()
+      
+      if (error || !session) {
+        return navigateTo('/login')
+      }
+      
+      // Obtener perfil del usuario para verificar rol
+      const { data: profile, error: profileError } = await $supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', session.user.id)
+        .single()
+      
+      if (profileError || !profile) {
+        return navigateTo('/login')
+      }
+      
+      // Verificar que el usuario tenga rol de admin
+      if (profile.role !== 'admin') {
+        return navigateTo('/unauthorized')
+      }
+      
+    } catch (error) {
+      console.error('Error en middleware de autenticación:', error)
+      return navigateTo('/login')
+    }
+  }
+})

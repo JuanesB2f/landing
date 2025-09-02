@@ -1,0 +1,38 @@
+{
+  "name": "mi-ecommerce-femenino",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxi build",
+    "dev": "nuxi dev",
+    "generate": "nuxi generate",
+    "preview": "nuxi preview",
+    "postinstall": "nuxi prepare && node scripts/fix-nuxt-tsconfig.mjs",
+    "prepare": "nuxi prepare && node scripts/fix-nuxt-tsconfig.mjs"
+  },
+  "dependencies": {
+    "@iconify/vue": "^5.0.0",
+    "@nuxt/kit": "^3.17.6",
+    "@nuxt/schema": "^3.17.6",
+    "@nuxt/ui": "^3.1.1",
+    "@nuxtjs/supabase": "^1.1.7",
+    "@pinia/nuxt": "^0.11.0",
+    "@vercel/speed-insights": "^1.2.0",
+    "chart.js": "^4.5.0",
+    "nitropack": "^2.11.13",
+    "nuxt": "^3.17.6",
+    "pinia": "^3.0.2",
+    "supabase": "^2.22.12",
+    "vue": "^3.5.13",
+    "vue-chartjs": "^5.3.2",
+    "vue-router": "^4.5.1"
+  },
+  "devDependencies": {
+    "@iconify-json/healthicons": "^1.2.8",
+    "@iconify-json/heroicons": "^1.2.2",
+    "@iconify-json/lucide": "^1.2.41",
+    "@iconify-json/svg-spinners": "^1.2.2",
+    "@types/node": "^24.3.0",
+    "typescript": "^5.9.2"
+  }
+}

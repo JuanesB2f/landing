@@ -1,0 +1,152 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@theme static {
+  --font-sans: "Raleway", sans-serif;
+  --color-custom-50: #fdfdfd;
+  --color-custom-100: #d0d0d0;
+  --color-custom-200: #b3b3b3;
+  --color-custom-300: #737373;
+  --color-custom-400: #404040;
+  --color-custom-500: #262626;
+  --color-custom-600: #0d0d0d;
+}
+
+:root {
+  --ui-bg: var(--color-custom-50);
+  --ui-text: var(--color-custom-500);
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+body, html, * {
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+.dark {
+  --ui-bg: var(--color-custom-500);
+  --ui-text: var(--color-custom-50);
+  --ui-primary: var(--color-custom-50);
+}
+
+/* Custom Animations */
+@keyframes blob {
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+.animate-blob {
+  animation: blob 7s infinite;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  background-size: 200px 100%;
+  animation: shimmer 2s infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+/* Enhanced Hover Effects */
+.hover-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+/* Gradient Text Animation */
+.gradient-text-animate {
+  background: linear-gradient(-45deg, #ec4899, #8b5cf6, #ec4899, #8b5cf6);
+  background-size: 400% 400%;
+  animation: gradient-shift 3s ease infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Glass Morphism Effect */
+.glass {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+/* Toasts: fuerza fuente normal para todo el contenido */
+.ui-toast, .ui-toast * {
+  font-family: inherit !important;
+  font-variant-numeric: normal !important;
+}
+
+/* Optimizaciones de rendimiento */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Evitar efectos scroll-linked problemáticos */
+* {
+  scroll-behavior: auto;
+}
+
+/* Optimizar animaciones */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
