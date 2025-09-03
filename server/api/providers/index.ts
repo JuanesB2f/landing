@@ -1,4 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server'
+import { requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
@@ -6,31 +7,29 @@ export default defineEventHandler(async (event) => {
 
   try {
     if (method === 'GET') {
-      // Obtener todos los proveedores (sin join problemático)
+      // Obtener todos los proveedores con conteo real de productos
       const { data: providers, error: providersError } = await supabase
         .from('providers')
-        .select('*')
+        .select(`
+          *,
+          products:products(count)
+        `)
         .order('name')
 
       if (providersError) {
         throw providersError
       }
 
-      // Por ahora, establecer product_count en 0 hasta que se implemente la relación
-      const providersWithCount = providers.map(provider => ({
+      const providersWithCount = (providers || []).map((provider: any) => ({
         ...provider,
-        product_count: 0 // Temporalmente en 0
+        product_count: provider.products?.[0]?.count || 0
       }))
 
-      return {
-        data: {
-          success: true,
-          data: providersWithCount
-        }
-      }
+      return respondSuccess(providersWithCount)
 
     } else if (method === 'POST') {
-      // Crear nuevo proveedor
+      // Requiere admin y crear nuevo proveedor
+      await requireAdmin(event)
       const body = await readBody(event)
       
       // Validaciones básicas
@@ -78,13 +77,7 @@ export default defineEventHandler(async (event) => {
         throw insertError
       }
 
-      return {
-        data: {
-          success: true,
-          data: newProvider,
-          message: 'Proveedor creado exitosamente'
-        }
-      }
+      return respondSuccess(newProvider, 'Proveedor creado exitosamente')
 
     } else {
       throw createError({
@@ -95,12 +88,6 @@ export default defineEventHandler(async (event) => {
 
   } catch (error) {
     console.error('Error en API de proveedores:', error)
-    
-    return {
-      data: {
-        success: false,
-        error: error.message || 'Error interno del servidor'
-      }
-    }
+    return respondError((error as any).statusMessage || (error as any).message || 'Error interno del servidor')
   }
 })

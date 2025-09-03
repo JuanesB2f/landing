@@ -1,4 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server'
+import { requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
@@ -40,15 +41,11 @@ export default defineEventHandler(async (event) => {
         product_count: provider.products?.[0]?.count || 0
       }
 
-      return {
-        data: {
-          success: true,
-          data: providerWithCount
-        }
-      }
+      return respondSuccess(providerWithCount)
 
     } else if (method === 'PUT') {
-      // Actualizar proveedor existente
+      // Requiere admin y actualizar proveedor existente
+      await requireAdmin(event)
       const body = await readBody(event)
       
       // Validaciones básicas
@@ -99,16 +96,11 @@ export default defineEventHandler(async (event) => {
         throw updateError
       }
 
-      return {
-        data: {
-          success: true,
-          data: updatedProvider,
-          message: 'Proveedor actualizado exitosamente'
-        }
-      }
+      return respondSuccess(updatedProvider, 'Proveedor actualizado exitosamente')
 
     } else if (method === 'DELETE') {
-      // Verificar si el proveedor tiene productos asociados
+      // Requiere admin y verificar si el proveedor tiene productos asociados
+      await requireAdmin(event)
       const { data: products, error: productsError } = await supabase
         .from('products')
         .select('id_product')
@@ -136,12 +128,7 @@ export default defineEventHandler(async (event) => {
         throw deleteError
       }
 
-      return {
-        data: {
-          success: true,
-          message: 'Proveedor eliminado exitosamente'
-        }
-      }
+      return respondSuccess(null, 'Proveedor eliminado exitosamente')
 
     } else {
       throw createError({
@@ -152,16 +139,9 @@ export default defineEventHandler(async (event) => {
 
   } catch (error) {
     console.error('Error en API de proveedor específico:', error)
-    
-    if (error.statusCode) {
+    if ((error as any).statusCode) {
       throw error
     }
-    
-    return {
-      data: {
-        success: false,
-        error: error.message || 'Error interno del servidor'
-      }
-    }
+    return respondError((error as any).statusMessage || (error as any).message || 'Error interno del servidor')
   }
 })

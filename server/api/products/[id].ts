@@ -1,4 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server'
+import { requireAuth, respondSuccess, respondError } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const client = await serverSupabaseClient(event)
@@ -35,14 +36,43 @@ export default defineEventHandler(async (event) => {
           throw getError
         }
 
-        return {
-          success: true,
-          data: product
-        }
+        return respondSuccess(product)
 
       case 'PUT':
-        // Actualizar producto existente
-        const updateBody = await readBody(event)
+        // Requiere sesión (temporal durante configuración de perfiles)
+        await requireAuth(event)
+        const contentType = getHeader(event, 'content-type') || ''
+        let updateBody: any = {}
+        let uploadedImageUrl: string | null = null
+        if (contentType.includes('multipart/form-data')) {
+          const form = await readMultipartFormData(event)
+          const fields: Record<string, string> = {}
+          let filePart: any = null
+          for (const part of form || []) {
+            if (part.type === 'file') {
+              if (part.name === 'image' && part.data && part.filename) {
+                filePart = part
+              }
+            } else if (part.name) {
+              fields[part.name] = part.data?.toString() || ''
+            }
+          }
+          updateBody = fields
+          if (filePart) {
+            const fileExt = (filePart.filename as string).split('.').pop()
+            const filePath = `${crypto.randomUUID()}.${fileExt}`
+            const { error: uploadError } = await client.storage
+              .from('product-image')
+              .upload(filePath, filePart.data, { contentType: filePart.mimetype, upsert: false })
+            if (uploadError) {
+              throw createError({ statusCode: 400, statusMessage: 'Error subiendo imagen' })
+            }
+            const { data: publicUrl } = client.storage.from('product-image').getPublicUrl(filePath)
+            uploadedImageUrl = publicUrl.publicUrl
+          }
+        } else {
+          updateBody = await readBody(event)
+        }
         
         // Validar campos requeridos
         const requiredFields = ['name', 'description', 'price', 'stock_quantity', 'category_id', 'sku']
@@ -65,7 +95,7 @@ export default defineEventHandler(async (event) => {
             category_id: updateBody.category_id,
             brand: updateBody.brand || '',
             sku: updateBody.sku,
-            image_url: updateBody.image_url || null,
+            image_url: uploadedImageUrl || updateBody.image_url || null,
             is_active: updateBody.is_active !== undefined ? updateBody.is_active : true,
             updated_at: new Date().toISOString()
           })
@@ -83,14 +113,11 @@ export default defineEventHandler(async (event) => {
           throw updateError
         }
 
-        return {
-          success: true,
-          data: updatedProduct,
-          message: 'Producto actualizado exitosamente'
-        }
+        return respondSuccess(updatedProduct, 'Producto actualizado exitosamente')
 
       case 'DELETE':
-        // Eliminar producto
+        // Requiere sesión (temporal durante configuración de perfiles)
+        await requireAuth(event)
         const { error: deleteError } = await client
           .from('products')
           .delete()
@@ -106,10 +133,7 @@ export default defineEventHandler(async (event) => {
           throw deleteError
         }
 
-        return {
-          success: true,
-          message: 'Producto eliminado exitosamente'
-        }
+        return respondSuccess(null, 'Producto eliminado exitosamente')
 
       default:
         throw createError({
@@ -119,14 +143,9 @@ export default defineEventHandler(async (event) => {
     }
   } catch (error) {
     console.error('Error en API de producto individual:', error)
-    
-    if (error.statusCode) {
+    if ((error as any).statusCode) {
       throw error
     }
-    
-    return {
-      success: false,
-      error: error.message || 'Error interno del servidor'
-    }
+    return respondError((error as any).statusMessage || (error as any).message || 'Error interno del servidor')
   }
 })

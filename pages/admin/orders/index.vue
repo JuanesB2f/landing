@@ -199,7 +199,7 @@
                 <div class="text-sm text-gray-500">{{ order.customer?.email }}</div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm font-medium text-gray-900">${{ formatPrice(order.total_amount) }}</div>
+                <div class="text-sm font-medium text-gray-900">{{ formatCOP(order.total_amount) }}</div>
                 <div class="text-sm text-gray-500">{{ order.order_items?.length || 0 }} productos</div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
@@ -516,7 +516,7 @@ const saveOrder = async (orderData) => {
 
 const updateOrderStatus = async (statusData) => {
   try {
-    const { data } = await $fetch(`/api/orders/${selectedOrder.value.id_order}/status`, {
+    const { data } = await $fetch(`/api/orders/${selectedOrder.value.id_order}/update-status`, {
       method: 'PATCH',
       body: statusData
     })
@@ -628,9 +628,7 @@ const getPaymentStatusText = (status) => {
   return texts[status] || 'Desconocido'
 }
 
-const formatPrice = (price) => {
-  return parseFloat(price).toFixed(2)
-}
+const { formatCOP } = useCurrency()
 
 const formatDate = (dateString) => {
   if (!dateString) return 'N/A'

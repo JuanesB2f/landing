@@ -1,4 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server'
+import { requireAuth, respondSuccess, respondError } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const client = await serverSupabaseClient(event)
@@ -24,6 +25,8 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
+    // Requiere sesión (temporal durante configuración de perfiles)
+    await requireAuth(event)
     // Obtener el estado actual del producto
     const { data: currentProduct, error: getError } = await client
       .from('products')
@@ -70,21 +73,9 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    return {
-      data: {
-        success: true,
-        data: updatedProduct,
-        message: `Producto ${newStatus ? 'activado' : 'desactivado'} exitosamente`
-      }
-    }
+    return respondSuccess(updatedProduct, `Producto ${newStatus ? 'activado' : 'desactivado'} exitosamente`)
   } catch (error) {
     console.error('Error cambiando estado del producto:', error)
-    
-    return {
-      data: {
-        success: false,
-        error: error.message || 'Error interno del servidor'
-      }
-    }
+    return respondError((error as any).statusMessage || (error as any).message || 'Error interno del servidor')
   }
 })

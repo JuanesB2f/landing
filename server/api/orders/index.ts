@@ -1,4 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server'
+import { requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
@@ -56,36 +57,22 @@ export default defineEventHandler(async (event) => {
         subtotal: order.subtotal || 0
       }))
 
-      return {
-        data: {
-          success: true,
-          data: processedOrders
-        }
-      }
+      return respondSuccess(processedOrders)
 
     } catch (error) {
       console.error('Error en GET /api/orders:', error)
-      return {
-        data: {
-          success: false,
-          error: 'Error interno del servidor'
-        }
-      }
+      return respondError('Error interno del servidor')
     }
   }
 
   if (method === 'POST') {
     try {
+      await requireAdmin(event)
       const body = await readBody(event)
       
       // Validar campos requeridos
       if (!body.customer_id || !body.order_items || !body.order_items.length === 0) {
-        return {
-          data: {
-            success: false,
-            error: 'El cliente y al menos un item son requeridos'
-          }
-        }
+        return respondError('El cliente y al menos un item son requeridos')
       }
 
       // Verificar que el cliente existe
@@ -96,21 +83,11 @@ export default defineEventHandler(async (event) => {
         .single()
 
       if (customerError || !customer) {
-        return {
-          data: {
-            success: false,
-            error: 'Cliente no encontrado'
-          }
-        }
+        return respondError('Cliente no encontrado')
       }
 
       if (!customer.is_active) {
-        return {
-          data: {
-            success: false,
-            error: 'El cliente está inactivo'
-          }
-        }
+        return respondError('El cliente está inactivo')
       }
 
       // Calcular totales
@@ -119,12 +96,7 @@ export default defineEventHandler(async (event) => {
 
       for (const item of body.order_items) {
         if (!item.product_id || !item.quantity || !item.unit_price) {
-          return {
-            data: {
-              success: false,
-              error: 'Todos los items deben tener product_id, quantity y unit_price'
-            }
-          }
+          return respondError('Todos los items deben tener product_id, quantity y unit_price')
         }
 
         // Verificar que el producto existe y tiene stock
@@ -135,21 +107,11 @@ export default defineEventHandler(async (event) => {
           .single()
 
         if (productError || !product) {
-          return {
-            data: {
-              success: false,
-              error: `Producto ${item.product_id} no encontrado`
-            }
-          }
+          return respondError(`Producto ${item.product_id} no encontrado`)
         }
 
         if (product.stock_quantity < item.quantity) {
-          return {
-            data: {
-              success: false,
-              error: `Stock insuficiente para ${product.name}. Disponible: ${product.stock_quantity}, Solicitado: ${item.quantity}`
-            }
-          }
+          return respondError(`Stock insuficiente para ${product.name}. Disponible: ${product.stock_quantity}, Solicitado: ${item.quantity}`)
         }
 
         const totalPrice = item.quantity * item.unit_price
@@ -192,13 +154,7 @@ export default defineEventHandler(async (event) => {
 
       if (orderError) {
         console.error('Error creando pedido:', orderError)
-        return {
-          data: {
-            success: false,
-            error: 'Error creando pedido',
-            details: orderError.message
-          }
-        }
+        return respondError('Error creando pedido', orderError.message)
       }
 
       // Crear los items del pedido
@@ -215,13 +171,7 @@ export default defineEventHandler(async (event) => {
         console.error('Error creando items del pedido:', itemsError)
         // Intentar eliminar el pedido si falla la creación de items
         await supabase.from('orders').delete().eq('id_order', orderData.id_order)
-        return {
-          data: {
-            success: false,
-            error: 'Error creando items del pedido',
-            details: itemsError.message
-          }
-        }
+        return respondError('Error creando items del pedido', itemsError.message)
       }
 
       // Actualizar stock de productos
@@ -271,29 +221,13 @@ export default defineEventHandler(async (event) => {
         console.error('Error obteniendo pedido completo:', fetchError)
       }
 
-      return {
-        data: {
-          success: true,
-          data: completeOrder || orderData,
-          message: 'Pedido creado exitosamente'
-        }
-      }
+      return respondSuccess(completeOrder || orderData, 'Pedido creado exitosamente')
 
     } catch (error) {
       console.error('Error en POST /api/orders:', error)
-      return {
-        data: {
-          success: false,
-          error: 'Error interno del servidor'
-        }
-      }
+      return respondError('Error interno del servidor')
     }
   }
 
-  return {
-    data: {
-      success: false,
-      error: 'Método no permitido'
-    }
-  }
+  return respondError('Método no permitido')
 })

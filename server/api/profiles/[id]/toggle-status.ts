@@ -1,4 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server'
+import { requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
@@ -24,6 +25,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
+    await requireAdmin(event)
     // Obtener el estado actual del usuario
     const { data: currentProfile, error: fetchError } = await supabase
       .from('profiles')
@@ -75,24 +77,10 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    return {
-      data: {
-        success: true,
-        data: {
-          id: data.id,
-          is_active: data.is_active
-        },
-        message: `Usuario ${data.is_active ? 'activado' : 'desactivado'} exitosamente`
-      }
-    }
+    return respondSuccess({ id: data.id, is_active: data.is_active }, `Usuario ${data.is_active ? 'activado' : 'desactivado'} exitosamente`)
 
   } catch (error) {
     console.error('Error en PATCH /api/profiles/[id]/toggle-status:', error)
-    return {
-      data: {
-        success: false,
-        error: 'Error interno del servidor'
-      }
-    }
+    return respondError('Error interno del servidor')
   }
 })

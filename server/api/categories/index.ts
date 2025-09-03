@@ -5,6 +5,7 @@
  */
 
 import { serverSupabaseClient } from '#supabase/server'
+import { requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
@@ -29,18 +30,26 @@ export default defineEventHandler(async (event) => {
         }
       }
 
-      // Procesar las categorías (product_count temporalmente en 0)
-      const processedCategories = categories.map(category => ({
+      // Obtener conteo real de productos por categoría
+      const { data: categoriesWithCounts, error: countError } = await supabase
+        .from('categories')
+        .select(`
+          *,
+          products:products(count)
+        `)
+        .eq('is_active', true)
+        .order('name')
+
+      if (countError) {
+        console.error('Error obteniendo conteos de productos por categoría:', countError)
+      }
+
+      const processedCategories = (categoriesWithCounts || categories).map((category: any) => ({
         ...category,
-        product_count: 0 // Temporalmente en 0 hasta implementar la relación
+        product_count: category.products?.[0]?.count || 0
       }))
 
-      return {
-        data: {
-          success: true,
-          data: processedCategories
-        }
-      }
+      return respondSuccess(processedCategories)
     } catch (error) {
       console.error('Error inesperado:', error)
       return {
@@ -54,16 +63,12 @@ export default defineEventHandler(async (event) => {
 
   if (method === 'POST') {
     try {
+      await requireAdmin(event)
       const body = await readBody(event)
       
       // Validar campos requeridos
       if (!body.name || !body.name.trim()) {
-        return {
-          data: {
-            success: false,
-            error: 'El nombre de la categoría es obligatorio'
-          }
-        }
+        return respondError('El nombre de la categoría es obligatorio')
       }
 
       // Verificar si ya existe una categoría con el mismo nombre
@@ -74,12 +79,7 @@ export default defineEventHandler(async (event) => {
         .single()
 
       if (existingCategory) {
-        return {
-          data: {
-            success: false,
-            error: 'Ya existe una categoría con ese nombre'
-          }
-        }
+        return respondError('Ya existe una categoría con ese nombre')
       }
 
       // Crear nueva categoría
@@ -97,37 +97,16 @@ export default defineEventHandler(async (event) => {
 
       if (error) {
         console.error('Error creando categoría:', error)
-        return {
-          data: {
-            success: false,
-            error: 'Error creando categoría'
-          }
-        }
+        return respondError('Error creando categoría')
       }
 
-      return {
-        data: {
-          success: true,
-          data: { ...data, product_count: 0 },
-          message: 'Categoría creada exitosamente'
-        }
-      }
+      return respondSuccess({ ...data, product_count: 0 }, 'Categoría creada exitosamente')
     } catch (error) {
       console.error('Error inesperado:', error)
-      return {
-        data: {
-          success: false,
-          error: 'Error interno del servidor'
-        }
-      }
+      return respondError('Error interno del servidor')
     }
   }
 
   // Método no permitido
-  return {
-    data: {
-      success: false,
-      error: 'Método no permitido'
-    }
-  }
+  return respondError('Método no permitido')
 })

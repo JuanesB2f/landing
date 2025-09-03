@@ -1,4 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server'
+import { requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
@@ -29,36 +30,22 @@ export default defineEventHandler(async (event) => {
         full_name: `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || null
       }))
 
-      return {
-        data: {
-          success: true,
-          data: processedProfiles
-        }
-      }
+      return respondSuccess(processedProfiles)
 
     } catch (error) {
       console.error('Error en GET /api/profiles:', error)
-      return {
-        data: {
-          success: false,
-          error: 'Error interno del servidor'
-        }
-      }
+      return respondError('Error interno del servidor')
     }
   }
 
   if (method === 'POST') {
     try {
+      await requireAdmin(event)
       const body = await readBody(event)
       
       // Validar campos requeridos
       if (!body.first_name || !body.last_name || !body.email || !body.password || !body.role) {
-        return {
-          data: {
-            success: false,
-            error: 'Los campos nombre, apellido, email, contraseña y rol son requeridos'
-          }
-        }
+        return respondError('Los campos nombre, apellido, email, contraseña y rol son requeridos')
       }
 
       // Verificar si el email ya existe
@@ -70,21 +57,11 @@ export default defineEventHandler(async (event) => {
 
       if (checkError && checkError.code !== 'PGRST116') {
         console.error('Error verificando email duplicado:', checkError)
-        return {
-          data: {
-            success: false,
-            error: 'Error verificando email duplicado'
-          }
-        }
+        return respondError('Error verificando email duplicado')
       }
 
       if (existingProfile) {
-        return {
-          data: {
-            success: false,
-            error: 'Ya existe un usuario con este email'
-          }
-        }
+        return respondError('Ya existe un usuario con este email')
       }
 
       // Crear usuario en Supabase Auth
@@ -96,13 +73,7 @@ export default defineEventHandler(async (event) => {
 
       if (authError) {
         console.error('Error creando usuario en Auth:', authError)
-        return {
-          data: {
-            success: false,
-            error: 'Error creando usuario en el sistema de autenticación',
-            details: authError.message
-          }
-        }
+        return respondError('Error creando usuario en el sistema de autenticación', authError.message)
       }
 
       // Crear perfil del usuario
@@ -134,38 +105,16 @@ export default defineEventHandler(async (event) => {
         console.error('Error creando perfil:', profileError)
         // Intentar eliminar el usuario de Auth si falla la creación del perfil
         await supabase.auth.admin.deleteUser(authData.user.id)
-        return {
-          data: {
-            success: false,
-            error: 'Error creando perfil del usuario',
-            details: profileError.message
-          }
-        }
+        return respondError('Error creando perfil del usuario', profileError.message)
       }
 
-      return {
-        data: {
-          success: true,
-          data: profileData,
-          message: 'Usuario creado exitosamente'
-        }
-      }
+      return respondSuccess(profileData, 'Usuario creado exitosamente')
 
     } catch (error) {
       console.error('Error en POST /api/profiles:', error)
-      return {
-        data: {
-          success: false,
-          error: 'Error interno del servidor'
-        }
-      }
+      return respondError('Error interno del servidor')
     }
   }
 
-  return {
-    data: {
-      success: false,
-      error: 'Método no permitido'
-    }
-  }
+  return respondError('Método no permitido')
 })

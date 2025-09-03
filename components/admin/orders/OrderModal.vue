@@ -155,7 +155,7 @@
                   >
                     <option value="">Seleccionar producto</option>
                     <option v-for="product in products" :key="product.id_product" :value="product.id_product">
-                      {{ product.name }} - ${{ product.price }}
+                      {{ product.name }} - {{ formatCOP(product.price) }}
                     </option>
                   </select>
                 </div>
@@ -402,9 +402,8 @@ const calculateTotal = () => {
   form.value.total_amount = total.value
 }
 
-const formatPrice = (price) => {
-  return parseFloat(price || 0).toFixed(2)
-}
+const { formatCOP } = useCurrency()
+const formatPrice = (price) => formatCOP(price)
 
 // Inicializar formulario cuando cambie el order
 watch(() => props.order, (newOrder) => {

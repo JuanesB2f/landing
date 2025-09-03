@@ -375,7 +375,7 @@ const userProfile = computed(() => user.value)
 // Composable para manejar el tema
 const { theme, isDark, toggleTheme, initTheme } = useTheme()
 
-// Estadísticas del dashboard (simuladas por ahora)
+// Estadísticas del dashboard
 const dashboardStats = ref({
   totalUsers: 0,
   totalProducts: 0,
@@ -398,17 +398,12 @@ const formatCurrency = (amount) => {
 // Cargar estadísticas del dashboard
 const loadDashboardStats = async () => {
   try {
-    // Aquí puedes hacer llamadas a tus APIs para obtener datos reales
-    // Por ahora usamos datos simulados
-    dashboardStats.value = {
-      totalUsers: 1247,
-      totalProducts: 452,
-      totalOrders: 389,
-      totalRevenue: 45678,
-      totalCustomers: 6380,
-      weeklySales: 18900,
-      newProducts: 23,
-      weeklyOrders: 67
+    const { data } = await $fetch('/api/dashboard')
+    if (data?.success) {
+      dashboardStats.value.totalUsers = data.data.totalUsers || 0
+      dashboardStats.value.totalProducts = data.data.totalProducts || 0
+      dashboardStats.value.totalOrders = data.data.totalOrders || 0
+      dashboardStats.value.totalRevenue = data.data.totalRevenue || 0
     }
   } catch (error) {
     console.error('Error cargando estadísticas del dashboard:', error)

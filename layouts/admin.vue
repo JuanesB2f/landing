@@ -3,7 +3,7 @@
     <!-- Sidebar -->
     <aside class="fixed inset-y-0 left-0 z-50 w-64 shadow-lg transition-colors duration-300 theme-sidebar">
       <div class="flex items-center justify-center h-16 theme-header">
-        <h1 class="text-xl font-bold text-white">Admin Panel</h1>
+        <h1 class="text-xl font-bold transition-colors theme-text-primary text-gray-900 dark:text-white">Admin Panel</h1>
       </div>
       
       <nav class="mt-8">
@@ -123,7 +123,7 @@
                 <p class="text-sm font-medium transition-colors theme-text-primary">{{ userName }}</p>
                 <p class="text-xs transition-colors theme-text-secondary">{{ userRole }}</p>
               </div>
-              <button @click="logout" class="p-2 rounded-lg transition-colors theme-button">
+              <button @click="handleLogout" class="p-2 rounded-lg transition-colors theme-button">
                 <Icon name="heroicons:arrow-right-on-rectangle" class="w-5 h-5" />
               </button>
             </div>
@@ -144,6 +144,8 @@ const route = useRoute()
 
 // Composable para manejar el tema
 const { isDark, toggleTheme } = useTheme()
+// Composable de autenticación
+const { logout } = useAuth()
 
 const pageTitle = computed(() => {
   const titles = {
@@ -164,9 +166,12 @@ const userInitials = ref('AD')
 const userName = ref('Administrador')
 const userRole = ref('Admin')
 
-const logout = () => {
-  // Implementar logout
-  console.log('Logout')
+const handleLogout = async () => {
+  try {
+    await logout()
+  } catch (e) {
+    console.error('Error al cerrar sesión:', e)
+  }
 }
 </script>
 

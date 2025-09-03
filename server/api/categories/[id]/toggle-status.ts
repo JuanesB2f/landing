@@ -4,6 +4,7 @@
  */
 
 import { serverSupabaseClient } from '#supabase/server'
+import { requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
@@ -29,6 +30,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
+    await requireAdmin(event)
     // Obtener el estado actual de la categoría
     const { data: currentCategory, error: fetchError } = await supabase
       .from('categories')
@@ -77,20 +79,9 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    return {
-      data: {
-        success: true,
-        data: { ...data, product_count: 0 },
-        message: `Categoría ${newStatus ? 'activada' : 'desactivada'} exitosamente`
-      }
-    }
+    return respondSuccess({ ...data, product_count: 0 }, `Categoría ${newStatus ? 'activada' : 'desactivada'} exitosamente`)
   } catch (error) {
     console.error('Error inesperado:', error)
-    return {
-      data: {
-        success: false,
-        error: 'Error interno del servidor'
-      }
-    }
+    return respondError('Error interno del servidor')
   }
 })

@@ -1,4 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server'
+import { requireAuth, respondSuccess, respondError } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const client = await serverSupabaseClient(event)
@@ -18,17 +19,47 @@ export default defineEventHandler(async (event) => {
 
         if (getError) throw getError
 
-        return {
-          data: {
-            success: true,
-            data: products
-          }
-        }
+        return respondSuccess(products)
 
       case 'POST':
-        // Crear nuevo producto
-        const body = await readBody(event)
-        
+        // Requiere sesión (temporal durante configuración de perfiles)
+        await requireAuth(event)
+        // Crear nuevo producto (permite multipart/form-data para imagen)
+        const contentType = getHeader(event, 'content-type') || ''
+        let body: any = {}
+        let uploadedImageUrl: string | null = null
+
+        if (contentType.includes('multipart/form-data')) {
+          const form = await readMultipartFormData(event)
+          const fields: Record<string, string> = {}
+          let filePart: any = null
+          for (const part of form || []) {
+            if (part.type === 'file') {
+              if (part.name === 'image' && part.data && part.filename) {
+                filePart = part
+              }
+            } else if (part.name) {
+              fields[part.name] = part.data?.toString() || ''
+            }
+          }
+          body = fields
+
+          if (filePart) {
+            const fileExt = (filePart.filename as string).split('.').pop()
+            const filePath = `${crypto.randomUUID()}.${fileExt}`
+            const { error: uploadError } = await client.storage
+              .from('product-image')
+              .upload(filePath, filePart.data, { contentType: filePart.mimetype, upsert: false })
+            if (uploadError) {
+              throw createError({ statusCode: 400, statusMessage: 'Error subiendo imagen' })
+            }
+            const { data: publicUrl } = client.storage.from('product-image').getPublicUrl(filePath)
+            uploadedImageUrl = publicUrl.publicUrl
+          }
+        } else {
+          body = await readBody(event)
+        }
+
         // Validar campos requeridos
         const requiredFields = ['name', 'description', 'price', 'stock_quantity', 'category_id', 'sku']
         for (const field of requiredFields) {
@@ -42,8 +73,8 @@ export default defineEventHandler(async (event) => {
 
         // Generar ID único
         const productId = crypto.randomUUID()
-        
-        const { data: newProduct, error: createError } = await client
+
+        const { data: newProduct, error: createErr } = await client
           .from('products')
           .insert({
             id_product: productId,
@@ -54,7 +85,7 @@ export default defineEventHandler(async (event) => {
             category_id: body.category_id,
             brand: body.brand || '',
             sku: body.sku,
-            image_url: body.image_url || null,
+            image_url: uploadedImageUrl || body.image_url || null,
             is_active: body.is_active !== undefined ? body.is_active : true,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
@@ -62,15 +93,9 @@ export default defineEventHandler(async (event) => {
           .select()
           .single()
 
-        if (createError) throw createError
+        if (createErr) throw createErr
 
-        return {
-          data: {
-            success: true,
-            data: newProduct,
-            message: 'Producto creado exitosamente'
-          }
-        }
+        return respondSuccess(newProduct, 'Producto creado exitosamente')
 
       default:
         throw createError({
@@ -80,12 +105,6 @@ export default defineEventHandler(async (event) => {
     }
   } catch (error) {
     console.error('Error en API de productos:', error)
-    
-    return {
-      data: {
-        success: false,
-        error: error.message || 'Error interno del servidor'
-      }
-    }
+    return respondError((error as any).statusMessage || (error as any).message || 'Error interno del servidor')
   }
 })

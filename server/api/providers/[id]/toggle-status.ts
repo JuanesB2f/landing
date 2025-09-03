@@ -1,4 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server'
+import { requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
@@ -24,6 +25,8 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
+    // Requiere admin
+    await requireAdmin(event)
     // Obtener el estado actual del proveedor
     const { data: currentProvider, error: fetchError } = await supabase
       .from('providers')
@@ -71,22 +74,10 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    return {
-      data: {
-        success: true,
-        data: updatedProvider,
-        message: `Proveedor ${newStatus ? 'activado' : 'desactivado'} exitosamente`
-      }
-    }
+    return respondSuccess(updatedProvider, `Proveedor ${newStatus ? 'activado' : 'desactivado'} exitosamente`)
 
   } catch (error) {
     console.error('Error cambiando estado del proveedor:', error)
-    
-    return {
-      data: {
-        success: false,
-        error: error.message || 'Error interno del servidor'
-      }
-    }
+    return respondError((error as any).statusMessage || (error as any).message || 'Error interno del servidor')
   }
 })

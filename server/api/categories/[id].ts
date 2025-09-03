@@ -6,6 +6,7 @@
  */
 
 import { serverSupabaseClient } from '#supabase/server'
+import { requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
@@ -53,32 +54,21 @@ export default defineEventHandler(async (event) => {
         product_count: category.products?.[0]?.count || 0
       }
 
-      return {
-        success: true,
-        data: processedCategory,
-        error: null
-      }
+      return respondSuccess(processedCategory)
     } catch (error) {
       console.error('Error inesperado:', error)
-      return {
-        success: false,
-        error: 'Error interno del servidor',
-        data: null
-      }
+      return respondError('Error interno del servidor')
     }
   }
 
   if (method === 'PUT') {
     try {
+      await requireAdmin(event)
       const body = await readBody(event)
       
       // Validar campos requeridos
       if (!body.name || !body.name.trim()) {
-        return {
-          success: false,
-          error: 'El nombre de la categoría es obligatorio',
-          data: null
-        }
+        return respondError('El nombre de la categoría es obligatorio')
       }
 
       // Verificar si ya existe otra categoría con el mismo nombre
@@ -90,11 +80,7 @@ export default defineEventHandler(async (event) => {
         .single()
 
       if (existingCategory) {
-        return {
-          success: false,
-          error: 'Ya existe otra categoría con ese nombre',
-          data: null
-        }
+        return respondError('Ya existe otra categoría con ese nombre')
       }
 
       // Actualizar categoría
@@ -114,30 +100,19 @@ export default defineEventHandler(async (event) => {
 
       if (error) {
         console.error('Error actualizando categoría:', error)
-        return {
-          success: false,
-          error: 'Error actualizando categoría',
-          data: null
-        }
+        return respondError('Error actualizando categoría')
       }
 
-      return {
-        success: true,
-        data: { ...data, product_count: 0 },
-        error: null
-      }
+      return respondSuccess({ ...data, product_count: 0 })
     } catch (error) {
       console.error('Error inesperado:', error)
-      return {
-        success: false,
-        error: 'Error interno del servidor',
-        data: null
-      }
+      return respondError('Error interno del servidor')
     }
   }
 
   if (method === 'DELETE') {
     try {
+      await requireAdmin(event)
       // Verificar si la categoría tiene productos asociados
       const { data: products, error: productsError } = await supabase
         .from('products')
@@ -170,32 +145,16 @@ export default defineEventHandler(async (event) => {
 
       if (error) {
         console.error('Error eliminando categoría:', error)
-        return {
-          success: false,
-          error: 'Error eliminando categoría',
-          data: null
-        }
+        return respondError('Error eliminando categoría')
       }
 
-      return {
-        success: true,
-        data: null,
-        error: null
-      }
+      return respondSuccess(null)
     } catch (error) {
       console.error('Error inesperado:', error)
-      return {
-        success: false,
-        error: 'Error interno del servidor',
-        data: null
-      }
+      return respondError('Error interno del servidor')
     }
   }
 
   // Método no permitido
-  return {
-    success: false,
-    error: 'Método no permitido',
-    data: null
-  }
+  return respondError('Método no permitido')
 })

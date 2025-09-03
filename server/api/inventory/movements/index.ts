@@ -5,6 +5,7 @@
  */
 
 import { serverSupabaseClient } from '#supabase/server'
+import { requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
@@ -16,11 +17,7 @@ export default defineEventHandler(async (event) => {
       const productId = query.product_id
 
       if (!productId) {
-        return {
-          success: false,
-          error: 'ID de producto requerido',
-          data: null
-        }
+        return respondError('ID de producto requerido')
       }
 
       // Obtener movimientos del producto ordenados por fecha
@@ -32,39 +29,24 @@ export default defineEventHandler(async (event) => {
 
       if (error) {
         console.error('Error obteniendo movimientos:', error)
-        return {
-          success: false,
-          error: 'Error obteniendo movimientos',
-          data: null
-        }
+        return respondError('Error obteniendo movimientos')
       }
 
-      return {
-        success: true,
-        data: movements,
-        error: null
-      }
+      return respondSuccess(movements)
     } catch (error) {
       console.error('Error inesperado:', error)
-      return {
-        success: false,
-        error: 'Error interno del servidor',
-        data: null
-      }
+      return respondError('Error interno del servidor')
     }
   }
 
   if (method === 'POST') {
     try {
+      await requireAdmin(event)
       const body = await readBody(event)
       
       // Validar campos requeridos
       if (!body.product_id || !body.movement_type || !body.quantity || !body.reason) {
-        return {
-          success: false,
-          error: 'Todos los campos son obligatorios',
-          data: null
-        }
+        return respondError('Todos los campos son obligatorios')
       }
 
       // Obtener stock actual del producto
@@ -75,11 +57,7 @@ export default defineEventHandler(async (event) => {
         .single()
 
       if (productError || !product) {
-        return {
-          success: false,
-          error: 'Producto no encontrado',
-          data: null
-        }
+        return respondError('Producto no encontrado')
       }
 
       const currentStock = product.stock_quantity
@@ -99,11 +77,7 @@ export default defineEventHandler(async (event) => {
           newStock = body.quantity
           break
         default:
-          return {
-            success: false,
-            error: 'Tipo de movimiento no válido',
-            data: null
-          }
+          return respondError('Tipo de movimiento no válido')
       }
 
       // Crear el movimiento
@@ -127,11 +101,7 @@ export default defineEventHandler(async (event) => {
 
       if (movementError) {
         console.error('Error creando movimiento:', movementError)
-        return {
-          success: false,
-          error: 'Error creando movimiento',
-          data: null
-        }
+        return respondError('Error creando movimiento')
       }
 
       // Actualizar stock del producto
@@ -151,32 +121,16 @@ export default defineEventHandler(async (event) => {
           .delete()
           .eq('id_movement', movement.id_movement)
         
-        return {
-          success: false,
-          error: 'Error actualizando stock del producto',
-          data: null
-        }
+        return respondError('Error actualizando stock del producto')
       }
 
-      return {
-        success: true,
-        data: movement,
-        error: null
-      }
+      return respondSuccess(movement)
     } catch (error) {
       console.error('Error inesperado:', error)
-      return {
-        success: false,
-        error: 'Error interno del servidor',
-        data: null
-      }
+      return respondError('Error interno del servidor')
     }
   }
 
   // Método no permitido
-  return {
-    success: false,
-    error: 'Método no permitido',
-    data: null
-  }
+  return respondError('Método no permitido')
 })

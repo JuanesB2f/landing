@@ -1,4 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server'
+import { requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
@@ -75,30 +76,22 @@ export default defineEventHandler(async (event) => {
         subtotal: order.subtotal || 0
       }
 
-      return {
-        success: true,
-        data: processedOrder
-      }
+      return respondSuccess(processedOrder)
 
     } catch (error) {
       console.error('Error en GET /api/orders/[id]:', error)
-      return {
-        success: false,
-        error: 'Error interno del servidor'
-      }
+      return respondError('Error interno del servidor')
     }
   }
 
   if (method === 'PUT') {
     try {
+      await requireAdmin(event)
       const body = await readBody(event)
       
       // Validar campos requeridos
       if (!body.customer_id || !body.order_items || body.order_items.length === 0) {
-        return {
-          success: false,
-          error: 'El cliente y al menos un item son requeridos'
-        }
+        return respondError('El cliente y al menos un item son requeridos')
       }
 
       // Verificar que el pedido existe
@@ -109,18 +102,12 @@ export default defineEventHandler(async (event) => {
         .single()
 
       if (orderError || !existingOrder) {
-        return {
-          success: false,
-          error: 'Pedido no encontrado'
-        }
+        return respondError('Pedido no encontrado')
       }
 
       // Solo permitir edición de pedidos pendientes o confirmados
       if (existingOrder.status !== 'pending' && existingOrder.status !== 'confirmed') {
-        return {
-          success: false,
-          error: 'Solo se pueden editar pedidos pendientes o confirmados'
-        }
+        return respondError('Solo se pueden editar pedidos pendientes o confirmados')
       }
 
       // Verificar que el cliente existe
@@ -131,17 +118,11 @@ export default defineEventHandler(async (event) => {
         .single()
 
       if (customerError || !customer) {
-        return {
-          success: false,
-          error: 'Cliente no encontrado'
-        }
+        return respondError('Cliente no encontrado')
       }
 
       if (!customer.is_active) {
-        return {
-          success: false,
-          error: 'El cliente está inactivo'
-        }
+        return respondError('El cliente está inactivo')
       }
 
       // Obtener items actuales del pedido para restaurar stock
@@ -177,10 +158,7 @@ export default defineEventHandler(async (event) => {
 
       for (const item of body.order_items) {
         if (!item.product_id || !item.quantity || !item.unit_price) {
-          return {
-            success: false,
-            error: 'Todos los items deben tener product_id, quantity y unit_price'
-          }
+          return respondError('Todos los items deben tener product_id, quantity y unit_price')
         }
 
         // Verificar que el producto existe y tiene stock
@@ -191,17 +169,11 @@ export default defineEventHandler(async (event) => {
           .single()
 
         if (productError || !product) {
-          return {
-            success: false,
-            error: `Producto ${item.product_id} no encontrado`
-          }
+          return respondError(`Producto ${item.product_id} no encontrado`)
         }
 
         if (product.stock_quantity < item.quantity) {
-          return {
-            success: false,
-            error: `Stock insuficiente para ${product.name}. Disponible: ${product.stock_quantity}, Solicitado: ${item.quantity}`
-          }
+          return respondError(`Stock insuficiente para ${product.name}. Disponible: ${product.stock_quantity}, Solicitado: ${item.quantity}`)
         }
 
         const totalPrice = item.quantity * item.unit_price
@@ -246,11 +218,7 @@ export default defineEventHandler(async (event) => {
 
       if (updateError) {
         console.error('Error actualizando pedido:', updateError)
-        return {
-          success: false,
-          error: 'Error actualizando pedido',
-          details: updateError.message
-        }
+        return respondError('Error actualizando pedido', updateError.message)
       }
 
       // Eliminar items actuales
@@ -261,11 +229,7 @@ export default defineEventHandler(async (event) => {
 
       if (deleteItemsError) {
         console.error('Error eliminando items actuales:', deleteItemsError)
-        return {
-          success: false,
-          error: 'Error eliminando items actuales',
-          details: deleteItemsError.message
-        }
+        return respondError('Error eliminando items actuales', deleteItemsError.message)
       }
 
       // Crear nuevos items
@@ -280,11 +244,7 @@ export default defineEventHandler(async (event) => {
 
       if (itemsError) {
         console.error('Error creando nuevos items:', itemsError)
-        return {
-          success: false,
-          error: 'Error creando nuevos items',
-          details: itemsError.message
-        }
+        return respondError('Error creando nuevos items', itemsError.message)
       }
 
       // Actualizar stock de productos
@@ -302,23 +262,17 @@ export default defineEventHandler(async (event) => {
         }
       }
 
-      return {
-        success: true,
-        data: orderData,
-        message: 'Pedido actualizado exitosamente'
-      }
+      return respondSuccess(orderData, 'Pedido actualizado exitosamente')
 
     } catch (error) {
       console.error('Error en PUT /api/orders/[id]:', error)
-      return {
-        success: false,
-        error: 'Error interno del servidor'
-      }
+      return respondError('Error interno del servidor')
     }
   }
 
   if (method === 'DELETE') {
     try {
+      await requireAdmin(event)
       // Verificar que el pedido existe
       const { data: existingOrder, error: orderError } = await supabase
         .from('orders')
@@ -327,18 +281,12 @@ export default defineEventHandler(async (event) => {
         .single()
 
       if (orderError || !existingOrder) {
-        return {
-          success: false,
-          error: 'Pedido no encontrado'
-        }
+        return respondError('Pedido no encontrado')
       }
 
       // Solo permitir eliminación de pedidos pendientes
       if (existingOrder.status !== 'pending') {
-        return {
-          success: false,
-          error: 'Solo se pueden eliminar pedidos pendientes'
-        }
+        return respondError('Solo se pueden eliminar pedidos pendientes')
       }
 
       // Obtener items del pedido para restaurar stock
@@ -376,11 +324,7 @@ export default defineEventHandler(async (event) => {
 
       if (deleteItemsError) {
         console.error('Error eliminando items del pedido:', deleteItemsError)
-        return {
-          success: false,
-          error: 'Error eliminando items del pedido',
-          details: deleteItemsError.message
-        }
+        return respondError('Error eliminando items del pedido', deleteItemsError.message)
       }
 
       // Eliminar el pedido
@@ -391,29 +335,16 @@ export default defineEventHandler(async (event) => {
 
       if (deleteOrderError) {
         console.error('Error eliminando pedido:', deleteOrderError)
-        return {
-          success: false,
-          error: 'Error eliminando pedido',
-          details: deleteOrderError.message
-        }
+        return respondError('Error eliminando pedido', deleteOrderError.message)
       }
 
-      return {
-        success: true,
-        message: 'Pedido eliminado exitosamente'
-      }
+      return respondSuccess(null, 'Pedido eliminado exitosamente')
 
     } catch (error) {
       console.error('Error en DELETE /api/orders/[id]:', error)
-      return {
-        success: false,
-        error: 'Error interno del servidor'
-      }
+      return respondError('Error interno del servidor')
     }
   }
 
-  return {
-    success: false,
-    error: 'Método no permitido'
-  }
+  return respondError('Método no permitido')
 })

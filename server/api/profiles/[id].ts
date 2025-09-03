@@ -1,4 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server'
+import { requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
@@ -42,30 +43,22 @@ export default defineEventHandler(async (event) => {
         full_name: `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || null
       }
 
-      return {
-        success: true,
-        data: processedProfile
-      }
+      return respondSuccess(processedProfile)
 
     } catch (error) {
       console.error('Error en GET /api/profiles/[id]:', error)
-      return {
-        success: false,
-        error: 'Error interno del servidor'
-      }
+      return respondError('Error interno del servidor')
     }
   }
 
   if (method === 'PUT') {
     try {
+      await requireAdmin(event)
       const body = await readBody(event)
       
       // Validar campos requeridos
       if (!body.first_name || !body.last_name || !body.email || !body.role) {
-        return {
-          success: false,
-          error: 'Los campos nombre, apellido, email y rol son requeridos'
-        }
+        return respondError('Los campos nombre, apellido, email y rol son requeridos')
       }
 
       // Verificar si el email ya existe en otro usuario
@@ -78,17 +71,11 @@ export default defineEventHandler(async (event) => {
 
       if (checkError && checkError.code !== 'PGRST116') {
         console.error('Error verificando email duplicado:', checkError)
-        return {
-          success: false,
-          error: 'Error verificando email duplicado'
-        }
+        return respondError('Error verificando email duplicado')
       }
 
       if (existingProfile) {
-        return {
-          success: false,
-          error: 'Ya existe otro usuario con este email'
-        }
+        return respondError('Ya existe otro usuario con este email')
       }
 
       // Actualizar perfil
@@ -126,23 +113,17 @@ export default defineEventHandler(async (event) => {
         }
       }
 
-      return {
-        success: true,
-        data: data,
-        message: 'Perfil actualizado exitosamente'
-      }
+      return respondSuccess(data, 'Perfil actualizado exitosamente')
 
     } catch (error) {
       console.error('Error en PUT /api/profiles/[id]:', error)
-      return {
-        success: false,
-        error: 'Error interno del servidor'
-      }
+      return respondError('Error interno del servidor')
     }
   }
 
   if (method === 'DELETE') {
     try {
+      await requireAdmin(event)
       // Verificar si el usuario tiene pedidos asociados
       const { data: orders, error: ordersError } = await supabase
         .from('orders')
@@ -191,22 +172,13 @@ export default defineEventHandler(async (event) => {
         }
       }
 
-      return {
-        success: true,
-        message: 'Usuario eliminado exitosamente'
-      }
+      return respondSuccess(null, 'Usuario eliminado exitosamente')
 
     } catch (error) {
       console.error('Error en DELETE /api/profiles/[id]:', error)
-      return {
-        success: false,
-        error: 'Error interno del servidor'
-      }
+      return respondError('Error interno del servidor')
     }
   }
 
-  return {
-    success: false,
-    error: 'Método no permitido'
-  }
+  return respondError('Método no permitido')
 })

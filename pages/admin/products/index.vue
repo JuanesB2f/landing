@@ -124,7 +124,7 @@
                 </span>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                ${{ product.price.toFixed(2) }}
+                {{ formatCOP(product.price) }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <span
@@ -243,7 +243,7 @@
     </div>
 
     <!-- Modal para crear/editar producto -->
-    <ProductModal
+    <ProductAddModal
       v-if="showModal"
       :product="editingProduct"
       :categories="categories"
@@ -252,10 +252,9 @@
     />
 
     <!-- Modal de confirmación para eliminar -->
-    <ConfirmModal
+    <ProductDeleteModal
       v-if="showDeleteModal"
-      title="Eliminar Producto"
-      :message="`¿Estás seguro de que quieres eliminar el producto '${productToDelete?.name}'? Esta acción no se puede deshacer.`"
+      :product="productToDelete"
       @confirm="confirmDelete"
       @cancel="showDeleteModal = false"
     />
@@ -332,6 +331,7 @@ const visiblePages = computed(() => {
 })
 
 // Métodos
+const { formatCOP } = useCurrency()
 const fetchProducts = async () => {
   loading.value = true
   try {
@@ -363,12 +363,12 @@ const fetchCategories = async () => {
 
 const openCreateModal = () => {
   editingProduct.value = null
-  showModal.value = true
+  nextTick(() => { showModal.value = true })
 }
 
 const editProduct = (product) => {
   editingProduct.value = { ...product }
-  showModal.value = true
+  nextTick(() => { showModal.value = true })
 }
 
 const closeModal = () => {
@@ -376,18 +376,21 @@ const closeModal = () => {
   editingProduct.value = null
 }
 
+const toast = useToast()
+
 const saveProduct = async (productData) => {
   try {
     if (editingProduct.value) {
       // Actualizar producto existente
-      const { data } = await $fetch(`/api/products/${productData.id_product}`, {
+      const { data } = await $fetch(`/api/products/${productData.get('id_product')}`, {
         method: 'PUT',
         body: productData
       })
       if (data.success) {
-        console.log('Producto actualizado exitosamente')
+        toast.add({ title: 'Producto actualizado', color: 'green' })
       } else {
         console.error('Error actualizando producto:', data.error)
+        toast.add({ title: data.error || 'Error actualizando producto', color: 'red' })
         return
       }
     } else {
@@ -397,9 +400,10 @@ const saveProduct = async (productData) => {
         body: productData
       })
       if (data.success) {
-        console.log('Producto creado exitosamente')
+        toast.add({ title: 'Producto creado', color: 'green' })
       } else {
         console.error('Error creando producto:', data.error)
+        toast.add({ title: data.error || 'Error creando producto', color: 'red' })
         return
       }
     }
@@ -408,6 +412,7 @@ const saveProduct = async (productData) => {
     closeModal()
   } catch (error) {
     console.error('Error saving product:', error)
+    toast.add({ title: 'Error guardando producto', color: 'red' })
   }
 }
 
@@ -417,19 +422,22 @@ const toggleProductStatus = async (product) => {
       method: 'PATCH'
     })
     if (data.success) {
-      console.log('Estado del producto cambiado exitosamente')
+      toast.add({ title: 'Estado actualizado', color: 'green' })
       await fetchProducts()
     } else {
       console.error('Error cambiando estado del producto:', data.error)
+      toast.add({ title: data.error || 'Error cambiando estado', color: 'red' })
     }
   } catch (error) {
     console.error('Error toggling product status:', error)
+    toast.add({ title: 'Error cambiando estado', color: 'red' })
   }
 }
 
 const deleteProduct = (product) => {
   productToDelete.value = product
-  showDeleteModal.value = true
+  // Forzar tick antes de abrir el modal para asegurar render
+  nextTick(() => { showDeleteModal.value = true })
 }
 
 const confirmDelete = async () => {
@@ -438,15 +446,20 @@ const confirmDelete = async () => {
       method: 'DELETE'
     })
     if (data.success) {
-      console.log('Producto eliminado exitosamente')
+      toast.add({ title: 'Producto eliminado', color: 'green' })
       await fetchProducts()
-      showDeleteModal.value = false
-      productToDelete.value = null
+      // Cerrar modal después de refrescar para evitar re-render extraño
+      nextTick(() => {
+        showDeleteModal.value = false
+        productToDelete.value = null
+      })
     } else {
       console.error('Error eliminando producto:', data.error)
+      toast.add({ title: data.error || 'Error eliminando producto', color: 'red' })
     }
   } catch (error) {
     console.error('Error deleting product:', error)
+    toast.add({ title: 'Error eliminando producto', color: 'red' })
   }
 }
 
