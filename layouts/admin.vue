@@ -1,8 +1,8 @@
 <template>
-  <div class="min-h-screen bg-gray-100">
+  <div class="min-h-screen transition-colors duration-300 theme-container">
     <!-- Sidebar -->
-    <aside class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg">
-      <div class="flex items-center justify-center h-16 bg-pink-600">
+    <aside class="fixed inset-y-0 left-0 z-50 w-64 shadow-lg transition-colors duration-300 theme-sidebar">
+      <div class="flex items-center justify-center h-16 theme-header">
         <h1 class="text-xl font-bold text-white">Admin Panel</h1>
       </div>
       
@@ -10,8 +10,8 @@
         <div class="px-4 space-y-2">
           <NuxtLink 
             to="/admin" 
-            class="flex items-center px-4 py-2 text-gray-700 rounded-lg hover:bg-pink-50 hover:text-pink-600 transition-colors"
-            :class="{ 'bg-pink-50 text-pink-600': $route.path === '/admin' }"
+            class="flex items-center px-4 py-2 rounded-lg transition-colors theme-nav-item"
+            :class="{ 'theme-nav-active': $route.path === '/admin' }"
           >
             <Icon name="heroicons:home" class="w-5 h-5 mr-3" />
             Dashboard
@@ -19,8 +19,8 @@
           
           <NuxtLink 
             to="/admin/products" 
-            class="flex items-center px-4 py-2 text-gray-700 rounded-lg hover:bg-pink-50 hover:text-pink-600 transition-colors"
-            :class="{ 'bg-pink-50 text-pink-600': $route.path.startsWith('/admin/products') }"
+            class="flex items-center px-4 py-2 rounded-lg transition-colors theme-nav-item"
+            :class="{ 'theme-nav-active': $route.path.startsWith('/admin/products') }"
           >
             <Icon name="heroicons:cube" class="w-5 h-5 mr-3" />
             Productos
@@ -28,8 +28,8 @@
           
           <NuxtLink 
             to="/admin/categories" 
-            class="flex items-center px-4 py-2 text-gray-700 rounded-lg hover:bg-pink-50 hover:text-pink-600 transition-colors"
-            :class="{ 'bg-pink-50 text-pink-600': $route.path.startsWith('/admin/categories') }"
+            class="flex items-center px-4 py-2 rounded-lg transition-colors theme-nav-item"
+            :class="{ 'theme-nav-active': $route.path.startsWith('/admin/categories') }"
           >
             <Icon name="heroicons:tag" class="w-5 h-5 mr-3" />
             Categorías
@@ -37,8 +37,8 @@
           
           <NuxtLink 
             to="/admin/inventory" 
-            class="flex items-center px-4 py-2 text-gray-700 rounded-lg hover:bg-pink-50 hover:text-pink-600 transition-colors"
-            :class="{ 'bg-pink-50 text-pink-600': $route.path.startsWith('/admin/inventory') }"
+            class="flex items-center px-4 py-2 rounded-lg transition-colors theme-nav-item"
+            :class="{ 'theme-nav-active': $route.path.startsWith('/admin/inventory') }"
           >
             <Icon name="heroicons:archive-box" class="w-5 h-5 mr-3" />
             Inventario
@@ -46,8 +46,8 @@
           
           <NuxtLink 
             to="/admin/providers" 
-            class="flex items-center px-4 py-2 text-gray-700 rounded-lg hover:bg-pink-50 hover:text-pink-600 transition-colors"
-            :class="{ 'bg-pink-50 text-pink-600': $route.path.startsWith('/admin/providers') }"
+            class="flex items-center px-4 py-2 rounded-lg transition-colors theme-nav-item"
+            :class="{ 'theme-nav-active': $route.path.startsWith('/admin/providers') }"
           >
             <Icon name="heroicons:truck" class="w-5 h-5 mr-3" />
             Proveedores
@@ -55,8 +55,8 @@
           
           <NuxtLink 
             to="/admin/orders" 
-            class="flex items-center px-4 py-2 text-gray-700 rounded-lg hover:bg-pink-50 hover:text-pink-600 transition-colors"
-            :class="{ 'bg-pink-50 text-pink-600': $route.path.startsWith('/admin/orders') }"
+            class="flex items-center px-4 py-2 rounded-lg transition-colors theme-nav-item"
+            :class="{ 'theme-nav-active': $route.path.startsWith('/admin/orders') }"
           >
             <Icon name="heroicons:shopping-bag" class="w-5 h-5 mr-3" />
             Pedidos
@@ -64,8 +64,8 @@
           
           <NuxtLink 
             to="/admin/customers" 
-            class="flex items-center px-4 py-2 text-gray-700 rounded-lg hover:bg-pink-50 hover:text-pink-600 transition-colors"
-            :class="{ 'bg-pink-50 text-pink-600': $route.path.startsWith('/admin/customers') }"
+            class="flex items-center px-4 py-2 rounded-lg transition-colors theme-nav-item"
+            :class="{ 'theme-nav-active': $route.path.startsWith('/admin/customers') }"
           >
             <Icon name="heroicons:users" class="w-5 h-5 mr-3" />
             Clientes
@@ -73,8 +73,8 @@
           
           <NuxtLink 
             to="/admin/profiles" 
-            class="flex items-center px-4 py-2 text-gray-700 rounded-lg hover:bg-pink-50 hover:text-pink-600 transition-colors"
-            :class="{ 'bg-pink-50 text-pink-600': $route.path.startsWith('/admin/profiles') }"
+            class="flex items-center px-4 py-2 rounded-lg transition-colors theme-nav-item"
+            :class="{ 'theme-nav-active': $route.path.startsWith('/admin/profiles') }"
           >
             <Icon name="heroicons:user-circle" class="w-5 h-5 mr-3" />
             Usuarios
@@ -86,32 +86,44 @@
     <!-- Main Content -->
     <div class="ml-64">
       <!-- Header -->
-      <header class="bg-white shadow-sm border-b">
+      <header class="shadow-sm border-b transition-colors duration-300 theme-header-bar">
         <div class="flex justify-between items-center h-16 px-6">
           <div class="flex items-center space-x-4">
-            <h2 class="text-lg font-semibold text-gray-900">
+            <h2 class="text-lg font-semibold transition-colors theme-text-primary">
               {{ pageTitle }}
             </h2>
           </div>
           
           <div class="flex items-center space-x-4">
+            <!-- Toggle de tema -->
+            <button 
+              @click="toggleTheme" 
+              class="p-2 rounded-lg transition-all duration-300 group theme-button"
+              :title="isDark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'"
+            >
+              <Icon 
+                :name="isDark ? 'heroicons:sun' : 'heroicons:moon'" 
+                class="w-6 h-6 group-hover:scale-110 transition-transform duration-200" 
+              />
+            </button>
+            
             <!-- Notifications -->
-            <button class="text-gray-500 hover:text-gray-700">
+            <button class="p-2 rounded-lg transition-colors theme-button">
               <Icon name="heroicons:bell" class="w-6 h-6" />
             </button>
             
             <!-- User Menu -->
             <div class="flex items-center space-x-3">
-              <div class="w-8 h-8 bg-pink-600 rounded-full flex items-center justify-center">
+              <div class="w-8 h-8 rounded-full flex items-center justify-center theme-user-avatar">
                 <span class="text-white text-sm font-semibold">
                   {{ userInitials }}
                 </span>
               </div>
               <div>
-                <p class="text-sm font-medium text-gray-900">{{ userName }}</p>
-                <p class="text-xs text-gray-500">{{ userRole }}</p>
+                <p class="text-sm font-medium transition-colors theme-text-primary">{{ userName }}</p>
+                <p class="text-xs transition-colors theme-text-secondary">{{ userRole }}</p>
               </div>
-              <button @click="logout" class="text-gray-500 hover:text-gray-700">
+              <button @click="logout" class="p-2 rounded-lg transition-colors theme-button">
                 <Icon name="heroicons:arrow-right-on-rectangle" class="w-5 h-5" />
               </button>
             </div>
@@ -129,6 +141,9 @@
 
 <script setup>
 const route = useRoute()
+
+// Composable para manejar el tema
+const { isDark, toggleTheme } = useTheme()
 
 const pageTitle = computed(() => {
   const titles = {

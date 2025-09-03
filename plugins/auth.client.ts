@@ -4,41 +4,50 @@
  */
 
 export default defineNuxtPlugin(async () => {
-  const supabase = useSupabaseClient<any>()
+  const supabase = useSupabaseClient()
+  const { checkAuth } = useAuth()
+  
+  console.log('🔐 Plugin de autenticación iniciado')
   
   // Verificar sesión de Supabase al cargar la aplicación
   try {
-    const { data: { session } } = await supabase.auth.getSession()
+    const { data: { session }, error } = await supabase.auth.getSession()
+    
+    if (error) {
+      console.error('❌ Error obteniendo sesión:', error)
+      return
+    }
     
     if (session) {
-      // Obtener perfil del usuario
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', session.user.id)
-        .single()
+      console.log('✅ Sesión encontrada para usuario:', session.user.email)
       
-      if (profile && profile.role === 'admin') {
-        // Usuario autenticado como admin, actualizar estado
-        const { user } = useAuth()
-        user.value = {
-          id: profile.id,
-          email: profile.email,
-          role: profile.role,
-          name: profile.name,
-          avatar: profile.avatar_url,
-          created_at: profile.created_at,
-          updated_at: profile.updated_at
-        }
-        
-        // Actualizar localStorage
-        localStorage.setItem('user', JSON.stringify(user.value))
-        localStorage.setItem('isAuthenticated', 'true')
+      // Usar el método checkAuth del composable para manejar la autenticación
+      const isAuthenticated = await checkAuth()
+      
+      if (isAuthenticated) {
+        console.log('✅ Usuario autenticado como admin')
+      } else {
+        console.log('❌ Usuario no es admin o error en autenticación')
       }
+    } else {
+      console.log('ℹ️ No hay sesión activa')
     }
   } catch (error) {
-    console.error('Error verificando sesión:', error)
+    console.error('❌ Error verificando sesión:', error)
   }
+  
+  // Escuchar cambios en la autenticación
+  supabase.auth.onAuthStateChange(async (event, session) => {
+    console.log('🔄 Cambio de estado de autenticación:', event)
+    
+    if (event === 'SIGNED_IN' && session) {
+      console.log('✅ Usuario inició sesión:', session.user.email)
+      await checkAuth()
+    } else if (event === 'SIGNED_OUT') {
+      console.log('🚪 Usuario cerró sesión')
+      // Limpiar estado local si es necesario
+    }
+  })
 })
 
 

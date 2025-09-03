@@ -3,9 +3,9 @@
  * Sistema adaptado para usar profiles + auth.users de Supabase
  */
 
-export default defineNuxtRouteMiddleware(async (to: any) => {
+export default defineNuxtRouteMiddleware(async (to) => {
   // Solo ejecutar en el cliente
-  if (typeof window !== 'undefined') {
+  if (process.client) {
     // Rutas públicas que no requieren autenticación
     const publicRoutes = ['/', '/login', '/register', '/about', '/shop', '/shop/category/*']
     const isPublicRoute = publicRoutes.some(route => {
@@ -21,31 +21,36 @@ export default defineNuxtRouteMiddleware(async (to: any) => {
     }
     
     // Para rutas protegidas, verificar autenticación
-    const { $supabase } = useNuxtApp()
+    const supabase = useSupabaseClient()
     
     try {
       // Verificar sesión de Supabase
-      const { data: { session }, error } = await $supabase.auth.getSession()
+      const { data: { session }, error } = await supabase.auth.getSession()
       
       if (error || !session) {
+        console.log('No hay sesión activa, redirigiendo al login')
         return navigateTo('/login')
       }
       
       // Obtener perfil del usuario para verificar rol
-      const { data: profile, error: profileError } = await $supabase
+      const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('role')
         .eq('id', session.user.id)
         .single()
       
       if (profileError || !profile) {
+        console.log('Perfil no encontrado, redirigiendo al login')
         return navigateTo('/login')
       }
       
       // Verificar que el usuario tenga rol de admin
       if (profile.role !== 'admin') {
+        console.log('Usuario no es admin, redirigiendo a unauthorized')
         return navigateTo('/unauthorized')
       }
+      
+      console.log('Usuario autenticado como admin, acceso permitido')
       
     } catch (error) {
       console.error('Error en middleware de autenticación:', error)
