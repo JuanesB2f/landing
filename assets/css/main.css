@@ -130,6 +130,41 @@ body, html, * {
 .theme-dark .border-gray-200, .theme-dark .border-gray-300 { border-color: var(--border-color) !important; }
 .theme-dark .divide-gray-200 > :not([hidden]) ~ :not([hidden]) { border-color: var(--border-color) !important; }
 
+/* Selects y opciones: forzar colores del tema en modo oscuro y claro */
+select {
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent);
+  border-color: var(--accent);
+}
+
+.theme-dark select,
+.theme-dark textarea,
+.theme-dark input[type="text"],
+.theme-dark input[type="number"],
+.theme-dark input[type="datetime-local"],
+.theme-dark input[type="date"] {
+  background-color: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+.theme-dark option,
+.theme-dark optgroup {
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+}
+
+.theme-dark select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+
 /* Custom Animations */
 @keyframes blob {
   0% {
