@@ -81,7 +81,7 @@
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
-            <tr v-for="category in filteredCategories" :key="category.id_category" class="hover:bg-gray-50">
+            <tr v-for="category in filteredCategories.slice(startIndex, endIndex)" :key="category.id_category" class="hover:bg-gray-50">
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center">
                   <div class="flex-shrink-0 h-10 w-10">

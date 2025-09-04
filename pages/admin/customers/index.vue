@@ -163,7 +163,7 @@
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
-            <tr v-for="customer in filteredCustomers" :key="customer.id_customer" class="hover:bg-gray-50">
+            <tr v-for="customer in filteredCustomers.slice(startIndex, endIndex)" :key="customer.id_customer" class="hover:bg-gray-50">
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center">
                   <div class="flex-shrink-0 h-10 w-10">

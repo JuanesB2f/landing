@@ -95,7 +95,7 @@
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
-            <tr v-for="product in filteredProducts" :key="product.id_product" class="hover:bg-gray-50">
+            <tr v-for="product in filteredProducts.slice(startIndex, endIndex)" :key="product.id_product" class="hover:bg-gray-50">
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center">
                   <div class="flex-shrink-0 h-12 w-12">
