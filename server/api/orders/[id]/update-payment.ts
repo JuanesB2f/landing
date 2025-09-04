@@ -1,5 +1,26 @@
 import { serverSupabaseClient } from '#supabase/server'
 
+type PaymentStatus = 'pending' | 'paid' | 'failed' | 'refunded'
+type OrderStatus = 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled'
+
+interface UpdatePaymentBody {
+  payment_status: PaymentStatus
+  notes?: string
+  payment_method?: string
+  payment_reference?: string
+}
+
+interface CurrentOrder {
+  id_order: string
+  payment_status: PaymentStatus
+  status: OrderStatus
+}
+
+interface OrderItemRow {
+  product_id: string
+  quantity: number
+}
+
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
   const supabase = await serverSupabaseClient(event)
@@ -24,7 +45,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const body = await readBody(event)
+    const body = await readBody<Partial<UpdatePaymentBody>>(event)
     
     // Validar campos requeridos
     if (!body.payment_status) {
@@ -37,8 +58,8 @@ export default defineEventHandler(async (event) => {
     }
 
     // Validar estado de pago válido
-    const validPaymentStatuses = ['pending', 'paid', 'failed', 'refunded']
-    if (!validPaymentStatuses.includes(body.payment_status)) {
+    const validPaymentStatuses: PaymentStatus[] = ['pending', 'paid', 'failed', 'refunded']
+    if (!body.payment_status || !validPaymentStatuses.includes(body.payment_status)) {
       return {
         data: {
           success: false,
@@ -48,11 +69,13 @@ export default defineEventHandler(async (event) => {
     }
 
     // Obtener el pedido actual
-    const { data: currentOrder, error: fetchError } = await supabase
+    const currentOrderRes = await supabase
       .from('orders')
       .select('id_order, payment_status, status')
       .eq('id_order', id)
       .single()
+    const fetchError = (currentOrderRes as any).error as any
+    const currentOrder = (currentOrderRes as any).data as CurrentOrder
 
     if (fetchError) {
       if (fetchError.code === 'PGRST116') {
@@ -74,15 +97,15 @@ export default defineEventHandler(async (event) => {
     }
 
     // Validar transiciones de estado de pago permitidas
-    const currentPaymentStatus = currentOrder.payment_status
-    const newPaymentStatus = body.payment_status
+    const currentPaymentStatus: PaymentStatus = currentOrder.payment_status
+    const newPaymentStatus: PaymentStatus = body.payment_status
 
     // Reglas de transición de estado de pago
-    const allowedPaymentTransitions = {
-      'pending': ['paid', 'failed'],
-      'paid': ['refunded'],
-      'failed': ['pending', 'paid'],
-      'refunded': [] // Estado final
+    const allowedPaymentTransitions: Record<PaymentStatus, PaymentStatus[]> = {
+      pending: ['paid', 'failed'],
+      paid: ['refunded'],
+      failed: ['pending', 'paid'],
+      refunded: []
     }
 
     if (!allowedPaymentTransitions[currentPaymentStatus].includes(newPaymentStatus)) {
@@ -114,7 +137,13 @@ export default defineEventHandler(async (event) => {
     }
 
     // Preparar datos de actualización
-    const updateData = {
+    const updateData: Partial<{
+      payment_status: PaymentStatus
+      updated_at: string
+      notes: string
+      payment_method: string
+      payment_reference: string
+    }> = {
       payment_status: newPaymentStatus,
       updated_at: new Date().toISOString()
     }
@@ -135,12 +164,21 @@ export default defineEventHandler(async (event) => {
     }
 
     // Actualizar el pedido
-    const { data, error } = await supabase
+    const clientAny = supabase as any
+    const updateRes = await clientAny
       .from('orders')
       .update(updateData)
       .eq('id_order', id)
       .select('id_order, payment_status, payment_method, notes, updated_at')
       .single()
+    const error = updateRes.error as any
+    const data = updateRes.data as {
+      id_order: string
+      payment_status: PaymentStatus
+      payment_method: string | null
+      notes: string | null
+      updated_at: string
+    }
 
     if (error) {
       console.error('Error actualizando estado de pago del pedido:', error)
@@ -155,19 +193,22 @@ export default defineEventHandler(async (event) => {
 
     // Si el pago se marca como fallido, restaurar stock si el pedido estaba confirmado
     if (newPaymentStatus === 'failed' && currentPaymentStatus === 'paid' && currentOrder.status === 'confirmed') {
-      const { data: orderItems, error: itemsError } = await supabase
+      const orderItemsRes = await supabase
         .from('order_items')
         .select('product_id, quantity')
         .eq('order_id', id)
+      const itemsError = (orderItemsRes as any).error as any
+      const orderItems = (orderItemsRes as any).data as OrderItemRow[] | null
 
       if (itemsError) {
         console.error('Error obteniendo items para restaurar stock:', itemsError)
       } else if (orderItems) {
         for (const item of orderItems) {
-          const { error: stockError } = await supabase
+          const clientAny = supabase as any
+          const { error: stockError } = await clientAny
             .from('products')
             .update({ 
-              stock_quantity: supabase.raw(`stock_quantity + ${item.quantity}`),
+              stock_quantity: clientAny.raw(`stock_quantity + ${item.quantity}`),
               updated_at: new Date().toISOString()
             })
             .eq('id_product', item.product_id)
@@ -182,10 +223,12 @@ export default defineEventHandler(async (event) => {
     // Si el pago se marca como pagado, verificar si se puede confirmar el pedido
     if (newPaymentStatus === 'paid' && currentPaymentStatus === 'pending' && currentOrder.status === 'pending') {
       // Verificar stock antes de confirmar automáticamente
-      const { data: orderItems, error: itemsError } = await supabase
+      const orderItemsRes = await supabase
         .from('order_items')
         .select('product_id, quantity')
         .eq('order_id', id)
+      const itemsError = (orderItemsRes as any).error as any
+      const orderItems = (orderItemsRes as any).data as OrderItemRow[] | null
 
       if (itemsError) {
         console.error('Error obteniendo items para verificar stock:', itemsError)
@@ -193,11 +236,13 @@ export default defineEventHandler(async (event) => {
         let canConfirm = true
         
         for (const item of orderItems) {
-          const { data: product, error: productError } = await supabase
+          const productRes = await supabase
             .from('products')
             .select('stock_quantity, name')
             .eq('id_product', item.product_id)
             .single()
+          const productError = (productRes as any).error as any
+          const product = (productRes as any).data as { stock_quantity: number, name: string }
 
           if (productError) {
             console.error('Error verificando stock del producto:', productError)
@@ -210,7 +255,7 @@ export default defineEventHandler(async (event) => {
 
         // Si se puede confirmar, hacerlo automáticamente
         if (canConfirm) {
-          const { error: confirmError } = await supabase
+          const { error: confirmError } = await (supabase as any)
             .from('orders')
             .update({ 
               status: 'confirmed',

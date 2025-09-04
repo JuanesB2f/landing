@@ -2,8 +2,9 @@
  * Middleware de autenticación
  * Sistema adaptado para usar profiles + auth.users de Supabase
  */
+import type { RouteLocationNormalized } from 'vue-router'
 
-export default defineNuxtRouteMiddleware(async (to) => {
+export default defineNuxtRouteMiddleware(async (to: RouteLocationNormalized) => {
   // Solo ejecutar en el cliente
   if (process.client) {
     // Rutas públicas que no requieren autenticación
@@ -45,7 +46,8 @@ export default defineNuxtRouteMiddleware(async (to) => {
       }
       
       // Verificar que el usuario tenga rol de admin
-      if (profile.role !== 'admin') {
+      const role = (profile as { role?: 'admin' | 'manager' | 'customer' } | null)?.role
+      if (role !== 'admin') {
         console.log('Usuario no es admin, redirigiendo a unauthorized')
         return navigateTo('/unauthorized')
       }

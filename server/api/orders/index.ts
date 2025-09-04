@@ -1,6 +1,38 @@
 import { serverSupabaseClient } from '#supabase/server'
 import { requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
 
+type OrderStatus = 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled'
+
+interface OrderCustomer {
+  id_customer: string
+  first_name: string
+  last_name: string
+  email: string
+  phone: string
+}
+
+interface OrderItemWithProduct {
+  id_order_item: string
+  quantity: number
+  unit_price: number
+  total_price: number
+  product: {
+    id_product: string
+    name: string
+    sku: string
+    image_url: string
+  }
+}
+
+interface OrderRow {
+  id_order: string
+  status: OrderStatus
+  total_amount: number | null
+  subtotal: number | null
+  customer?: OrderCustomer | null
+  order_items?: OrderItemWithProduct[] | null
+}
+
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
   const supabase = await serverSupabaseClient(event)
@@ -46,13 +78,12 @@ export default defineEventHandler(async (event) => {
       }
 
       // Procesar los pedidos para incluir información adicional
-      const processedOrders = orders.map(order => ({
-        ...order,
+      const processedOrders = (orders as unknown as OrderRow[]).map(order => ({
+        ...(order as any),
         customer_name: order.customer ? `${order.customer.first_name} ${order.customer.last_name}` : 'Cliente no encontrado',
         customer_email: order.customer?.email || 'N/A',
         customer_phone: order.customer?.phone || 'N/A',
         items_count: order.order_items?.length || 0,
-        // Calcular totales si no están presentes
         total_amount: order.total_amount || 0,
         subtotal: order.subtotal || 0
       }))
@@ -68,10 +99,10 @@ export default defineEventHandler(async (event) => {
   if (method === 'POST') {
     try {
       await requireAdmin(event)
-      const body = await readBody(event)
+      const body = await readBody<any>(event)
       
       // Validar campos requeridos
-      if (!body.customer_id || !body.order_items || !body.order_items.length === 0) {
+      if (!body.customer_id || !body.order_items || body.order_items.length === 0) {
         return respondError('El cliente y al menos un item son requeridos')
       }
 
@@ -86,15 +117,15 @@ export default defineEventHandler(async (event) => {
         return respondError('Cliente no encontrado')
       }
 
-      if (!customer.is_active) {
+      if (!(customer as any).is_active) {
         return respondError('El cliente está inactivo')
       }
 
       // Calcular totales
       let subtotal = 0
-      const orderItems = []
+      const orderItems: Array<{ product_id: string; quantity: number; unit_price: number; total_price: number }> = []
 
-      for (const item of body.order_items) {
+      for (const item of body.order_items as any[]) {
         if (!item.product_id || !item.quantity || !item.unit_price) {
           return respondError('Todos los items deben tener product_id, quantity y unit_price')
         }
@@ -110,11 +141,11 @@ export default defineEventHandler(async (event) => {
           return respondError(`Producto ${item.product_id} no encontrado`)
         }
 
-        if (product.stock_quantity < item.quantity) {
-          return respondError(`Stock insuficiente para ${product.name}. Disponible: ${product.stock_quantity}, Solicitado: ${item.quantity}`)
+        if ((product as any).stock_quantity < item.quantity) {
+          return respondError(`Stock insuficiente para ${(product as any).name}. Disponible: ${(product as any).stock_quantity}, Solicitado: ${item.quantity}`)
         }
 
-        const totalPrice = item.quantity * item.unit_price
+        const totalPrice = Number(item.quantity) * Number(item.unit_price)
         subtotal += totalPrice
 
         orderItems.push({
@@ -131,7 +162,7 @@ export default defineEventHandler(async (event) => {
       const totalAmount = subtotal + taxAmount + shippingAmount
 
       // Crear el pedido
-      const newOrder = {
+      const newOrder: any = {
         customer_id: body.customer_id,
         total_amount: totalAmount,
         subtotal: subtotal,
@@ -146,11 +177,13 @@ export default defineEventHandler(async (event) => {
         notes: body.notes || null
       }
 
-      const { data: orderData, error: orderError } = await supabase
+      const orderRes = await (supabase as any)
         .from('orders')
         .insert(newOrder)
         .select()
         .single()
+      const orderData = (orderRes as any).data
+      const orderError = (orderRes as any).error
 
       if (orderError) {
         console.error('Error creando pedido:', orderError)
@@ -163,7 +196,7 @@ export default defineEventHandler(async (event) => {
         order_id: orderData.id_order
       }))
 
-      const { error: itemsError } = await supabase
+      const { error: itemsError } = await (supabase as any)
         .from('order_items')
         .insert(orderItemsWithOrderId)
 
@@ -176,10 +209,10 @@ export default defineEventHandler(async (event) => {
 
       // Actualizar stock de productos
       for (const item of orderItems) {
-        const { error: stockError } = await supabase
+        const { error: stockError } = await (supabase as any)
           .from('products')
           .update({ 
-            stock_quantity: supabase.raw(`stock_quantity - ${item.quantity}`),
+            stock_quantity: (supabase as any).raw(`stock_quantity - ${item.quantity}`),
             updated_at: new Date().toISOString()
           })
           .eq('id_product', item.product_id)

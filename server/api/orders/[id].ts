@@ -1,6 +1,44 @@
 import { serverSupabaseClient } from '#supabase/server'
 import { requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
 
+type OrderStatus = 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled'
+
+interface OrderCustomer {
+  id_customer: string
+  first_name: string
+  last_name: string
+  email: string
+  phone: string
+  address?: string
+  city?: string
+  state?: string
+  postal_code?: string
+  country?: string
+}
+
+interface OrderItemWithProduct {
+  id_order_item: string
+  quantity: number
+  unit_price: number
+  total_price: number
+  product: {
+    id_product: string
+    name: string
+    sku: string
+    image_url: string
+    price: number
+  }
+}
+
+interface OrderRow {
+  id_order: string
+  status: OrderStatus
+  total_amount: number | null
+  subtotal: number | null
+  customer?: OrderCustomer | null
+  order_items?: OrderItemWithProduct[] | null
+}
+
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
   const supabase = await serverSupabaseClient(event)
@@ -65,15 +103,15 @@ export default defineEventHandler(async (event) => {
       }
 
       // Procesar el pedido para incluir información adicional
+      const o = order as unknown as OrderRow
       const processedOrder = {
-        ...order,
-        customer_name: order.customer ? `${order.customer.first_name} ${order.customer.last_name}` : 'Cliente no encontrado',
-        customer_email: order.customer?.email || 'N/A',
-        customer_phone: order.customer?.phone || 'N/A',
-        items_count: order.order_items?.length || 0,
-        // Calcular totales si no están presentes
-        total_amount: order.total_amount || 0,
-        subtotal: order.subtotal || 0
+        ...(o as any),
+        customer_name: o.customer ? `${o.customer.first_name} ${o.customer.last_name}` : 'Cliente no encontrado',
+        customer_email: o.customer?.email || 'N/A',
+        customer_phone: o.customer?.phone || 'N/A',
+        items_count: o.order_items?.length || 0,
+        total_amount: o.total_amount || 0,
+        subtotal: o.subtotal || 0
       }
 
       return respondSuccess(processedOrder)
@@ -87,7 +125,7 @@ export default defineEventHandler(async (event) => {
   if (method === 'PUT') {
     try {
       await requireAdmin(event)
-      const body = await readBody(event)
+      const body = await readBody<any>(event)
       
       // Validar campos requeridos
       if (!body.customer_id || !body.order_items || body.order_items.length === 0) {
@@ -106,7 +144,7 @@ export default defineEventHandler(async (event) => {
       }
 
       // Solo permitir edición de pedidos pendientes o confirmados
-      if (existingOrder.status !== 'pending' && existingOrder.status !== 'confirmed') {
+      if ((existingOrder as any).status !== 'pending' && (existingOrder as any).status !== 'confirmed') {
         return respondError('Solo se pueden editar pedidos pendientes o confirmados')
       }
 
@@ -121,7 +159,7 @@ export default defineEventHandler(async (event) => {
         return respondError('Cliente no encontrado')
       }
 
-      if (!customer.is_active) {
+      if (!(customer as any).is_active) {
         return respondError('El cliente está inactivo')
       }
 
@@ -137,11 +175,11 @@ export default defineEventHandler(async (event) => {
 
       // Restaurar stock de items actuales
       if (currentItems) {
-        for (const item of currentItems) {
-          const { error: stockError } = await supabase
+        for (const item of currentItems as any[]) {
+          const { error: stockError } = await (supabase as any)
             .from('products')
             .update({ 
-              stock_quantity: supabase.raw(`stock_quantity + ${item.quantity}`),
+              stock_quantity: (supabase as any).raw(`stock_quantity + ${item.quantity}`),
               updated_at: new Date().toISOString()
             })
             .eq('id_product', item.product_id)
@@ -154,9 +192,9 @@ export default defineEventHandler(async (event) => {
 
       // Calcular totales de nuevos items
       let subtotal = 0
-      const orderItems = []
+      const orderItems: Array<{ product_id: string; quantity: number; unit_price: number; total_price: number }> = []
 
-      for (const item of body.order_items) {
+      for (const item of body.order_items as any[]) {
         if (!item.product_id || !item.quantity || !item.unit_price) {
           return respondError('Todos los items deben tener product_id, quantity y unit_price')
         }
@@ -172,11 +210,11 @@ export default defineEventHandler(async (event) => {
           return respondError(`Producto ${item.product_id} no encontrado`)
         }
 
-        if (product.stock_quantity < item.quantity) {
-          return respondError(`Stock insuficiente para ${product.name}. Disponible: ${product.stock_quantity}, Solicitado: ${item.quantity}`)
+        if ((product as any).stock_quantity < item.quantity) {
+          return respondError(`Stock insuficiente para ${(product as any).name}. Disponible: ${(product as any).stock_quantity}, Solicitado: ${item.quantity}`)
         }
 
-        const totalPrice = item.quantity * item.unit_price
+        const totalPrice = Number(item.quantity) * Number(item.unit_price)
         subtotal += totalPrice
 
         orderItems.push({
@@ -193,13 +231,13 @@ export default defineEventHandler(async (event) => {
       const totalAmount = subtotal + taxAmount + shippingAmount
 
       // Actualizar el pedido
-      const updatedOrder = {
+      const updatedOrder: any = {
         customer_id: body.customer_id,
         total_amount: totalAmount,
         subtotal: subtotal,
         tax_amount: taxAmount,
         shipping_amount: shippingAmount,
-        status: body.status || existingOrder.status,
+        status: body.status || (existingOrder as any).status,
         shipping_address: body.shipping_address || null,
         billing_address: body.billing_address || null,
         payment_method: body.payment_method || null,
@@ -209,12 +247,14 @@ export default defineEventHandler(async (event) => {
         updated_at: new Date().toISOString()
       }
 
-      const { data: orderData, error: updateError } = await supabase
+      const updateRes = await (supabase as any)
         .from('orders')
         .update(updatedOrder)
         .eq('id_order', id)
         .select()
         .single()
+      const orderData = (updateRes as any).data
+      const updateError = (updateRes as any).error
 
       if (updateError) {
         console.error('Error actualizando pedido:', updateError)
@@ -222,7 +262,7 @@ export default defineEventHandler(async (event) => {
       }
 
       // Eliminar items actuales
-      const { error: deleteItemsError } = await supabase
+      const { error: deleteItemsError } = await (supabase as any)
         .from('order_items')
         .delete()
         .eq('order_id', id)
@@ -238,7 +278,7 @@ export default defineEventHandler(async (event) => {
         order_id: id
       }))
 
-      const { error: itemsError } = await supabase
+      const { error: itemsError } = await (supabase as any)
         .from('order_items')
         .insert(orderItemsWithOrderId)
 
@@ -249,10 +289,10 @@ export default defineEventHandler(async (event) => {
 
       // Actualizar stock de productos
       for (const item of orderItems) {
-        const { error: stockError } = await supabase
+        const { error: stockError } = await (supabase as any)
           .from('products')
           .update({ 
-            stock_quantity: supabase.raw(`stock_quantity - ${item.quantity}`),
+            stock_quantity: (supabase as any).raw(`stock_quantity - ${item.quantity}`),
             updated_at: new Date().toISOString()
           })
           .eq('id_product', item.product_id)
@@ -285,7 +325,7 @@ export default defineEventHandler(async (event) => {
       }
 
       // Solo permitir eliminación de pedidos pendientes
-      if (existingOrder.status !== 'pending') {
+      if ((existingOrder as any).status !== 'pending') {
         return respondError('Solo se pueden eliminar pedidos pendientes')
       }
 
@@ -301,11 +341,11 @@ export default defineEventHandler(async (event) => {
 
       // Restaurar stock de productos
       if (orderItems) {
-        for (const item of orderItems) {
-          const { error: stockError } = await supabase
+        for (const item of orderItems as any[]) {
+          const { error: stockError } = await (supabase as any)
             .from('products')
             .update({ 
-              stock_quantity: supabase.raw(`stock_quantity + ${item.quantity}`),
+              stock_quantity: (supabase as any).raw(`stock_quantity + ${item.quantity}`),
               updated_at: new Date().toISOString()
             })
             .eq('id_product', item.product_id)

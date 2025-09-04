@@ -6,11 +6,12 @@ export default defineNuxtPlugin(() => {
     
     if (supabase) {
       console.log('✅ Cliente Supabase encontrado')
-      console.log('🔧 Configuración:', {
-        url: supabase.supabaseUrl,
-        hasAuth: !!supabase.auth,
-        hasFrom: !!supabase.from
-      })
+      // Evitar acceder a propiedades protegidas para no romper tipos
+      const configInfo = {
+        hasAuth: Boolean((supabase as any).auth),
+        hasFrom: Boolean((supabase as any).from)
+      }
+      console.log('🔧 Configuración:', configInfo)
     } else {
       console.error('❌ Cliente Supabase no encontrado')
       console.error('🔧 Variables de entorno necesarias:')

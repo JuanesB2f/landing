@@ -93,8 +93,8 @@ export const useAuth = () => {
         localStorage.removeItem('isAuthenticated')
       }
       
-      // Redirigir al login
-      await navigateTo('/login')
+      // Redirigir a la página principal
+      await navigateTo('/')
       
       return { success: true }
     } catch (error) {

@@ -1,5 +1,25 @@
 import { serverSupabaseClient } from '#supabase/server'
 
+type OrderStatus = 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled'
+type PaymentStatus = 'pending' | 'paid' | 'failed' | 'refunded'
+
+interface UpdateStatusBody {
+  status: OrderStatus
+  tracking_number?: string
+  notes?: string
+}
+
+interface CurrentOrder {
+  id_order: string
+  status: OrderStatus
+  payment_status: PaymentStatus
+}
+
+interface OrderItemRow {
+  product_id: string
+  quantity: number
+}
+
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
   const supabase = await serverSupabaseClient(event)
@@ -24,7 +44,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const body = await readBody(event)
+    const body = await readBody<Partial<UpdateStatusBody>>(event)
     
     // Validar campos requeridos
     if (!body.status) {
@@ -37,8 +57,8 @@ export default defineEventHandler(async (event) => {
     }
 
     // Validar estado válido
-    const validStatuses = ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled']
-    if (!validStatuses.includes(body.status)) {
+    const validStatuses: OrderStatus[] = ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled']
+    if (!body.status || !validStatuses.includes(body.status)) {
       return {
         data: {
           success: false,
@@ -48,11 +68,13 @@ export default defineEventHandler(async (event) => {
     }
 
     // Obtener el pedido actual
-    const { data: currentOrder, error: fetchError } = await supabase
+    const currentOrderRes = await supabase
       .from('orders')
       .select('id_order, status, payment_status')
       .eq('id_order', id)
       .single()
+    const fetchError = (currentOrderRes as any).error as any
+    const currentOrder = (currentOrderRes as any).data as CurrentOrder
 
     if (fetchError) {
       if (fetchError.code === 'PGRST116') {
@@ -74,16 +96,16 @@ export default defineEventHandler(async (event) => {
     }
 
     // Validar transiciones de estado permitidas
-    const currentStatus = currentOrder.status
-    const newStatus = body.status
+    const currentStatus: OrderStatus = currentOrder.status
+    const newStatus: OrderStatus = body.status
 
     // Reglas de transición de estado
-    const allowedTransitions = {
-      'pending': ['confirmed', 'cancelled'],
-      'confirmed': ['shipped', 'cancelled'],
-      'shipped': ['delivered', 'cancelled'],
-      'delivered': [], // Estado final
-      'cancelled': [] // Estado final
+    const allowedTransitions: Record<OrderStatus, OrderStatus[]> = {
+      pending: ['confirmed', 'cancelled'],
+      confirmed: ['shipped', 'cancelled'],
+      shipped: ['delivered', 'cancelled'],
+      delivered: [],
+      cancelled: []
     }
 
     if (!allowedTransitions[currentStatus].includes(newStatus)) {
@@ -115,7 +137,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Preparar datos de actualización
-    const updateData = {
+    const updateData: Partial<{ status: OrderStatus; updated_at: string; tracking_number: string; notes: string }> = {
       status: newStatus,
       updated_at: new Date().toISOString()
     }
@@ -131,12 +153,14 @@ export default defineEventHandler(async (event) => {
     }
 
     // Actualizar el pedido
-    const { data, error } = await supabase
+    const updateRes = await (supabase as any)
       .from('orders')
       .update(updateData)
       .eq('id_order', id)
       .select('id_order, status, tracking_number, notes, updated_at')
       .single()
+    const error = (updateRes as any).error as any
+    const data = (updateRes as any).data as { id_order: string; status: OrderStatus; tracking_number: string | null; notes: string | null; updated_at: string }
 
     if (error) {
       console.error('Error actualizando estado del pedido:', error)
@@ -151,19 +175,21 @@ export default defineEventHandler(async (event) => {
 
     // Si el pedido se cancela, restaurar stock
     if (newStatus === 'cancelled' && currentStatus !== 'cancelled') {
-      const { data: orderItems, error: itemsError } = await supabase
+      const orderItemsRes = await supabase
         .from('order_items')
         .select('product_id, quantity')
         .eq('order_id', id)
+      const itemsError = (orderItemsRes as any).error as any
+      const orderItems = (orderItemsRes as any).data as OrderItemRow[] | null
 
       if (itemsError) {
         console.error('Error obteniendo items para restaurar stock:', itemsError)
       } else if (orderItems) {
         for (const item of orderItems) {
-          const { error: stockError } = await supabase
+          const { error: stockError } = await (supabase as any)
             .from('products')
             .update({ 
-              stock_quantity: supabase.raw(`stock_quantity + ${item.quantity}`),
+              stock_quantity: (supabase as any).raw(`stock_quantity + ${item.quantity}`),
               updated_at: new Date().toISOString()
             })
             .eq('id_product', item.product_id)
@@ -177,20 +203,24 @@ export default defineEventHandler(async (event) => {
 
     // Si el pedido se confirma desde pendiente, verificar stock nuevamente
     if (newStatus === 'confirmed' && currentStatus === 'pending') {
-      const { data: orderItems, error: itemsError } = await supabase
+      const orderItemsRes = await supabase
         .from('order_items')
         .select('product_id, quantity')
         .eq('order_id', id)
+      const itemsError = (orderItemsRes as any).error as any
+      const orderItems = (orderItemsRes as any).data as OrderItemRow[] | null
 
       if (itemsError) {
         console.error('Error obteniendo items para verificar stock:', itemsError)
       } else if (orderItems) {
         for (const item of orderItems) {
-          const { data: product, error: productError } = await supabase
+          const productRes = await supabase
             .from('products')
             .select('stock_quantity, name')
             .eq('id_product', item.product_id)
             .single()
+          const productError = (productRes as any).error as any
+          const product = (productRes as any).data as { stock_quantity: number, name: string }
 
           if (productError) {
             console.error('Error verificando stock del producto:', productError)
