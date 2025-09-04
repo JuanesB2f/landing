@@ -12,9 +12,27 @@
   --color-custom-600: #0d0d0d;
 }
 
-:root {
+:root, .theme-light {
+  /* Base UI tokens */
   --ui-bg: var(--color-custom-50);
   --ui-text: var(--color-custom-500);
+
+  /* Design tokens para todo el sistema (Light) */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f9fafb; /* slate-50 */
+  --bg-card: #ffffff;
+  --bg-hover: #f3f4f6; /* slate-100 */
+
+  --text-primary: #111827; /* slate-900 */
+  --text-secondary: #374151; /* slate-700 */
+  --text-muted: #6b7280; /* slate-500 */
+
+  --border-color: #e5e7eb; /* slate-200 */
+
+  /* Marca (coincide con home: rosa/violeta) */
+  --accent: #ec4899; /* pink-500 */
+  --accent-hover: #db2777; /* pink-600 */
+
   font-family: Arial, Helvetica, sans-serif !important;
 }
 
@@ -22,11 +40,95 @@ body, html, * {
   font-family: Arial, Helvetica, sans-serif !important;
 }
 
-.dark {
+.dark, .theme-dark {
   --ui-bg: var(--color-custom-500);
   --ui-text: var(--color-custom-50);
   --ui-primary: var(--color-custom-50);
+
+  /* Design tokens (Dark) */
+  --bg-primary: #0f172a; /* slate-900 */
+  --bg-secondary: #111827; /* slate-800 */
+  --bg-card: #0b1220; /* custom dark card */
+  --bg-hover: #1f2937; /* slate-700 */
+
+  --text-primary: #f9fafb; /* slate-50 */
+  --text-secondary: #e5e7eb; /* slate-200 */
+  --text-muted: #9ca3af; /* slate-400 */
+
+  --border-color: #1f2937; /* slate-700 */
+
+  --accent: #8b5cf6; /* violet-500 */
+  --accent-hover: #7c3aed; /* violet-600 */
 }
+
+/* Estilos de utilidades para layouts Admin usando las variables */
+.theme-container {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.theme-header, .theme-header-bar {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+.theme-sidebar {
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+}
+
+.theme-nav-item {
+  color: var(--text-secondary);
+}
+
+.theme-nav-item:hover {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.theme-nav-active {
+  background-color: var(--bg-hover);
+  color: var(--accent);
+}
+
+.theme-text-primary { color: var(--text-primary); }
+.theme-text-secondary { color: var(--text-secondary); }
+
+/* Botones unificados */
+.btn {
+  @apply inline-flex items-center justify-center px-4 py-2 rounded-md font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm;
+}
+
+.btn-primary {
+  background-color: var(--accent);
+  color: #fff;
+}
+.btn-primary:hover { background-color: var(--accent-hover); }
+.btn-primary:focus { outline: none; box-shadow: 0 0 0 2px rgb(255 255 255 / 0.6), 0 0 0 4px var(--accent); }
+
+.btn-secondary {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+}
+.btn-secondary:hover { background-color: var(--bg-secondary); }
+.btn-secondary:focus { outline: none; box-shadow: 0 0 0 2px rgb(255 255 255 / 0.6), 0 0 0 4px var(--border-color); }
+
+.btn-danger {
+  background-color: #ef4444; /* red-500 for destructive only */
+  color: #fff;
+}
+.btn-danger:hover { background-color: #dc2626; }
+
+/* Overrides para clases tailwind comunes en admin (modo oscuro) */
+.theme-dark .bg-white { background-color: var(--bg-card) !important; }
+.theme-dark .bg-gray-50 { background-color: var(--bg-secondary) !important; }
+.theme-dark .hover\:bg-gray-50:hover { background-color: var(--bg-hover) !important; }
+.theme-dark .text-gray-900 { color: var(--text-primary) !important; }
+.theme-dark .text-gray-700 { color: var(--text-secondary) !important; }
+.theme-dark .text-gray-500 { color: var(--text-muted) !important; }
+.theme-dark .border-gray-200, .theme-dark .border-gray-300 { border-color: var(--border-color) !important; }
+.theme-dark .divide-gray-200 > :not([hidden]) ~ :not([hidden]) { border-color: var(--border-color) !important; }
 
 /* Custom Animations */
 @keyframes blob {

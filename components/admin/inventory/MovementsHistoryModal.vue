@@ -197,7 +197,7 @@
                         :class="[
                           'relative inline-flex items-center px-4 py-2 border text-sm font-medium',
                           page === currentPage
-                            ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
+                            ? 'z-10 bg-[var(--bg-hover)] border-[var(--accent)] text-[var(--accent)]'
                             : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
                         ]"
                       >
@@ -223,7 +223,7 @@
           <button
             type="button"
             @click="$emit('close')"
-            class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
+            class="w-full btn btn-secondary sm:ml-3 sm:w-auto sm:text-sm"
           >
             Cerrar
           </button>

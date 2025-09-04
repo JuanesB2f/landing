@@ -9,14 +9,14 @@
       <div class="flex space-x-3">
         <button
           @click="openMovementModal"
-          class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors"
+          class="btn btn-primary flex items-center space-x-2"
         >
           <Icon name="heroicons:plus-circle" class="w-5 h-5" />
           <span>Nuevo Movimiento</span>
         </button>
         <button
           @click="openAdjustmentModal"
-          class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors"
+          class="btn btn-primary flex items-center space-x-2"
         >
           <Icon name="heroicons:adjustments-horizontal" class="w-5 h-5" />
           <span>Ajuste de Stock</span>
