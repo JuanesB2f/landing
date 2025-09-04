@@ -222,10 +222,9 @@
     />
 
     <!-- Modal de confirmación para eliminar -->
-    <ConfirmModal
-      v-if="showConfirmModal"
-      title="Eliminar Proveedor"
-      message="¿Estás seguro de que quieres eliminar este proveedor? Esta acción no se puede deshacer."
+    <ProviderDeleteModal
+      v-if="showConfirmModal && providerToDelete"
+      :provider="providerToDelete"
       @confirm="deleteProvider"
       @cancel="showConfirmModal = false"
     />
@@ -329,11 +328,12 @@ const saveProvider = async (providerData) => {
         body: providerData
       })
       if (data.success) {
-        console.log('Proveedor actualizado exitosamente')
+        toast.add({ title: 'Proveedor actualizado', color: 'green' })
         await fetchProviders()
         closeModal()
       } else {
         console.error('Error actualizando proveedor:', data.error)
+        toast.add({ title: data.error || 'Error actualizando proveedor', color: 'red' })
       }
     } else {
       // Crear nuevo proveedor
@@ -342,15 +342,19 @@ const saveProvider = async (providerData) => {
         body: providerData
       })
       if (data.success) {
-        console.log('Proveedor creado exitosamente')
+        toast.add({ title: 'Proveedor creado', color: 'green' })
         await fetchProviders()
         closeModal()
       } else {
         console.error('Error creando proveedor:', data.error)
+        toast.add({ title: data.error || 'Error creando proveedor', color: 'red' })
       }
     }
   } catch (error) {
     console.error('Error saving provider:', error)
+    const e = error
+    const msg = (e && e.data && e.data.error) || (e && e.message) || 'Error guardando proveedor'
+    toast.add({ title: msg, color: 'red' })
   }
 }
 
@@ -375,6 +379,8 @@ const confirmDelete = (provider) => {
   showConfirmModal.value = true
 }
 
+const toast = useToast()
+
 const deleteProvider = async () => {
   if (!providerToDelete.value) return
   
@@ -383,15 +389,19 @@ const deleteProvider = async () => {
       method: 'DELETE'
     })
     if (data.success) {
-      console.log('Proveedor eliminado exitosamente')
+      toast.add({ title: 'Proveedor eliminado', color: 'green' })
       await fetchProviders()
       showConfirmModal.value = false
       providerToDelete.value = null
     } else {
       console.error('Error eliminando proveedor:', data.error)
+      toast.add({ title: data.error || 'Error eliminando proveedor', color: 'red' })
     }
   } catch (error) {
     console.error('Error deleting provider:', error)
+    const e = error
+    const msg = (e && e.data && e.data.error) || (e && e.message) || 'Error eliminando proveedor'
+    toast.add({ title: msg, color: 'red' })
   }
 }
 
@@ -461,7 +471,6 @@ const checkAuthentication = async () => {
 
 // Lifecycle
 onMounted(async () => {
-  await checkAuthentication()
   await fetchProviders()
 })
 </script>

@@ -5,14 +5,15 @@
  */
 
 import { serverSupabaseClient } from '#supabase/server'
-import { requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
+import { requireAuth, respondSuccess, respondError } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
-  const supabase = await serverSupabaseClient(event)
+  const supabase = await serverSupabaseClient<any>(event)
 
   if (method === 'GET') {
     try {
+      setHeader(event, 'Cache-Control', 'public, max-age=60')
       // Obtener categorías (sin join problemático)
       const { data: categories, error } = await supabase
         .from('categories')
@@ -45,8 +46,8 @@ export default defineEventHandler(async (event) => {
       }
 
       const processedCategories = (categoriesWithCounts || categories).map((category: any) => ({
-        ...category,
-        product_count: category.products?.[0]?.count || 0
+        ...(category as any),
+        product_count: (category as any)?.products?.[0]?.count || 0
       }))
 
       return respondSuccess(processedCategories)
@@ -63,8 +64,36 @@ export default defineEventHandler(async (event) => {
 
   if (method === 'POST') {
     try {
-      await requireAdmin(event)
-      const body = await readBody(event)
+      await requireAuth(event)
+      const contentType = getHeader(event, 'content-type') || ''
+      let body: any = {}
+      let uploadedImageUrl: string | null = null
+      if (contentType.includes('multipart/form-data')) {
+        const form = await readMultipartFormData(event)
+        const fields: Record<string, string> = {}
+        let filePart: any = null
+        for (const part of form || []) {
+          if (part.type === 'file') {
+            if (part.name === 'image' && part.data && part.filename) filePart = part
+          } else if (part.name) {
+            fields[part.name] = part.data?.toString() || ''
+          }
+        }
+        body = fields
+        if (filePart) {
+          const fileExt = (filePart.filename as string).split('.').pop()
+          const filePath = `${crypto.randomUUID()}.${fileExt}`
+          const { error: uploadError } = await supabase.storage
+            .from('product-image')
+            .upload(filePath, filePart.data, { contentType: filePart.mimetype, upsert: false })
+          if (!uploadError) {
+            const { data: publicUrl } = supabase.storage.from('product-image').getPublicUrl(filePath)
+            uploadedImageUrl = publicUrl.publicUrl
+          }
+        }
+      } else {
+        body = await readBody(event)
+      }
       
       // Validar campos requeridos
       if (!body.name || !body.name.trim()) {
@@ -86,12 +115,13 @@ export default defineEventHandler(async (event) => {
       const newCategory = {
         name: body.name.trim(),
         description: body.description?.trim() || null,
+        image_url: uploadedImageUrl || body.image_url || null,
         is_active: body.is_active !== undefined ? body.is_active : true
       }
 
       const { data, error } = await supabase
         .from('categories')
-        .insert(newCategory)
+        .insert(newCategory as any)
         .select()
         .single()
 
@@ -100,7 +130,7 @@ export default defineEventHandler(async (event) => {
         return respondError('Error creando categoría')
       }
 
-      return respondSuccess({ ...data, product_count: 0 }, 'Categoría creada exitosamente')
+      return respondSuccess({ ...(data as any), product_count: 0 }, 'Categoría creada exitosamente')
     } catch (error) {
       console.error('Error inesperado:', error)
       return respondError('Error interno del servidor')

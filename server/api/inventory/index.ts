@@ -4,22 +4,21 @@
  */
 
 import { serverSupabaseClient } from '#supabase/server'
+import { requireAuth, respondSuccess, respondError } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
   const supabase = await serverSupabaseClient(event)
 
   if (method !== 'GET') {
-    return {
-      data: {
-        success: false,
-        error: 'Método no permitido'
-      }
-    }
+    return respondError('Método no permitido')
   }
 
   try {
-    // Obtener productos con información de categorías y último movimiento
+    await requireAuth(event)
+    setHeader(event, 'Cache-Control', 'public, max-age=30')
+
+    // Obtener productos con categoría y última fecha de movimiento
     const { data: products, error } = await supabase
       .from('products')
       .select(`
@@ -31,35 +30,39 @@ export default defineEventHandler(async (event) => {
 
     if (error) {
       console.error('Error obteniendo inventario:', error)
-      return {
-        data: {
-          success: false,
-          error: 'Error obteniendo inventario'
+      return respondError('Error obteniendo inventario')
+    }
+
+    // Obtener últimas fechas de movimiento por producto
+    const productIds = (products || []).map((p: any) => p.id_product)
+    let lastMovementsByProduct: Record<string, string | null> = {}
+
+    if (productIds.length > 0) {
+      const { data: lastMovements, error: lmError } = await supabase
+        .from('inventory_movements')
+        .select('product_id, movement_date')
+        .in('product_id', productIds)
+        .order('movement_date', { ascending: false })
+
+      if (!lmError && lastMovements) {
+        for (const m of lastMovements as any[]) {
+          if (!lastMovementsByProduct[m.product_id]) {
+            lastMovementsByProduct[m.product_id] = m.movement_date
+          }
         }
       }
     }
 
-    // Procesar los datos para incluir información básica
-    const processedProducts = products.map(product => ({
+    const processedProducts = (products || []).map((product: any) => ({
       ...product,
       category: product.category,
-      last_movement_date: null, // Temporalmente null hasta implementar movimientos
+      last_movement_date: lastMovementsByProduct[product.id_product] || null,
       movements: undefined
     }))
 
-    return {
-      data: {
-        success: true,
-        data: processedProducts
-      }
-    }
+    return respondSuccess(processedProducts)
   } catch (error) {
     console.error('Error inesperado:', error)
-    return {
-      data: {
-        success: false,
-        error: 'Error interno del servidor'
-      }
-    }
+    return respondError('Error interno del servidor')
   }
 })

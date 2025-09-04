@@ -1,136 +1,141 @@
 <template>
-  <div class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-      <div class="mt-3">
-        <!-- Header -->
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-medium text-gray-900">
-            {{ provider ? 'Editar Proveedor' : 'Nuevo Proveedor' }}
-          </h3>
-          <button
-            @click="$emit('close')"
-            class="text-gray-400 hover:text-gray-600"
-          >
-            <Icon name="heroicons:x-mark" class="w-6 h-6" />
-          </button>
+  <Teleport to="body">
+  <div class="fixed inset-0 z-[9998] overflow-y-auto" role="dialog" aria-modal="true">
+    <div class="flex items-center justify-center min-h-screen p-4">
+      <div class="fixed inset-0 bg-black/50" @click="$emit('close')"></div>
+
+      <div class="relative z-[9999] w-full max-w-2xl bg-white rounded-lg text-left overflow-hidden shadow-xl">
+        <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+          <div class="sm:flex sm:items-start">
+            <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
+              <Icon name="heroicons:building-storefront" class="h-6 w-6 text-green-600" />
+            </div>
+            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+              <h3 class="text-lg leading-6 font-medium text-gray-900">
+                {{ provider ? 'Editar Proveedor' : 'Nuevo Proveedor' }}
+              </h3>
+
+              <!-- Formulario -->
+              <form @submit.prevent="handleSubmit" class="mt-4 space-y-4">
+                <!-- Nombre -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Nombre *
+                  </label>
+                  <input
+                    v-model="form.name"
+                    type="text"
+                    required
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    placeholder="Nombre del proveedor"
+                  />
+                </div>
+
+                <!-- Email -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Email
+                  </label>
+                  <input
+                    v-model="form.email"
+                    type="email"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    placeholder="email@proveedor.com"
+                  />
+                </div>
+
+                <!-- Teléfono -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Teléfono
+                  </label>
+                  <input
+                    v-model="form.phone"
+                    type="tel"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    placeholder="+52 123 456 7890"
+                  />
+                </div>
+
+                <!-- Persona de contacto -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Persona de Contacto
+                  </label>
+                  <input
+                    v-model="form.contact_person"
+                    type="text"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    placeholder="Nombre del contacto"
+                  />
+                </div>
+
+                <!-- Dirección -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Dirección
+                  </label>
+                  <textarea
+                    v-model="form.address"
+                    rows="2"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    placeholder="Dirección completa"
+                  ></textarea>
+                </div>
+
+                <!-- Ciudad -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Ciudad
+                  </label>
+                  <input
+                    v-model="form.city"
+                    type="text"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    placeholder="Ciudad"
+                  />
+                </div>
+
+                <!-- Estado activo -->
+                <div class="flex items-center">
+                  <input
+                    v-model="form.is_active"
+                    type="checkbox"
+                    id="is_active"
+                    class="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                  />
+                  <label for="is_active" class="ml-2 block text-sm text-gray-900">
+                    Proveedor activo
+                  </label>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
 
-        <!-- Formulario -->
-        <form @submit.prevent="handleSubmit" class="space-y-4">
-          <!-- Nombre -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
-              Nombre *
-            </label>
-            <input
-              v-model="form.name"
-              type="text"
-              required
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-              placeholder="Nombre del proveedor"
-            />
-          </div>
-
-          <!-- Email -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
-              Email
-            </label>
-            <input
-              v-model="form.email"
-              type="email"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-              placeholder="email@proveedor.com"
-            />
-          </div>
-
-          <!-- Teléfono -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
-              Teléfono
-            </label>
-            <input
-              v-model="form.phone"
-              type="tel"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-              placeholder="+52 123 456 7890"
-            />
-          </div>
-
-          <!-- Persona de contacto -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
-              Persona de Contacto
-            </label>
-            <input
-              v-model="form.contact_person"
-              type="text"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-              placeholder="Nombre del contacto"
-            />
-          </div>
-
-          <!-- Dirección -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
-              Dirección
-            </label>
-            <textarea
-              v-model="form.address"
-              rows="2"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-              placeholder="Dirección completa"
-            ></textarea>
-          </div>
-
-          <!-- Ciudad -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
-              Ciudad
-            </label>
-            <input
-              v-model="form.city"
-              type="text"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-              placeholder="Ciudad"
-            />
-          </div>
-
-          <!-- Estado activo -->
-          <div class="flex items-center">
-            <input
-              v-model="form.is_active"
-              type="checkbox"
-              id="is_active"
-              class="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
-            />
-            <label for="is_active" class="ml-2 block text-sm text-gray-900">
-              Proveedor activo
-            </label>
-          </div>
-
-          <!-- Botones -->
-          <div class="flex space-x-3 pt-4">
-            <button
-              type="button"
-              @click="$emit('close')"
-              class="flex-1 px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              :disabled="loading"
-              class="flex-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              <span v-if="loading">Guardando...</span>
-              <span v-else>{{ provider ? 'Actualizar' : 'Crear' }}</span>
-            </button>
-          </div>
-        </form>
+        <!-- Footer -->
+        <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+          <button
+            type="submit"
+            @click="handleSubmit"
+            :disabled="loading"
+            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Icon v-if="loading" name="heroicons:arrow-path" class="w-4 h-4 mr-2 animate-spin" />
+            {{ provider ? 'Actualizar' : 'Crear' }}
+          </button>
+          <button
+            type="button"
+            @click="$emit('close')"
+            class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+          >
+            Cancelar
+          </button>
+        </div>
       </div>
     </div>
   </div>
+  </Teleport>
 </template>
 
 <script setup>

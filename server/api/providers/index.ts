@@ -1,35 +1,34 @@
 import { serverSupabaseClient } from '#supabase/server'
-import { requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
+import { requireAuth, requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
-  const supabase = await serverSupabaseClient(event)
+  const supabase = await serverSupabaseClient<any>(event)
 
   try {
     if (method === 'GET') {
-      // Obtener todos los proveedores con conteo real de productos
+      setHeader(event, 'Cache-Control', 'public, max-age=60')
+      // Obtener todos los proveedores
       const { data: providers, error: providersError } = await supabase
         .from('providers')
-        .select(`
-          *,
-          products:products(count)
-        `)
+        .select('*')
         .order('name')
 
       if (providersError) {
         throw providersError
       }
 
-      const providersWithCount = (providers || []).map((provider: any) => ({
+      // Si la columna provider_id no existe en products, devolver conteo 0 para evitar error
+      const providersWithCount = (providers as any[] || []).map((provider: any) => ({
         ...provider,
-        product_count: provider.products?.[0]?.count || 0
+        product_count: 0
       }))
 
       return respondSuccess(providersWithCount)
 
     } else if (method === 'POST') {
-      // Requiere admin y crear nuevo proveedor
-      await requireAdmin(event)
+      // Requiere sesión (alineado con productos)
+      await requireAuth(event)
       const body = await readBody(event)
       
       // Validaciones básicas
@@ -66,7 +65,6 @@ export default defineEventHandler(async (event) => {
           email: body.email || null,
           phone: body.phone || null,
           address: body.address || null,
-          city: body.city || null,
           contact_person: body.contact_person || null,
           is_active: body.is_active !== undefined ? body.is_active : true
         })

@@ -1,9 +1,9 @@
 import { serverSupabaseClient } from '#supabase/server'
-import { requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
+import { requireAuth, requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
-  const supabase = await serverSupabaseClient(event)
+  const supabase = await serverSupabaseClient<any>(event)
   const id = getRouterParam(event, 'id')
 
   if (!id) {
@@ -37,15 +37,15 @@ export default defineEventHandler(async (event) => {
 
       // Procesar el conteo de productos
       const providerWithCount = {
-        ...provider,
-        product_count: provider.products?.[0]?.count || 0
+        ...(provider as any),
+        product_count: (provider as any)?.products?.[0]?.count || 0
       }
 
       return respondSuccess(providerWithCount)
 
     } else if (method === 'PUT') {
-      // Requiere admin y actualizar proveedor existente
-      await requireAdmin(event)
+      // Requiere sesión (alineado con productos) y actualizar proveedor existente
+      await requireAuth(event)
       const body = await readBody(event)
       
       // Validaciones básicas
@@ -83,11 +83,10 @@ export default defineEventHandler(async (event) => {
           email: body.email || null,
           phone: body.phone || null,
           address: body.address || null,
-          city: body.city || null,
           contact_person: body.contact_person || null,
           is_active: body.is_active !== undefined ? body.is_active : true,
           updated_at: new Date().toISOString()
-        })
+        } as any)
         .eq('id_provider', id)
         .select()
         .single()
@@ -99,32 +98,18 @@ export default defineEventHandler(async (event) => {
       return respondSuccess(updatedProvider, 'Proveedor actualizado exitosamente')
 
     } else if (method === 'DELETE') {
-      // Requiere admin y verificar si el proveedor tiene productos asociados
-      await requireAdmin(event)
-      const { data: products, error: productsError } = await supabase
-        .from('products')
-        .select('id_product')
-        .eq('provider_id', id)
-        .limit(1)
+      // Requiere sesión (alineado con productos). No validar productos asociados si no hay relación definida.
+      await requireAuth(event)
 
-      if (productsError) {
-        throw productsError
-      }
-
-      if (products && products.length > 0) {
-        throw createError({
-          statusCode: 400,
-          statusMessage: 'No se puede eliminar el proveedor porque tiene productos asociados'
-        })
-      }
-
-      // Eliminar proveedor
       const { error: deleteError } = await supabase
         .from('providers')
         .delete()
         .eq('id_provider', id)
 
       if (deleteError) {
+        if ((deleteError as any).code === 'PGRST116') {
+          throw createError({ statusCode: 404, statusMessage: 'Proveedor no encontrado' })
+        }
         throw deleteError
       }
 

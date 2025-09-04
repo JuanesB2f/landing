@@ -5,14 +5,16 @@
  */
 
 import { serverSupabaseClient } from '#supabase/server'
-import { requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
+import { requireAdmin, requireAuth, respondSuccess, respondError } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
-  const supabase = await serverSupabaseClient(event)
+  const supabase = await serverSupabaseClient<any>(event)
 
   if (method === 'GET') {
     try {
+      // Al menos requerir sesión para ver movimientos
+      await requireAuth(event)
       const query = getQuery(event)
       const productId = query.product_id
 
@@ -60,7 +62,7 @@ export default defineEventHandler(async (event) => {
         return respondError('Producto no encontrado')
       }
 
-      const currentStock = product.stock_quantity
+      const currentStock = (product as any).stock_quantity
       let newStock = currentStock
 
       // Calcular nuevo stock según el tipo de movimiento
@@ -95,7 +97,7 @@ export default defineEventHandler(async (event) => {
 
       const { data: movement, error: movementError } = await supabase
         .from('inventory_movements')
-        .insert(movementData)
+        .insert(movementData as any)
         .select()
         .single()
 
@@ -110,7 +112,7 @@ export default defineEventHandler(async (event) => {
         .update({ 
           stock_quantity: newStock,
           updated_at: new Date().toISOString()
-        })
+        } as any)
         .eq('id_product', body.product_id)
 
       if (updateError) {
@@ -119,7 +121,7 @@ export default defineEventHandler(async (event) => {
         await supabase
           .from('inventory_movements')
           .delete()
-          .eq('id_movement', movement.id_movement)
+          .eq('id_movement', (movement as any).id_movement)
         
         return respondError('Error actualizando stock del producto')
       }

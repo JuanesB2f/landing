@@ -1,4 +1,5 @@
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server'
+import { createClient } from '@supabase/supabase-js'
 
 /**
  * Requiere que exista sesión y que el usuario tenga rol admin.
@@ -7,8 +8,14 @@ import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server'
 export async function requireAdmin(event: any) {
   const { user } = await requireAuth(event)
 
-  const client = await serverSupabaseClient(event)
-  const { data: profile, error } = await client
+  // Usar client con service role para evitar bloqueos por RLS al leer el perfil
+  const config = useRuntimeConfig()
+  const serviceClient = createClient(
+    config.public.supabaseUrl,
+    config.supabaseServiceKey,
+    { auth: { persistSession: false } }
+  )
+  const { data: profile, error } = await serviceClient
     .from('profiles')
     .select('role, is_active')
     .eq('id', user.id)

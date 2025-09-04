@@ -1,11 +1,12 @@
 <template>
-  <div class="fixed inset-0 z-50 overflow-y-auto">
-    <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-      <!-- Overlay -->
-      <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" @click="$emit('close')"></div>
+  <ClientOnly>
+    <Teleport to="body">
+    <div class="fixed inset-0 z-50 overflow-y-auto">
+      <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <!-- Overlay eliminado para que no oscurezca -->
 
-      <!-- Modal -->
-      <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+        <!-- Modal -->
+        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full relative z-50">
         <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
           <div class="sm:flex sm:items-start">
             <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 sm:mx-0 sm:h-10 sm:w-10">
@@ -118,7 +119,7 @@
                     </tr>
                   </thead>
                   <tbody class="bg-white divide-y divide-gray-200">
-                    <tr v-for="movement in filteredMovements" :key="movement.id_movement" class="hover:bg-gray-50">
+                    <tr v-for="movement in filteredMovements.slice(startIndex, endIndex)" :key="movement.id_movement" class="hover:bg-gray-50">
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {{ formatDateTime(movement.movement_date) }}
                       </td>
@@ -227,9 +228,11 @@
             Cerrar
           </button>
         </div>
+        </div>
       </div>
     </div>
-  </div>
+    </Teleport>
+  </ClientOnly>
 </template>
 
 <script setup>

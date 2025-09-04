@@ -1,11 +1,10 @@
 <template>
-  <div class="fixed inset-0 z-50 overflow-y-auto">
-    <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-      <!-- Overlay -->
-      <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" @click="$emit('close')"></div>
+  <Teleport to="body">
+  <div class="fixed inset-0 z-[9998] overflow-y-auto" role="dialog" aria-modal="true">
+    <div class="flex items-center justify-center min-h-screen p-4">
+      <div class="fixed inset-0 bg-black/50" @click="$emit('close')"></div>
 
-      <!-- Modal -->
-      <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+      <div class="relative z-[9999] w-full max-w-2xl bg-white rounded-lg text-left overflow-hidden shadow-xl">
         <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
           <div class="sm:flex sm:items-start">
             <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
@@ -18,10 +17,8 @@
               <h3 class="text-lg leading-6 font-medium text-gray-900">
                 {{ props.product ? `Movimiento para ${props.product.name}` : 'Nuevo Movimiento de Inventario' }}
               </h3>
-              
-              <!-- Formulario -->
+
               <form @submit.prevent="handleSubmit" class="mt-4 space-y-4">
-                <!-- Producto (si no se seleccionó uno) -->
                 <div v-if="!props.product">
                   <label class="block text-sm font-medium text-gray-700 mb-1">
                     Producto *
@@ -38,7 +35,6 @@
                   </select>
                 </div>
 
-                <!-- Tipo de movimiento -->
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-1">
                     Tipo de Movimiento *
@@ -51,13 +47,11 @@
                     <option value="">Seleccionar tipo</option>
                     <option value="in">Entrada de Stock</option>
                     <option value="out">Salida de Stock</option>
-                    <option value="adjustment">Ajuste</option>
                     <option value="return">Devolución</option>
                     <option value="damaged">Producto Dañado</option>
                   </select>
                 </div>
 
-                <!-- Cantidad -->
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-1">
                     Cantidad *
@@ -72,7 +66,6 @@
                   />
                 </div>
 
-                <!-- Motivo -->
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-1">
                     Motivo *
@@ -93,7 +86,6 @@
                   </select>
                 </div>
 
-                <!-- Descripción -->
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-1">
                     Descripción
@@ -106,7 +98,6 @@
                   ></textarea>
                 </div>
 
-                <!-- Fecha del movimiento -->
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-1">
                     Fecha del Movimiento
@@ -118,7 +109,6 @@
                   />
                 </div>
 
-                <!-- Referencia -->
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-1">
                     Referencia
@@ -135,7 +125,6 @@
           </div>
         </div>
 
-        <!-- Footer del modal -->
         <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
           <button
             type="submit"
@@ -157,6 +146,7 @@
       </div>
     </div>
   </div>
+  </Teleport>
 </template>
 
 <script setup>

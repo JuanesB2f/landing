@@ -7,26 +7,7 @@
           <h1 class="text-3xl font-bold mb-2 transition-colors theme-text-primary">Dashboard</h1>
           <p class="transition-colors theme-text-secondary">Bienvenido de vuelta, {{ userProfile?.first_name || 'Admin' }}! Aquí tienes un resumen de tu negocio.</p>
         </div>
-        <div class="flex items-center space-x-4">
-          <!-- Toggle de tema -->
-          <button 
-            @click="toggleTheme" 
-            class="p-2 rounded-lg transition-all duration-300 group theme-button"
-            :title="isDark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'"
-          >
-            <Icon 
-              :name="isDark ? 'heroicons:sun' : 'heroicons:moon'" 
-              class="w-6 h-6 group-hover:scale-110 transition-transform duration-200" 
-            />
-          </button>
-          
-          <button class="p-2 rounded-lg transition-colors theme-button">
-            <Icon name="heroicons:bell" class="w-6 h-6" />
-          </button>
-          <button class="p-2 rounded-lg transition-colors theme-button">
-            <Icon name="heroicons:cog-6-tooth" class="w-6 h-6" />
-          </button>
-        </div>
+        <div class="flex items-center space-x-4"></div>
       </div>
     </div>
 

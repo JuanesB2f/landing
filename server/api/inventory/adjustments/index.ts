@@ -8,7 +8,7 @@ import { requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
-  const supabase = await serverSupabaseClient(event)
+  const supabase = await serverSupabaseClient<any>(event)
 
   if (method !== 'POST') {
     return respondError('Método no permitido')
@@ -18,8 +18,8 @@ export default defineEventHandler(async (event) => {
     await requireAdmin(event)
     const body = await readBody(event)
     
-    // Validar campos requeridos
-    if (!body.product_id || !body.adjustment_type || !body.quantity || !body.reason) {
+    // Validar campos requeridos (permitir quantity = 0 para tipo 'set')
+    if (!body.product_id || !body.adjustment_type || body.quantity === undefined || body.quantity === null || !body.reason) {
       return respondError('Todos los campos son obligatorios')
     }
 
@@ -34,7 +34,7 @@ export default defineEventHandler(async (event) => {
       return respondError('Producto no encontrado')
     }
 
-    const currentStock = product.stock_quantity
+    const currentStock = (product as any).stock_quantity
     let newStock = currentStock
 
     // Calcular nuevo stock según el tipo de ajuste
@@ -67,7 +67,7 @@ export default defineEventHandler(async (event) => {
 
     const { data: movement, error: movementError } = await supabase
       .from('inventory_movements')
-      .insert(movementData)
+      .insert(movementData as any)
       .select()
       .single()
 
@@ -82,7 +82,7 @@ export default defineEventHandler(async (event) => {
       .update({ 
         stock_quantity: newStock,
         updated_at: new Date().toISOString()
-      })
+      } as any)
       .eq('id_product', body.product_id)
 
     if (updateError) {
@@ -91,7 +91,7 @@ export default defineEventHandler(async (event) => {
       await supabase
         .from('inventory_movements')
         .delete()
-        .eq('id_movement', movement.id_movement)
+        .eq('id_movement', (movement as any).id_movement)
       
       return respondError('Error actualizando stock del producto')
     }

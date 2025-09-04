@@ -99,10 +99,15 @@
   </Teleport>
 </template>
 
-<script setup>
-const props = defineProps({
-  product: { type: Object, default: null },
-  categories: { type: Array, required: true, default: () => [] }
+<script setup lang="ts">
+type CategoryOption = { id_category: string; name: string }
+
+const props = withDefaults(defineProps<{
+  product?: any | null
+  categories: CategoryOption[]
+}>(), {
+  product: null,
+  categories: () => [] as CategoryOption[]
 })
 
 const emit = defineEmits(['close', 'save'])
@@ -169,8 +174,8 @@ const handleSubmit = async () => {
     // Validar SKU único
     const params = new URLSearchParams({ sku: form.value.sku })
     if (props.product?.id_product) params.set('exclude_id', props.product.id_product)
-    const { data: skuResp } = await $fetch(`/api/products/check-sku?${params.toString()}`)
-    if (skuResp?.success && skuResp.data.exists) {
+    const resp = await $fetch<{ data: { success: boolean; data?: { exists: boolean }; error?: string } }>(`/api/products/check-sku?${params.toString()}`)
+    if (resp.data.success && resp.data.data?.exists) {
       alert('El SKU ya está en uso. Elige otro.')
       return
     }

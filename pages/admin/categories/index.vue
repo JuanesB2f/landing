@@ -215,7 +215,7 @@
     </div>
 
     <!-- Modal para crear/editar categoría -->
-    <CategoryModal
+    <CategoryAddModal
       v-if="showModal"
       :category="editingCategory"
       @close="closeModal"
@@ -223,10 +223,9 @@
     />
 
     <!-- Modal de confirmación para eliminar -->
-    <ConfirmModal
+    <CategoryDeleteModal
       v-if="showDeleteModal"
-      title="Eliminar Categoría"
-      :message="`¿Estás seguro de que quieres eliminar la categoría '${categoryToDelete?.name}'? Esta acción no se puede deshacer y afectará a todos los productos asociados.`"
+      :category="categoryToDelete"
       @confirm="confirmDelete"
       @cancel="showDeleteModal = false"
     />
@@ -311,14 +310,16 @@ const fetchCategories = async () => {
   }
 }
 
+const toast = useToast()
+
 const openCreateModal = () => {
   editingCategory.value = null
-  showModal.value = true
+  nextTick(() => { showModal.value = true })
 }
 
 const editCategory = (category) => {
   editingCategory.value = { ...category }
-  showModal.value = true
+  nextTick(() => { showModal.value = true })
 }
 
 const closeModal = () => {
@@ -329,27 +330,24 @@ const closeModal = () => {
 const saveCategory = async (categoryData) => {
   try {
     if (editingCategory.value) {
-      // Actualizar categoría existente
-      const { data } = await $fetch(`/api/categories/${categoryData.id_category}`, {
-        method: 'PUT',
-        body: categoryData
-      })
+      // Actualizar categoría existente (FormData si trae archivo)
+      const endpoint = `/api/categories/${editingCategory.value.id_category}`
+      const { data } = await $fetch(endpoint, { method: 'PUT', body: categoryData })
       if (data.success) {
-        console.log('Categoría actualizada exitosamente')
+        toast.add({ title: 'Categoría actualizada', color: 'green' })
       } else {
         console.error('Error actualizando categoría:', data.error)
+        toast.add({ title: data.error || 'Error actualizando categoría', color: 'red' })
         return
       }
     } else {
       // Crear nueva categoría
-      const { data } = await $fetch('/api/categories', {
-        method: 'POST',
-        body: categoryData
-      })
+      const { data } = await $fetch('/api/categories', { method: 'POST', body: categoryData })
       if (data.success) {
-        console.log('Categoría creada exitosamente')
+        toast.add({ title: 'Categoría creada', color: 'green' })
       } else {
         console.error('Error creando categoría:', data.error)
+        toast.add({ title: data.error || 'Error creando categoría', color: 'red' })
         return
       }
     }
@@ -358,6 +356,7 @@ const saveCategory = async (categoryData) => {
     closeModal()
   } catch (error) {
     console.error('Error saving category:', error)
+    toast.add({ title: 'Error guardando categoría', color: 'red' })
   }
 }
 
@@ -379,24 +378,26 @@ const toggleCategoryStatus = async (category) => {
 
 const deleteCategory = (category) => {
   categoryToDelete.value = category
-  showDeleteModal.value = true
+  nextTick(() => { showDeleteModal.value = true })
 }
 
 const confirmDelete = async () => {
   try {
-    const { data } = await $fetch(`/api/categories/${categoryToDelete.value.id_category}`, {
-      method: 'DELETE'
-    })
+    const { data } = await $fetch(`/api/categories/${categoryToDelete.value.id_category}`, { method: 'DELETE' })
     if (data.success) {
-      console.log('Categoría eliminada exitosamente')
+      toast.add({ title: 'Categoría eliminada', color: 'green' })
       await fetchCategories()
-      showDeleteModal.value = false
-      categoryToDelete.value = null
+      nextTick(() => {
+        showDeleteModal.value = false
+        categoryToDelete.value = null
+      })
     } else {
       console.error('Error eliminando categoría:', data.error)
+      toast.add({ title: data.error || 'Error eliminando categoría', color: 'red' })
     }
   } catch (error) {
     console.error('Error deleting category:', error)
+    toast.add({ title: 'Error eliminando categoría', color: 'red' })
   }
 }
 

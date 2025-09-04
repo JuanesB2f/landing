@@ -63,6 +63,12 @@ export default defineNuxtConfig({
         { rel: "preconnect", href: "https://fonts.gstatic.com", crossorigin: "" },
         { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap" }
       ],
+      script: [
+        {
+          // Establecer tema lo antes posible para evitar FOUC
+          children: `;(function(){try{var t=localStorage.getItem('theme');var isDark=t?t==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;var e=document.documentElement;e.classList.remove('theme-light','theme-dark');e.classList.add(isDark?'theme-dark':'theme-light');e.classList.toggle('dark',isDark);}catch(_e){}})();`
+        }
+      ]
     },
     pageTransition: { name: 'page', mode: 'out-in' }
   },
