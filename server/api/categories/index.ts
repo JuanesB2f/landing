@@ -5,7 +5,7 @@
  */
 
 import { serverSupabaseClient } from '#supabase/server'
-import { requireAuth, respondSuccess, respondError } from '~/server/utils/auth'
+import { requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
@@ -64,7 +64,7 @@ export default defineEventHandler(async (event) => {
 
   if (method === 'POST') {
     try {
-      await requireAuth(event)
+      await requireAdmin(event)
       const contentType = getHeader(event, 'content-type') || ''
       let body: any = {}
       let uploadedImageUrl: string | null = null

@@ -1,14 +1,22 @@
 import { serverSupabaseClient } from '#supabase/server'
+import { createClient } from '@supabase/supabase-js'
 import { requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
   const supabase = await serverSupabaseClient(event)
+  const config = useRuntimeConfig()
+  const serviceClient = createClient(
+    config.public.supabaseUrl,
+    config.supabaseServiceKey,
+    { auth: { persistSession: false } }
+  )
 
   if (method === 'GET') {
     try {
       // Obtener todos los perfiles de usuario
-      const { data: profiles, error } = await supabase
+      // Usar service role para listar todos los perfiles en panel admin
+      const { data: profiles, error } = await serviceClient
         .from('profiles')
         .select('*')
         .order('created_at', { ascending: false })
@@ -64,8 +72,14 @@ export default defineEventHandler(async (event) => {
         return respondError('Ya existe un usuario con este email')
       }
 
-      // Crear usuario en Supabase Auth
-      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+      // Crear usuario en Supabase Auth usando service role
+      const config = useRuntimeConfig()
+      const serviceClient = createClient(
+        config.public.supabaseUrl,
+        config.supabaseServiceKey,
+        { auth: { persistSession: false } }
+      )
+      const { data: authData, error: authError } = await serviceClient.auth.admin.createUser({
         email: body.email.trim().toLowerCase(),
         password: body.password,
         email_confirm: true
@@ -79,6 +93,7 @@ export default defineEventHandler(async (event) => {
       // Crear perfil del usuario
       const newProfile = {
         id: authData.user.id,
+        name: `${body.first_name.trim()} ${body.last_name.trim()}`,
         first_name: body.first_name.trim(),
         last_name: body.last_name.trim(),
         email: body.email.trim().toLowerCase(),
@@ -95,16 +110,16 @@ export default defineEventHandler(async (event) => {
         notes: body.notes?.trim() || null
       }
 
-      const { data: profileData, error: profileError } = await supabase
+      const { data: profileData, error: profileError } = await serviceClient
         .from('profiles')
-        .insert(newProfile)
+        .upsert(newProfile as any, { onConflict: 'id' })
         .select()
         .single()
 
       if (profileError) {
         console.error('Error creando perfil:', profileError)
         // Intentar eliminar el usuario de Auth si falla la creación del perfil
-        await supabase.auth.admin.deleteUser(authData.user.id)
+        await serviceClient.auth.admin.deleteUser(authData.user.id)
         return respondError('Error creando perfil del usuario', profileError.message)
       }
 

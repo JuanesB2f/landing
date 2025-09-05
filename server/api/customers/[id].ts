@@ -1,4 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server'
+import { requireAdmin } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
@@ -14,14 +15,10 @@ export default defineEventHandler(async (event) => {
 
   if (method === 'GET') {
     try {
-      // Obtener cliente específico con información relacionada
+      // Obtener cliente específico
       const { data: customer, error } = await supabase
         .from('customers')
-        .select(`
-          *,
-          user:users(id, role),
-          order_count:orders(count)
-        `)
+        .select('*')
         .eq('id_customer', id)
         .single()
 
@@ -40,10 +37,15 @@ export default defineEventHandler(async (event) => {
         }
       }
 
-      // Procesar el conteo de pedidos
+      // Obtener conteo de pedidos
+      const { count: ordersCount } = await supabase
+        .from('orders')
+        .select('id_order', { count: 'exact', head: true })
+        .eq('customer_id', id)
+
       const processedCustomer = {
-        ...customer,
-        order_count: customer.order_count?.[0]?.count || 0
+        ...(customer as Record<string, unknown>),
+        order_count: ordersCount || 0
       }
 
       return {
@@ -61,6 +63,7 @@ export default defineEventHandler(async (event) => {
   }
 
   if (method === 'PUT') {
+    await requireAdmin(event)
     try {
       const body = await readBody(event)
       
@@ -113,8 +116,8 @@ export default defineEventHandler(async (event) => {
         updated_at: new Date().toISOString()
       }
 
-      const { data, error } = await supabase
-        .from('customers')
+      const { data, error } = await (supabase
+        .from('customers') as any)
         .update(updatedCustomer)
         .eq('id_customer', id)
         .select()
@@ -145,6 +148,7 @@ export default defineEventHandler(async (event) => {
   }
 
   if (method === 'DELETE') {
+    await requireAdmin(event)
     try {
       // Verificar si el cliente tiene pedidos asociados
       const { data: orders, error: ordersError } = await supabase

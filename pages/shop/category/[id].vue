@@ -106,7 +106,7 @@ definePageMeta({
 })
 
 useHead({
-  title: `${categoryTitle} - BeautyStore`,
+  title: `${categoryTitle} - BylotoStore`,
   meta: [
     { name: 'description', content: categoryDescription }
   ]

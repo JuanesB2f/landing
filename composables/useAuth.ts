@@ -37,9 +37,9 @@ export const useAuth = () => {
         throw new Error('Perfil de usuario no encontrado')
       }
 
-      // Verificar que el usuario tenga rol de admin
-      if (profile.role !== 'admin') {
-        throw new Error('Acceso denegado. Solo administradores pueden acceder.')
+      // Aceptar los tres roles: admin, user, customer
+      if (!['admin', 'user', 'customer'].includes(profile.role)) {
+        throw new Error('Rol no permitido')
       }
 
       // Crear objeto de usuario
@@ -47,7 +47,7 @@ export const useAuth = () => {
         id: profile.id,
         email: profile.email,
         role: profile.role,
-        name: profile.name,
+        name: profile.first_name ? `${profile.first_name} ${profile.last_name || ''}`.trim() : (profile.name || null),
         avatar: profile.avatar_url,
         created_at: profile.created_at,
         updated_at: profile.updated_at
@@ -127,17 +127,15 @@ export const useAuth = () => {
         return false
       }
 
-      // Verificar que el usuario tenga rol de admin
-      if (profile.role !== 'admin') {
-        return false
-      }
+      // Aceptar los tres roles
+      if (!['admin', 'user', 'customer'].includes(profile.role)) return false
 
       // Actualizar datos del usuario
       user.value = {
         id: profile.id,
         email: profile.email,
         role: profile.role,
-        name: profile.name,
+        name: profile.first_name ? `${profile.first_name} ${profile.last_name || ''}`.trim() : (profile.name || null),
         avatar: profile.avatar_url,
         created_at: profile.created_at,
         updated_at: profile.updated_at

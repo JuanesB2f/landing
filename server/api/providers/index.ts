@@ -1,5 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server'
-import { requireAuth, requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
+import { requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
@@ -27,8 +27,8 @@ export default defineEventHandler(async (event) => {
       return respondSuccess(providersWithCount)
 
     } else if (method === 'POST') {
-      // Requiere sesión (alineado con productos)
-      await requireAuth(event)
+      // Solo administradores
+      await requireAdmin(event)
       const body = await readBody(event)
       
       // Validaciones básicas

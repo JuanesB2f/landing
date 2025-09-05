@@ -1,5 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server'
-import { requireAuth, requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
+import { requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
@@ -44,8 +44,8 @@ export default defineEventHandler(async (event) => {
       return respondSuccess(providerWithCount)
 
     } else if (method === 'PUT') {
-      // Requiere sesión (alineado con productos) y actualizar proveedor existente
-      await requireAuth(event)
+      // Solo administradores
+      await requireAdmin(event)
       const body = await readBody(event)
       
       // Validaciones básicas
@@ -98,8 +98,8 @@ export default defineEventHandler(async (event) => {
       return respondSuccess(updatedProvider, 'Proveedor actualizado exitosamente')
 
     } else if (method === 'DELETE') {
-      // Requiere sesión (alineado con productos). No validar productos asociados si no hay relación definida.
-      await requireAuth(event)
+      // Solo administradores
+      await requireAdmin(event)
 
       const { error: deleteError } = await supabase
         .from('providers')

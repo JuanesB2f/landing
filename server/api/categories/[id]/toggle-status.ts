@@ -4,7 +4,7 @@
  */
 
 import { serverSupabaseClient } from '#supabase/server'
-import { requireAuth, respondSuccess, respondError } from '~/server/utils/auth'
+import { requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
@@ -30,8 +30,8 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    // Permitir con sesión autenticada mientras se configuran perfiles
-    await requireAuth(event)
+    // Solo administradores
+    await requireAdmin(event)
     // Obtener el estado actual de la categoría
     const { data: currentCategory, error: fetchError } = await supabase
       .from('categories')

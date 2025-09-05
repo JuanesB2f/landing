@@ -11,13 +11,17 @@
                 <Icon name="heroicons:sparkles" class="w-6 h-6 text-white" />
               </div>
               <span class="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
-                BeautyStore
+                BylotoStore
               </span>
             </NuxtLink>
           </div>
 
           <!-- Navigation -->
           <nav class="hidden md:flex space-x-8">
+            <NuxtLink v-if="isUser" to="/user" class="relative text-gray-700 hover:text-pink-600 transition-colors font-medium group">
+              Mis Ofertas
+              <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-pink-500 to-purple-600 group-hover:w-full transition-all duration-300"></span>
+            </NuxtLink>
             <NuxtLink to="/shop" class="relative text-gray-700 hover:text-pink-600 transition-colors font-medium group">
               Productos
               <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-pink-500 to-purple-600 group-hover:w-full transition-all duration-300"></span>
@@ -54,10 +58,15 @@
               </span>
             </NuxtLink>
 
-            <!-- Login Button -->
-            <NuxtLink to="/login" class="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-2 rounded-full font-medium hover:from-pink-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+            <!-- Login Button (oculto si hay sesión) -->
+            <NuxtLink v-if="!authUser" to="/login" class="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-2 rounded-full font-medium hover:from-pink-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
               Iniciar Sesión
             </NuxtLink>
+
+            <!-- Logout cuando hay sesión -->
+            <button v-else @click="handleLogout" class="bg-gray-100 text-gray-700 px-6 py-2 rounded-full font-medium hover:bg-gray-200 transition-all duration-300 shadow-sm">
+              Cerrar sesión
+            </button>
           </div>
         </div>
       </div>
@@ -81,7 +90,7 @@
               <div class="w-8 h-8 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center">
                 <Icon name="heroicons:sparkles" class="w-5 h-5 text-white" />
               </div>
-              <h3 class="text-xl font-bold">BeautyStore</h3>
+              <h3 class="text-xl font-bold">BylotoStore</h3>
             </div>
             <p class="text-gray-300 leading-relaxed">
               Tu tienda de belleza y moda femenina con los mejores productos seleccionados especialmente para la mujer moderna y elegante.
@@ -160,7 +169,7 @@
         </div>
         
         <div class="border-t border-gray-700 mt-12 pt-8 text-center">
-          <p class="text-gray-300">&copy; 2024 BeautyStore. Todos los derechos reservados.</p>
+          <p class="text-gray-300">&copy; 2024 BylotoStore. Todos los derechos reservados.</p>
         </div>
       </div>
     </footer>
@@ -169,6 +178,16 @@
 
 <script setup>
 const cartItemsCount = ref(0)
+
+// Ocultar botón de login cuando hay sesión
+const authUser = useSupabaseUser()
+const { logout } = useAuth()
+const { user } = useAuth()
+const isUser = computed(() => user.value?.role === 'user')
+
+const handleLogout = async () => {
+  try { await logout() } catch (e) { console.error(e) }
+}
 
 // Inicializar datos básicos
 onMounted(() => {

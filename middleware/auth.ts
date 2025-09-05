@@ -45,14 +45,23 @@ export default defineNuxtRouteMiddleware(async (to: RouteLocationNormalized) => 
         return navigateTo('/login')
       }
       
-      // Verificar que el usuario tenga rol de admin
-      const role = (profile as { role?: 'admin' | 'manager' | 'customer' } | null)?.role
-      if (role !== 'admin') {
-        console.log('Usuario no es admin, redirigiendo a unauthorized')
-        return navigateTo('/unauthorized')
+      // Rutas por rol
+      const role = (profile as { role?: 'admin' | 'manager' | 'customer' | 'user' } | null)?.role
+
+      // Reglas de acceso por prefijo
+      const path = to.path
+      const isAdminArea = path.startsWith('/admin')
+      const isUserPortal = path.startsWith('/user')
+
+      if (isAdminArea) {
+        if (role !== 'admin') return navigateTo('/unauthorized')
+      }
+
+      if (isUserPortal) {
+        if (role !== 'user') return navigateTo('/unauthorized')
       }
       
-      console.log('Usuario autenticado como admin, acceso permitido')
+      // Para el resto de rutas protegidas: cualquier rol autenticado
       
     } catch (error) {
       console.error('Error en middleware de autenticación:', error)

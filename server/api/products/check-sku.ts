@@ -1,5 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server'
-import { requireAuth, respondSuccess, respondError } from '~/server/utils/auth'
+import { requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    await requireAuth(event)
+    await requireAdmin(event)
     const query = getQuery(event)
     const sku = String(query.sku || '').trim()
     const excludeId = query.exclude_id ? String(query.exclude_id) : null

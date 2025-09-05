@@ -161,7 +161,7 @@ export default defineEventHandler(async (event) => {
       const shippingAmount = body.shipping_amount || 0
       const totalAmount = subtotal + taxAmount + shippingAmount
 
-      // Crear el pedido
+      // Crear el pedido (admin origin)
       const newOrder: any = {
         customer_id: body.customer_id,
         total_amount: totalAmount,
@@ -174,7 +174,9 @@ export default defineEventHandler(async (event) => {
         payment_method: body.payment_method || null,
         payment_status: body.payment_status || 'pending',
         tracking_number: body.tracking_number || null,
-        notes: body.notes || null
+        notes: body.notes || null,
+        order_source: 'admin',
+        assigned_user_id: body.assigned_user_id || null
       }
 
       const orderRes = await (supabase as any)

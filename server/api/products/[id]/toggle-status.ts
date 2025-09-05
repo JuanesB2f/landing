@@ -1,5 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server'
-import { requireAuth, respondSuccess, respondError } from '~/server/utils/auth'
+import { requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const client = await serverSupabaseClient(event)
@@ -25,8 +25,8 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    // Requiere sesión (temporal durante configuración de perfiles)
-    await requireAuth(event)
+    // Solo administradores
+    await requireAdmin(event)
     // Obtener el estado actual del producto
     const { data: currentProduct, error: getError } = await client
       .from('products')
@@ -52,10 +52,10 @@ export default defineEventHandler(async (event) => {
     }
 
     // Cambiar el estado
-    const newStatus = !currentProduct.is_active
+    const newStatus = !(currentProduct as any).is_active
 
-    const { data: updatedProduct, error: updateError } = await client
-      .from('products')
+    const { data: updatedProduct, error: updateError } = await (client
+      .from('products') as any)
       .update({
         is_active: newStatus,
         updated_at: new Date().toISOString()

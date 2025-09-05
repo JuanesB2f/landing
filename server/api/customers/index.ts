@@ -1,4 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server'
+import { requireAdmin } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
@@ -6,13 +7,10 @@ export default defineEventHandler(async (event) => {
 
   if (method === 'GET') {
     try {
-      // Obtener todos los clientes con información relacionada
+      // Obtener todos los clientes
       const { data: customers, error } = await supabase
         .from('customers')
-        .select(`
-          *,
-          user:users(id, role)
-        `)
+        .select('*')
         .order('created_at', { ascending: false })
 
       if (error) {
@@ -26,10 +24,22 @@ export default defineEventHandler(async (event) => {
         }
       }
 
-      // Procesar los clientes (sin join problemático de orders)
-      const processedCustomers = customers.map(customer => ({
+      // Obtener conteo de pedidos por cliente
+      const ids = (customers || []).map((c: any) => c.id_customer)
+      let counts: Record<string, number> = {}
+      if (ids.length > 0) {
+        const { data: orders } = await supabase
+          .from('orders')
+          .select('customer_id')
+          .in('customer_id', ids)
+        for (const o of ((orders as Array<{ customer_id: string }>) || [])) {
+          counts[o.customer_id] = (counts[o.customer_id] || 0) + 1
+        }
+      }
+
+      const processedCustomers = (customers || []).map((customer: any) => ({
         ...customer,
-        order_count: 0 // Temporalmente en 0 hasta implementar la relación
+        order_count: counts[customer.id_customer] || 0
       }))
 
       return {
@@ -51,6 +61,7 @@ export default defineEventHandler(async (event) => {
   }
 
   if (method === 'POST') {
+    await requireAdmin(event)
     try {
       const body = await readBody(event)
       
@@ -107,8 +118,8 @@ export default defineEventHandler(async (event) => {
         is_active: body.is_active !== undefined ? body.is_active : true
       }
 
-      const { data, error } = await supabase
-        .from('customers')
+      const { data, error } = await (supabase
+        .from('customers') as any)
         .insert(newCustomer)
         .select()
         .single()

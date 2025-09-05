@@ -1,5 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server'
-import { requireAuth, respondSuccess, respondError } from '~/server/utils/auth'
+import { requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const client = await serverSupabaseClient(event)
@@ -22,8 +22,8 @@ export default defineEventHandler(async (event) => {
         return respondSuccess(products)
 
       case 'POST':
-        // Requiere sesión (temporal durante configuración de perfiles)
-        await requireAuth(event)
+        // Solo administradores pueden crear productos
+        await requireAdmin(event)
         // Crear nuevo producto (permite multipart/form-data para imagen)
         const contentType = getHeader(event, 'content-type') || ''
         let body: any = {}
@@ -74,8 +74,8 @@ export default defineEventHandler(async (event) => {
         // Generar ID único
         const productId = crypto.randomUUID()
 
-        const { data: newProduct, error: createErr } = await client
-          .from('products')
+        const { data: newProduct, error: createErr } = await (client
+          .from('products') as any)
           .insert({
             id_product: productId,
             name: body.name,

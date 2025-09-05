@@ -6,7 +6,7 @@
  */
 
 import { serverSupabaseClient } from '#supabase/server'
-import { requireAuth, requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
+import { requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
@@ -63,7 +63,7 @@ export default defineEventHandler(async (event) => {
 
   if (method === 'PUT') {
     try {
-      await requireAuth(event)
+      await requireAdmin(event)
       const contentType = getHeader(event, 'content-type') || ''
       let body: any = {}
       let uploadedImageUrl: string | null = null
@@ -141,8 +141,8 @@ export default defineEventHandler(async (event) => {
 
   if (method === 'DELETE') {
     try {
-      // Permitir eliminar con sesión autenticada mientras se configuran perfiles
-      await requireAuth(event)
+      // Solo administradores pueden eliminar
+      await requireAdmin(event)
       // Verificar si la categoría tiene productos asociados
       const { data: products, error: productsError } = await supabase
         .from('products')

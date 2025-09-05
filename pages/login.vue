@@ -151,9 +151,19 @@ const handleLogin = async () => {
     const result = await login(email.value, password.value)
 
     if (result.success) {
-      console.log('Usuario autenticado:', result.user?.email)
-      console.log('Redirigiendo al dashboard...')
-      await navigateTo('/dashboard')
+      const user = result.user
+      if (!user) {
+        error.value = 'No se pudo obtener el perfil'
+        return
+      }
+      // Redirección por rol
+      if (user.role === 'admin') {
+        await navigateTo('/dashboard')
+      } else if (user.role === 'user') {
+        await navigateTo('/user')
+      } else {
+        await navigateTo('/')
+      }
     } else {
       error.value = result.error || 'Credenciales incorrectas'
     }

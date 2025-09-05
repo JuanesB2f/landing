@@ -5,7 +5,7 @@
       <div class="text-center mb-12">
         <h1 class="text-4xl font-bold text-gray-900 mb-4">Sobre Nosotros</h1>
         <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-          BeautyStore es tu destino preferido para productos de belleza y moda femenina. 
+          BylotoStore es tu destino preferido para productos de belleza y moda femenina. 
           Nos dedicamos a ofrecer productos de alta calidad con un servicio excepcional.
         </p>
       </div>

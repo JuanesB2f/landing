@@ -92,76 +92,24 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <!-- Category 1 -->
-          <div class="group cursor-pointer">
-            <div class="relative bg-gradient-to-br from-pink-100 via-white to-purple-100 rounded-2xl p-8 text-center hover:shadow-2xl transition-all duration-500 group-hover:scale-105 border border-pink-200/50">
-              <div class="absolute inset-0 bg-gradient-to-br from-pink-500/5 to-purple-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div class="relative z-10">
-                <div class="w-20 h-20 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                  <Icon name="heroicons:sparkles" class="w-10 h-10 text-white" />
-                </div>
-                <h3 class="text-2xl font-bold text-gray-800 mb-3 group-hover:text-pink-600 transition-colors">Loción</h3>
-                <p class="text-gray-600 mb-4">Productos de cuidado personal que nutren y protegen tu piel</p>
-                <div class="inline-flex items-center text-pink-600 font-medium group-hover:translate-x-1 transition-transform">
-                  Explorar
-                  <Icon name="heroicons:arrow-right" class="w-4 h-4 ml-1" />
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Category 2 -->
-          <div class="group cursor-pointer">
-            <div class="relative bg-gradient-to-br from-purple-100 via-white to-pink-100 rounded-2xl p-8 text-center hover:shadow-2xl transition-all duration-500 group-hover:scale-105 border border-purple-200/50">
-              <div class="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div class="relative z-10">
-                <div class="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                  <Icon name="heroicons:tag" class="w-10 h-10 text-white" />
-                </div>
-                <h3 class="text-2xl font-bold text-gray-800 mb-3 group-hover:text-purple-600 transition-colors">Ropa</h3>
-                <p class="text-gray-600 mb-4">Moda femenina elegante que destaca tu belleza natural</p>
-                <div class="inline-flex items-center text-purple-600 font-medium group-hover:translate-x-1 transition-transform">
-                  Explorar
-                  <Icon name="heroicons:arrow-right" class="w-4 h-4 ml-1" />
+          <div v-for="cat in categories" :key="cat.id_category" class="group cursor-pointer">
+            <NuxtLink :to="`/shop/category/${cat.id_category}`">
+              <div class="relative bg-gradient-to-br from-pink-100 via-white to-purple-100 rounded-2xl p-8 text-center hover:shadow-2xl transition-all duration-500 group-hover:scale-105 border border-pink-200/50">
+                <div class="absolute inset-0 bg-gradient-to-br from-pink-500/5 to-purple-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div class="relative z-10">
+                  <div class="w-20 h-20 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg overflow-hidden">
+                    <img v-if="cat.image_url" :src="cat.image_url" :alt="cat.name" class="w-full h-full object-cover rounded-full" />
+                    <Icon v-else name="heroicons:tag" class="w-10 h-10 text-white" />
+                  </div>
+                  <h3 class="text-2xl font-bold text-gray-800 mb-3 group-hover:text-pink-600 transition-colors">{{ cat.name }}</h3>
+                  <p class="text-gray-600 mb-4">{{ cat.description || ' ' }}</p>
+                  <div class="inline-flex items-center text-pink-600 font-medium group-hover:translate-x-1 transition-transform">
+                    Explorar
+                    <Icon name="heroicons:arrow-right" class="w-4 h-4 ml-1" />
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-          
-          <!-- Category 3 -->
-          <div class="group cursor-pointer">
-            <div class="relative bg-gradient-to-br from-pink-100 via-white to-purple-100 rounded-2xl p-8 text-center hover:shadow-2xl transition-all duration-500 group-hover:scale-105 border border-pink-200/50">
-              <div class="absolute inset-0 bg-gradient-to-br from-pink-500/5 to-purple-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div class="relative z-10">
-                <div class="w-20 h-20 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                  <Icon name="heroicons:eye" class="w-10 h-10 text-white" />
-                </div>
-                <h3 class="text-2xl font-bold text-gray-800 mb-3 group-hover:text-pink-600 transition-colors">Maquillaje</h3>
-                <p class="text-gray-600 mb-4">Productos de belleza que realzan tu naturalidad</p>
-                <div class="inline-flex items-center text-pink-600 font-medium group-hover:translate-x-1 transition-transform">
-                  Explorar
-                  <Icon name="heroicons:arrow-right" class="w-4 h-4 ml-1" />
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Category 4 -->
-          <div class="group cursor-pointer">
-            <div class="relative bg-gradient-to-br from-purple-100 via-white to-pink-100 rounded-2xl p-8 text-center hover:shadow-2xl transition-all duration-500 group-hover:scale-105 border border-purple-200/50">
-              <div class="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div class="relative z-10">
-                <div class="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                  <Icon name="heroicons:shopping-bag" class="w-10 h-10 text-white" />
-                </div>
-                <h3 class="text-2xl font-bold text-gray-800 mb-3 group-hover:text-purple-600 transition-colors">Bolsos</h3>
-                <p class="text-gray-600 mb-4">Accesorios elegantes que complementan tu estilo</p>
-                <div class="inline-flex items-center text-purple-600 font-medium group-hover:translate-x-1 transition-transform">
-                  Explorar
-                  <Icon name="heroicons:arrow-right" class="w-4 h-4 ml-1" />
-                </div>
-              </div>
-            </div>
+            </NuxtLink>
           </div>
         </div>
       </div>
@@ -183,86 +131,19 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          <!-- Product Card 1 -->
-          <div class="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-pink-100">
+          <div v-for="p in products" :key="p.id_product" class="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-pink-100">
             <div class="relative h-64 bg-gradient-to-br from-pink-200 to-purple-200 flex items-center justify-center overflow-hidden">
-              <div class="absolute inset-0 bg-gradient-to-br from-pink-500/20 to-purple-500/20 group-hover:scale-110 transition-transform duration-500"></div>
-              <Icon name="heroicons:sparkles" class="w-20 h-20 text-pink-500 relative z-10 group-hover:scale-110 transition-transform duration-300" />
-              <div class="absolute top-4 right-4 bg-gradient-to-r from-pink-500 to-purple-600 text-white px-3 py-1 rounded-full text-sm font-medium">
-                Nuevo
-              </div>
+              <img v-if="p.image_url" :src="p.image_url" :alt="p.name" class="absolute inset-0 w-full h-full object-cover" />
+              <div class="absolute inset-0 bg-gradient-to-br from-pink-500/10 to-purple-500/10"></div>
             </div>
             <div class="p-6">
-              <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-pink-600 transition-colors">Loción Hidratante</h3>
-              <p class="text-gray-600 text-sm mb-4">Hidratación profunda para tu piel con ingredientes naturales</p>
+              <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-pink-600 transition-colors">{{ p.name }}</h3>
+              <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ p.description || '' }}</p>
               <div class="flex justify-between items-center">
-                <span class="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">$29.99</span>
-                <button class="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-2 rounded-full hover:from-pink-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
-                  Agregar
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Product Card 2 -->
-          <div class="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-purple-100">
-            <div class="relative h-64 bg-gradient-to-br from-purple-200 to-pink-200 flex items-center justify-center overflow-hidden">
-              <div class="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-pink-500/20 group-hover:scale-110 transition-transform duration-500"></div>
-              <Icon name="heroicons:tag" class="w-20 h-20 text-purple-500 relative z-10 group-hover:scale-110 transition-transform duration-300" />
-              <div class="absolute top-4 right-4 bg-gradient-to-r from-purple-500 to-pink-600 text-white px-3 py-1 rounded-full text-sm font-medium">
-                Popular
-              </div>
-            </div>
-            <div class="p-6">
-              <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-purple-600 transition-colors">Vestido Elegante</h3>
-              <p class="text-gray-600 text-sm mb-4">Diseño moderno y sofisticado para ocasiones especiales</p>
-              <div class="flex justify-between items-center">
-                <span class="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">$89.99</span>
-                <button class="bg-gradient-to-r from-purple-500 to-pink-600 text-white px-6 py-2 rounded-full hover:from-purple-600 hover:to-pink-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
-                  Agregar
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Product Card 3 -->
-          <div class="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-pink-100">
-            <div class="relative h-64 bg-gradient-to-br from-pink-200 to-purple-200 flex items-center justify-center overflow-hidden">
-              <div class="absolute inset-0 bg-gradient-to-br from-pink-500/20 to-purple-500/20 group-hover:scale-110 transition-transform duration-500"></div>
-              <Icon name="heroicons:eye" class="w-20 h-20 text-pink-500 relative z-10 group-hover:scale-110 transition-transform duration-300" />
-              <div class="absolute top-4 right-4 bg-gradient-to-r from-pink-500 to-purple-600 text-white px-3 py-1 rounded-full text-sm font-medium">
-                Destacado
-              </div>
-            </div>
-            <div class="p-6">
-              <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-pink-600 transition-colors">Paleta de Sombras</h3>
-              <p class="text-gray-600 text-sm mb-4">Colores vibrantes y duraderos para crear looks únicos</p>
-              <div class="flex justify-between items-center">
-                <span class="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">$45.99</span>
-                <button class="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-2 rounded-full hover:from-pink-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
-                  Agregar
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Product Card 4 -->
-          <div class="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-purple-100">
-            <div class="relative h-64 bg-gradient-to-br from-purple-200 to-pink-200 flex items-center justify-center overflow-hidden">
-              <div class="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-pink-500/20 group-hover:scale-110 transition-transform duration-500"></div>
-              <Icon name="heroicons:shopping-bag" class="w-20 h-20 text-purple-500 relative z-10 group-hover:scale-110 transition-transform duration-300" />
-              <div class="absolute top-4 right-4 bg-gradient-to-r from-purple-500 to-pink-600 text-white px-3 py-1 rounded-full text-sm font-medium">
-                Premium
-              </div>
-            </div>
-            <div class="p-6">
-              <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-purple-600 transition-colors">Bolso de Mano</h3>
-              <p class="text-gray-600 text-sm mb-4">Elegante y funcional, perfecto para cualquier ocasión</p>
-              <div class="flex justify-between items-center">
-                <span class="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">$129.99</span>
-                <button class="bg-gradient-to-r from-purple-500 to-pink-600 text-white px-6 py-2 rounded-full hover:from-purple-600 hover:to-pink-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
-                  Agregar
-                </button>
+                <span class="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">{{ formatCOP(p.price) }}</span>
+                <NuxtLink :to="`/shop/product/${p.id_product}`" class="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-2 rounded-full hover:from-pink-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
+                  Ver
+                </NuxtLink>
               </div>
             </div>
           </div>
@@ -352,6 +233,29 @@
 definePageMeta({
   layout: 'default'
 })
+
+const categories = ref([])
+const products = ref([])
+const loading = ref(false)
+const { formatCOP } = useCurrency()
+
+const fetchHomeData = async () => {
+  loading.value = true
+  try {
+    const [{ data: catRes }, { data: prodRes }] = await Promise.all([
+      $fetch('/api/categories'),
+      $fetch('/api/products')
+    ])
+    if (catRes?.success) categories.value = catRes.data
+    if (prodRes?.success) products.value = (prodRes.data || []).slice(0, 8)
+  } catch (e) {
+    console.error('Error cargando datos del home:', e)
+  } finally {
+    loading.value = false
+  }
+}
+
+onMounted(fetchHomeData)
 </script>
 
 <style scoped>

@@ -1,4 +1,4 @@
-# 🛍️ BeautyStore - E-commerce Femenino
+# 🛍️ BylotoStore - E-commerce Femenino
 
 Un e-commerce moderno y atractivo diseñado específicamente para el público femenino, con un diseño llamativo y funcionalidades avanzadas.
 
@@ -232,5 +232,5 @@ Si tienes alguna pregunta o necesitas ayuda:
 
 ---
 
-**BeautyStore** - Tu e-commerce femenino moderno y atractivo ✨
+**BylotoStore** - Tu e-commerce femenino moderno y atractivo ✨
 

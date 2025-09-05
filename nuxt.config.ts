@@ -21,7 +21,7 @@ export default defineNuxtConfig({
     redirectOptions: {
       login: '/login',
       callback: '/callback',
-      exclude: ['/', '/about', '/shop/*']
+      exclude: ['/', '/about', '/shop', '/shop/*']
     },
     clientOptions: {
       auth: {
@@ -50,7 +50,7 @@ export default defineNuxtConfig({
   // Configuración de la aplicación
   app: {
     head: {
-      title: "BeautyStore - Tu E-commerce Femenino",
+      title: "BylotoStore - Tu E-commerce Femenino",
       meta: [
         { charset: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1" },

@@ -1,5 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server'
-import { requireAuth, respondSuccess, respondError } from '~/server/utils/auth'
+import { requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const client = await serverSupabaseClient(event)
@@ -39,8 +39,8 @@ export default defineEventHandler(async (event) => {
         return respondSuccess(product)
 
       case 'PUT':
-        // Requiere sesión (temporal durante configuración de perfiles)
-        await requireAuth(event)
+        // Solo administradores pueden editar productos
+        await requireAdmin(event)
         const contentType = getHeader(event, 'content-type') || ''
         let updateBody: any = {}
         let uploadedImageUrl: string | null = null
@@ -85,8 +85,8 @@ export default defineEventHandler(async (event) => {
           }
         }
 
-        const { data: updatedProduct, error: updateError } = await client
-          .from('products')
+        const { data: updatedProduct, error: updateError } = await (client
+          .from('products') as any)
           .update({
             name: updateBody.name,
             description: updateBody.description,
@@ -116,8 +116,8 @@ export default defineEventHandler(async (event) => {
         return respondSuccess(updatedProduct, 'Producto actualizado exitosamente')
 
       case 'DELETE':
-        // Requiere sesión (temporal durante configuración de perfiles)
-        await requireAuth(event)
+        // Solo administradores pueden eliminar productos
+        await requireAdmin(event)
         const { error: deleteError } = await client
           .from('products')
           .delete()

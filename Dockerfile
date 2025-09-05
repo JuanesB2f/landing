@@ -1,4 +1,4 @@
-# Dockerfile para BeautyStore E-commerce
+# Dockerfile para BylotoStore E-commerce
 # Basado en la configuración de "La Leyenda de San Rafael"
 
 # Etapa de construcción
