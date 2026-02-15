@@ -1,4 +1,7 @@
-
+/**
+ * Composable para gestión de temas (light/dark)
+ * Optimizado para transiciones fluidas y rendimiento
+ */
 
 export const useTheme = () => {
   const theme = ref<'light' | 'dark'>('light')
@@ -117,4 +120,3 @@ export const useTheme = () => {
     watchSystemTheme
   }
 }
-
