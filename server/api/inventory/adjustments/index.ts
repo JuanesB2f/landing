@@ -52,16 +52,19 @@ export default defineEventHandler(async (event) => {
         return respondError('Tipo de ajuste no válido')
     }
 
-    // Crear el movimiento de ajuste
-    const movementData = {
+    // Crear el movimiento de ajuste.
+    // Nota: algunos proyectos no tienen columnas stock_before/stock_after/reason/description/reference
+    // en inventory_movements; para máxima compatibilidad usamos solo columnas estándar
+    // y guardamos el motivo/descripción en notes.
+    const notes: string[] = []
+    if (body.reason) notes.push(`Motivo: ${body.reason}`)
+    if (body.description) notes.push(`Descripción: ${body.description}`)
+    const movementData: any = {
       product_id: body.product_id,
       movement_type: 'adjustment',
       quantity: Math.abs(newStock - currentStock),
-      stock_before: currentStock,
-      stock_after: newStock,
-      reason: body.reason,
-      description: body.description || `Ajuste de stock: ${body.adjustment_type}`,
-      reference: body.reference || null
+      unit_price: null,
+      notes: notes.length ? notes.join(' | ') : `Ajuste de stock: ${body.adjustment_type}`,
     }
 
     const { data: movement, error: movementError } = await supabase

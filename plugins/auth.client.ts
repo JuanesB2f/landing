@@ -106,6 +106,14 @@ export default defineNuxtPlugin(() => {
       try {
         await checkAuth()
         const role = (user.value?.role as unknown as string)
+
+        // Si ya estamos en otra página (por ejemplo /admin/orders),
+        // no forzar navegación automática; solo usamos este redirect
+        // como atajo cuando el usuario está en la raíz o en /login.
+        const currentPath = router.currentRoute.value.path
+        if (currentPath !== '/' && currentPath !== '/login') {
+          return
+        }
         
         // Verificar nuevamente si estamos haciendo logout antes de redirigir
         if (isLoggingOut) {

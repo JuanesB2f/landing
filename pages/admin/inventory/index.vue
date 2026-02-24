@@ -1,19 +1,10 @@
 <template>
   <div>
-    <!-- Header con botones de acción -->
+    <!-- Header -->
     <div class="flex justify-between items-center mb-6">
       <div>
         <h1 class="text-2xl font-bold text-gray-900">Gestión de Inventario</h1>
         <p class="text-gray-600">Controla el stock y movimientos de productos de tu tienda</p>
-      </div>
-      <div class="flex space-x-3">
-        <button
-          @click="openAdjustmentModal"
-          class="btn btn-primary flex items-center space-x-2"
-        >
-          <Icon name="heroicons:adjustments-horizontal" class="w-5 h-5" />
-          <span>Ajuste de Stock</span>
-        </button>
       </div>
     </div>
 
