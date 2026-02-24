@@ -1,6 +1,5 @@
-import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server'
-import { createClient } from '@supabase/supabase-js'
-import { respondError, respondSuccess, requireAuth } from '~/server/utils/auth'
+import { serverSupabaseUser } from '#supabase/server'
+import { respondError, respondSuccess, requireAuth, getServiceClient } from '~/server/utils/auth'
 
 // Ensures a profile row exists for the authenticated user and upgrades role to 'user'
 export default defineEventHandler(async (event) => {
@@ -12,12 +11,7 @@ export default defineEventHandler(async (event) => {
     const user = await serverSupabaseUser(event)
     if (!user) return respondError('No autenticado')
 
-    const config = useRuntimeConfig()
-    const adminClient = createClient(
-      config.public.supabaseUrl,
-      config.supabaseServiceKey,
-      { auth: { persistSession: false } }
-    ) as any
+    const adminClient = getServiceClient() as any
 
     // Upsert profile with role 'user' (if role already admin, keep admin)
     const { data: existing } = await adminClient

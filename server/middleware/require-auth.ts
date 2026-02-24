@@ -26,7 +26,9 @@ export default defineEventHandler(async (event) => {
     if (!user) {
       return sendRedirect(event, '/login')
     }
-  } catch (_e) {
+  } catch (e) {
+    // En Vercel, cookies o env pueden fallar; no dejar que la función crashee con 500
+    console.error('[require-auth] Error verificando sesión:', e)
     return sendRedirect(event, '/login')
   }
 })

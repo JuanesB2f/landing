@@ -122,6 +122,18 @@ docker run -p 3000:3000 beautystore
 docker-compose up -d
 ```
 
+## ▲ Despliegue en Vercel
+
+Para evitar **500 / FUNCTION_INVOCATION_FAILED** tras iniciar sesión, configura en el proyecto de Vercel (Settings → Environment Variables) estas variables:
+
+| Variable | Descripción |
+|---------|-------------|
+| `NUXT_SUPABASE_URL` | URL del proyecto (ej. `https://xxx.supabase.co`) |
+| `NUXT_SUPABASE_KEY` | Clave anónima (anon/public) de Supabase |
+| `NUXT_SUPABASE_SERVICE_KEY` | Clave service_role de Supabase (solo servidor) |
+
+Sin `NUXT_SUPABASE_SERVICE_KEY` las rutas de API que usan el perfil/admin pueden fallar y la página puede “caerse” después del login. Añade las tres variables y vuelve a desplegar.
+
 ## 🔐 Sistema de Autenticación
 
 ### Roles de Usuario
