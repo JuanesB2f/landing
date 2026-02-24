@@ -10,11 +10,10 @@ export default defineNuxtConfig({
     "@nuxtjs/supabase"
   ],
   
-  // Configuración de Supabase
-  // Especificar explícitamente las variables de entorno para evitar warnings
+  // Configuración de Supabase (el módulo usa runtimeConfig en servidor; aquí solo para build/dev)
   supabase: {
-    url: process.env.NUXT_SUPABASE_URL,
-    key: process.env.NUXT_SUPABASE_KEY,
+    url: process.env.NUXT_SUPABASE_URL || process.env.NUXT_PUBLIC_SUPABASE_URL,
+    key: process.env.NUXT_SUPABASE_KEY || process.env.NUXT_PUBLIC_SUPABASE_KEY,
     redirect: true,
     redirectOptions: {
       login: '/login',
@@ -74,15 +73,12 @@ export default defineNuxtConfig({
 
   colorMode: { preference: "light" },
   
-  // Runtime config - necesario para el servidor (server/utils/auth.ts)
-  // El módulo @nuxtjs/supabase maneja automáticamente las variables públicas
+  // Runtime config: acepta NUXT_SUPABASE_* (local .env) y NUXT_PUBLIC_SUPABASE_* (Vercel)
   runtimeConfig: {
-    // Service key solo en servidor (nunca se expone al cliente)
-    supabaseServiceKey: process.env.NUXT_SUPABASE_SERVICE_KEY,
-    // Variables públicas necesarias para el servidor
+    supabaseServiceKey: process.env.NUXT_SUPABASE_SERVICE_KEY || '',
     public: {
-      supabaseUrl: process.env.NUXT_SUPABASE_URL,
-      supabaseKey: process.env.NUXT_SUPABASE_KEY,
+      supabaseUrl: process.env.NUXT_SUPABASE_URL || process.env.NUXT_PUBLIC_SUPABASE_URL || '',
+      supabaseKey: process.env.NUXT_SUPABASE_KEY || process.env.NUXT_PUBLIC_SUPABASE_KEY || '',
     }
   },
   
