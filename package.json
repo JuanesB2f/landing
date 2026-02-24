@@ -4,12 +4,14 @@
   "type": "module",
   "scripts": {
     "build": "nuxi build",
-    "dev": "nuxi dev",
+    "dev": "cross-env NODE_OPTIONS=--no-deprecation nuxi dev",
     "generate": "nuxi generate",
     "preview": "nuxi preview",
     "predev": "node scripts/fix-nuxt-tsconfig.mjs",
     "postinstall": "nuxi prepare && node scripts/fix-nuxt-tsconfig.mjs",
-    "prepare": "nuxi prepare && node scripts/fix-nuxt-tsconfig.mjs"
+    "prepare": "nuxi prepare && node scripts/fix-nuxt-tsconfig.mjs",
+    "update-browserslist": "npx update-browserslist-db@latest",
+    "clean": "npx rimraf .nuxt .output node_modules/.cache node_modules/.vite"
   },
   "dependencies": {
     "@iconify-json/healthicons": "^1.2.8",
@@ -29,7 +31,7 @@
     "chart.js": "^4.5.0",
     "mercadopago": "^2.9.0",
     "nitropack": "^2.11.13",
-    "nuxt": "^3.17.6",
+    "nuxt": "3.17.6",
     "pinia": "^3.0.2",
     "supabase": "^2.22.12",
     "vue": "^3.5.13",
@@ -38,6 +40,7 @@
   },
   "devDependencies": {
     "@types/node": "^24.3.0",
+    "cross-env": "^7.0.3",
     "typescript": "^5.9.2"
   }
 }

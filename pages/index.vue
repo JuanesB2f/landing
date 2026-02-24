@@ -203,7 +203,7 @@
     <!-- Inspirational Quote -->
     <section class="py-16 bg-gray-50">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <Icon name="heroicons:quote" class="w-12 h-12 text-pink-400 mx-auto mb-6" />
+        <Icon name="lucide:quote" class="w-12 h-12 text-pink-400 mx-auto mb-6" />
         <blockquote class="text-2xl md:text-3xl font-serif italic text-gray-700 leading-relaxed mb-4">
           "La belleza comienza en el momento en que decides ser tú misma."
         </blockquote>
