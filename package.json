@@ -10,8 +10,8 @@
     "predev": "node scripts/fix-nuxt-tsconfig.mjs",
     "postinstall": "nuxi prepare && node scripts/fix-nuxt-tsconfig.mjs",
     "prepare": "nuxi prepare && node scripts/fix-nuxt-tsconfig.mjs",
-    "update-browserslist": "npx update-browserslist-db@latest",
-    "clean": "npx rimraf .nuxt .output node_modules/.cache node_modules/.vite"
+    "update-browserslist": "bunx update-browserslist-db@latest",
+    "clean": "bunx rimraf .nuxt .output node_modules/.cache node_modules/.vite"
   },
   "dependencies": {
     "@iconify-json/healthicons": "^1.2.8",

@@ -36,7 +36,7 @@
                 <div class="text-sm theme-text-muted">SKU: {{ o.product?.sku }}</div>
               </td>
               <td>
-                <span class="text-pink-600 dark:text-pink-400 font-semibold">-{{ o.discount_percent }}%</span>
+                <span class="text-accent-strong font-semibold">-{{ o.discount_percent }}%</span>
               </td>
               <td class="text-sm theme-text-primary">
                 <div>{{ o.valid_from ? formatDate(o.valid_from) : '—' }} → {{ o.valid_to ? formatDate(o.valid_to) : '—' }}</div>

@@ -281,15 +281,6 @@ export default defineNuxtPlugin(() => {
     init()
   }
 
-  // Limpiar observers al desmontar
-  onUnmounted(() => {
-    if (lazyObserver) {
-      lazyObserver.disconnect()
-    }
-    imageCache.clear()
-    loadedImages.clear()
-  })
-
   // Exponer funciones globalmente para uso en componentes
   return {
     provide: {

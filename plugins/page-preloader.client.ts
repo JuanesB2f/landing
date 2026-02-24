@@ -346,13 +346,6 @@ export default defineNuxtPlugin(() => {
     init()
   }
 
-  // Limpiar al desmontar
-  onUnmounted(() => {
-    preloadedPages.clear()
-    preloadedComponents.clear()
-    navigationPatterns.clear()
-  })
-
   // Exponer funciones globalmente
   return {
     provide: {

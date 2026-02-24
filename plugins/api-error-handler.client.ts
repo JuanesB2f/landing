@@ -46,8 +46,4 @@ export default defineNuxtPlugin(() => {
     }
   }
   
-  // Restaurar fetch original al desmontar
-  onUnmounted(() => {
-    window.fetch = originalFetch
-  })
 })

@@ -418,10 +418,13 @@ const refreshKey = ref(0)
 // Detectar inactividad y forzar refresh
 let lastInteraction = Date.now()
 const INACTIVITY_THRESHOLD = 5 * 60 * 1000 // 5 minutos
+const activityEvents = ['click', 'mousemove', 'keydown', 'scroll', 'touchstart']
 
 const handleUserActivity = () => {
   lastInteraction = Date.now()
 }
+
+let inactivityIntervalId = null
 
 const checkForInactivity = () => {
   const now = Date.now()
@@ -429,6 +432,16 @@ const checkForInactivity = () => {
     // Forzar re-render incrementando la key
     refreshKey.value++
     lastInteraction = now
+  }
+}
+
+const handleWindowFocus = () => {
+  refreshKey.value++
+}
+
+const handleVisibilityChange = () => {
+  if (document.visibilityState === 'visible') {
+    refreshKey.value++
   }
 }
 
@@ -541,24 +554,34 @@ const navigateToCart = async () => {
 // Inicializar datos básicos
 onMounted(() => {
   // Eventos para detectar actividad
-  const events = ['click', 'mousemove', 'keydown', 'scroll', 'touchstart']
-  events.forEach(event => {
+  activityEvents.forEach(event => {
     document.addEventListener(event, handleUserActivity, { passive: true })
   })
 
   // Verificar inactividad cada minuto
-  setInterval(checkForInactivity, 60000)
+  inactivityIntervalId = setInterval(checkForInactivity, 60000)
 
   // Forzar refresh cuando la ventana recupera el foco
-  window.addEventListener('focus', () => {
-    refreshKey.value++
-  })
+  window.addEventListener('focus', handleWindowFocus)
 
   // Forzar refresh cuando la página se vuelve visible
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') {
-      refreshKey.value++
-    }
+  document.addEventListener('visibilitychange', handleVisibilityChange)
+})
+
+onBeforeUnmount(() => {
+  // Limpiar eventos de actividad
+  activityEvents.forEach(event => {
+    document.removeEventListener(event, handleUserActivity)
   })
+
+  // Limpiar intervalo de inactividad
+  if (inactivityIntervalId) {
+    clearInterval(inactivityIntervalId)
+    inactivityIntervalId = null
+  }
+
+  // Limpiar listeners globales
+  window.removeEventListener('focus', handleWindowFocus)
+  document.removeEventListener('visibilitychange', handleVisibilityChange)
 })
 </script>

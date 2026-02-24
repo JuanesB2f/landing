@@ -200,13 +200,22 @@
 definePageMeta({ 
   layout: 'default', 
   middleware: 'user-only',
-  key: route => `cart-${route.fullPath}-${Date.now()}`
+  key: route => `cart-${route.fullPath}`
 })
 import { useCartStore } from '~/stores/cart'
 const cart = useCartStore()
 const { formatCOP } = useCurrency()
 
 const { $toast } = useNuxtApp()
+
+// Estado del modal de pago (MercadoPago)
+const showPaymentModal = ref(false)
+const closePaymentModal = () => {
+  showPaymentModal.value = false
+}
+const onPaymentSuccess = () => {
+  showPaymentModal.value = false
+}
 const inc = (id) => { cart.updateQuantity(id, (cart.items.find(i => i.product_id === id)?.quantity || 1) + 1); $toast?.info('Cantidad actualizada') }
 const dec = (id) => { cart.removeOne(id); $toast?.info('Cantidad actualizada') }
 const remove = (id) => cart.removeItem(id)
@@ -303,6 +312,7 @@ onMounted(() => { loadMyOrders() })
 // Auto refresh cada 15s opcional
 const autoRefresh = ref(false)
 let intervalId = null
+let reloadIntervalId = null
 
 // Función para recargar datos tras inactividad
 const reloadCartData = async () => {
@@ -322,6 +332,16 @@ const checkCartDataReload = () => {
   }
 }
 
+const handleCartWindowFocus = () => {
+  checkCartDataReload()
+}
+
+const handleCartVisibilityChange = () => {
+  if (document.visibilityState === 'visible') {
+    checkCartDataReload()
+  }
+}
+
 onMounted(async () => {
   await loadMyReservations()
   lastCartDataLoad = Date.now()
@@ -331,19 +351,24 @@ onMounted(async () => {
   }, 15000)
   
   // Listeners para reactivación
-  window.addEventListener('focus', checkCartDataReload, { passive: true })
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') {
-      checkCartDataReload()
-    }
-  }, { passive: true })
+  window.addEventListener('focus', handleCartWindowFocus, { passive: true })
+  document.addEventListener('visibilitychange', handleCartVisibilityChange, { passive: true })
   
   // Verificación periódica
-  setInterval(checkCartDataReload, 60000) // cada minuto
+  reloadIntervalId = setInterval(checkCartDataReload, 60000) // cada minuto
 })
 
 onBeforeUnmount(() => {
-  if (intervalId) clearInterval(intervalId)
+  if (intervalId) {
+    clearInterval(intervalId)
+    intervalId = null
+  }
+  if (reloadIntervalId) {
+    clearInterval(reloadIntervalId)
+    reloadIntervalId = null
+  }
+  window.removeEventListener('focus', handleCartWindowFocus)
+  document.removeEventListener('visibilitychange', handleCartVisibilityChange)
 })
 
 // Helpers UI

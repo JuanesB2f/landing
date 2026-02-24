@@ -43,7 +43,7 @@
           </NuxtLink>
           <NuxtLink
             to="/shop?sort=price_asc"
-            class="px-8 py-4 bg-white dark:bg-bg-card rounded-full font-semibold text-lg border-2 border-gray-300 dark:border-border-color hover:border-accent dark:hover:border-accent hover:bg-accent-soft dark:hover:bg-bg-hover transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl text-[#0E1627] dark:text-gray-100"
+            class="btn-accent-strong-outline transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl text-sm sm:text-base md:text-lg"
           >
             Ver Ofertas
           </NuxtLink>

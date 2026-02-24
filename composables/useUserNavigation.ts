@@ -42,7 +42,9 @@ export const useUserNavigation = () => {
       const role = (profile as any)?.role
       const active = (profile as any)?.is_active
       
-      if (!role || active === false || role !== 'user') {
+      const isUserRole = role === 'user' || role === 'customer'
+      
+      if (!role || active === false || !isUserRole) {
         console.log('❌ Usuario no autorizado')
         await navigateTo('/unauthorized')
         return false

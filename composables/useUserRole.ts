@@ -9,9 +9,9 @@ export const useUserRole = () => {
   const { user } = useAuth()
   
   // Computed properties para roles
-  const userRole = computed(() => user.value?.role || 'user')
+  const userRole = computed(() => user.value?.role || 'guest')
   const isAdmin = computed(() => userRole.value === 'admin')
-  const isCustomer = computed(() => userRole.value === 'user')
+  const isCustomer = computed(() => userRole.value === 'customer')
   const isAuthenticated = computed(() => !!user.value)
   
   // Permisos específicos

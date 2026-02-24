@@ -625,7 +625,10 @@ const saveOrder = async (orderData) => {
 }
 const fetchReservations = async () => {
   try {
-    const { data } = await $fetch('/api/reservations')
+    // Solo mostrar reservas activas/pending en la tabla combinada
+    const { data } = await $fetch('/api/reservations', {
+      params: { status: 'pending' }
+    })
     if (data.success) {
       reservations.value = data.data
     }

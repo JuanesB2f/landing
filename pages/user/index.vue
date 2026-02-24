@@ -276,7 +276,7 @@
 <script setup>
 definePageMeta({
   middleware: 'user-only',
-  key: route => `user-${route.fullPath}-${Date.now()}`,
+  key: route => `user-${route.fullPath}`,
 })
 
 const loading = ref(true)

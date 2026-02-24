@@ -98,8 +98,8 @@ FOR EACH ROW EXECUTE PROCEDURE public.set_updated_at();
 -- Usage example from server: supabase.rpc('adjust_product_stock', { p_id_product: '<uuid>', p_delta: -2 })
 CREATE OR REPLACE FUNCTION public.adjust_product_stock(p_id_product uuid, p_delta integer)
 RETURNS TABLE (
-  id_product uuid,
-  stock_quantity integer
+  out_id_product uuid,
+  out_stock_quantity integer
 ) AS $$
 BEGIN
   UPDATE public.products AS p
@@ -107,7 +107,7 @@ BEGIN
       updated_at = now()
   WHERE p.id_product = p_id_product
   RETURNING p.id_product, p.stock_quantity
-  INTO id_product, stock_quantity;
+  INTO out_id_product, out_stock_quantity;
 
   RETURN NEXT;
 END;

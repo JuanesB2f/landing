@@ -50,8 +50,4 @@ export default defineNuxtPlugin(() => {
   }
 
   document.addEventListener('wheel', handleWheel, { passive: false })
-
-  onUnmounted(() => {
-    document.removeEventListener('wheel', handleWheel)
-  })
 })

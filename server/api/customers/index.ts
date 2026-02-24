@@ -1,4 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server'
+import { createClient } from '@supabase/supabase-js'
 import { requireAdmin } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
@@ -7,8 +8,17 @@ export default defineEventHandler(async (event) => {
 
   if (method === 'GET') {
     try {
+      // Solo admins y usar service role para evitar bloqueos por RLS en joins
+      await requireAdmin(event)
+      const config = useRuntimeConfig()
+      const adminClient = createClient(
+        config.public.supabaseUrl,
+        config.supabaseServiceKey,
+        { auth: { persistSession: false } }
+      ) as any
+
       // Obtener todos los clientes
-      const { data: customers, error } = await supabase
+      const { data: customers, error } = await adminClient
         .from('customers')
         .select('*')
         .order('created_at', { ascending: false })
@@ -28,7 +38,7 @@ export default defineEventHandler(async (event) => {
       const ids = (customers || []).map((c: any) => c.id_customer)
       let counts: Record<string, number> = {}
       if (ids.length > 0) {
-        const { data: orders } = await supabase
+        const { data: orders } = await adminClient
           .from('orders')
           .select('customer_id')
           .in('customer_id', ids)
