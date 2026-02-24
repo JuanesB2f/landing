@@ -16,7 +16,7 @@
       </div>
 
       <!-- Hero Section -->
-      <div class="relative h-[40vh] min-h-[300px] overflow-hidden">
+      <div class="relative h-[35vh] min-h-[240px] sm:h-[40vh] sm:min-h-[300px] overflow-hidden">
         <div
           class="absolute inset-0 bg-gradient-to-r from-pink-900/80 to-purple-900/80 z-10"
         ></div>
@@ -29,12 +29,12 @@
           class="absolute inset-0 z-20 flex flex-col items-center justify-center text-white text-center px-4"
         >
           <h1
-            class="text-4xl md:text-6xl font-serif font-bold mb-4 animate-fade-in-up"
+            class="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-serif font-bold mb-2 sm:mb-4 animate-fade-in-up px-2"
           >
             Colección Exclusiva
           </h1>
           <p
-            class="text-lg md:text-xl font-light max-w-2xl opacity-90 animate-fade-in-up animation-delay-200"
+            class="text-sm sm:text-base md:text-lg lg:text-xl font-light max-w-2xl opacity-90 animate-fade-in-up animation-delay-200 px-2"
           >
             Descubre las últimas tendencias seleccionadas especialmente para ti.
             Disponibles para compra en nuestra boutique.
@@ -43,7 +43,7 @@
       </div>
 
       <!-- Gallery Grid -->
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-20 relative z-30">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-12 sm:-mt-16 lg:-mt-20 relative z-30">
         <div v-if="loading" class="flex justify-center py-20">
           <Icon
             name="svg-spinners:180-ring-with-bg"
@@ -67,7 +67,7 @@
 
         <div
           v-else
-          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8"
         >
           <div
             v-for="offer in offers"
@@ -75,7 +75,7 @@
             class="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2"
           >
             <!-- Image Container -->
-            <div class="relative h-96 overflow-hidden">
+            <div class="relative h-64 sm:h-80 lg:h-96 overflow-hidden">
               <div
                 class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 z-10"
               ></div>
@@ -103,12 +103,12 @@
 
               <!-- Content Overlay -->
               <div
-                class="absolute bottom-0 left-0 w-full p-6 z-20 text-white transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300"
+                class="absolute bottom-0 left-0 w-full p-4 sm:p-6 z-20 text-white transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300"
               >
-                <h3 class="text-2xl font-serif font-bold mb-1">
+                <h3 class="text-lg sm:text-xl lg:text-2xl font-serif font-bold mb-1">
                   {{ offer.product?.name }}
                 </h3>
-                <p class="text-sm opacity-90 mb-3 line-clamp-1">
+                <p class="text-xs sm:text-sm opacity-90 mb-2 sm:mb-3 line-clamp-1">
                   {{ offer.product?.description || 'Producto exclusivo' }}
                 </p>
 
@@ -145,14 +145,14 @@
     </div>
 
     <!-- VISTA USER (Funcional / Carrito) -->
-    <div v-else class="max-w-6xl mx-auto p-6 theme-container">
-      <div class="flex items-center justify-between mb-6">
-        <h1 class="text-2xl font-bold theme-text-primary">Mi Perfil</h1>
+    <div v-else class="max-w-6xl mx-auto p-4 sm:p-6 theme-container">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <h1 class="text-xl sm:text-2xl font-bold theme-text-primary">Mi Perfil</h1>
         <NuxtLink
           to="/shop/cart"
-          class="inline-flex items-center px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors shadow-md"
+          class="inline-flex items-center justify-center px-4 py-2.5 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors shadow-md text-sm sm:text-base w-full sm:w-auto"
         >
-          <Icon name="heroicons:shopping-cart" class="w-5 h-5 mr-2" />
+          <Icon name="heroicons:shopping-cart" class="w-5 h-5 mr-2 shrink-0" />
           Ir al carrito ({{ cart.count }})
         </NuxtLink>
       </div>
@@ -178,7 +178,7 @@
 
         <div
           v-else
-          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
         >
           <div
             v-for="offer in offers"
@@ -186,7 +186,7 @@
             class="bg-white rounded-xl shadow-sm overflow-hidden border border-pink-100 hover:shadow-md transition-shadow"
           >
             <div
-              class="h-48 bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center overflow-hidden relative group"
+              class="h-40 sm:h-48 bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center overflow-hidden relative group"
             >
               <img
                 v-if="offer.product?.image_url"
@@ -205,25 +205,25 @@
                 -{{ offer.discount_percent }}%
               </div>
             </div>
-            <div class="p-4 space-y-3">
+            <div class="p-3 sm:p-4 space-y-2 sm:space-y-3">
               <div>
-                <h3 class="text-lg font-semibold text-gray-900 line-clamp-1">
+                <h3 class="text-base sm:text-lg font-semibold text-gray-900 line-clamp-1">
                   {{ offer.product?.name }}
                 </h3>
-                <div class="text-sm text-gray-500">
+                <div class="text-xs sm:text-sm text-gray-500">
                   SKU: {{ offer.product?.sku }}
                 </div>
               </div>
 
               <div class="flex items-center justify-between">
-                <div class="flex flex-col">
+                <div class="flex flex-col min-w-0">
                   <span
                     class="text-xs text-gray-400 line-through"
                     v-if="offer.product?.price"
                   >
                     {{ formatCOP(offer.product.price) }}
                   </span>
-                  <span class="text-lg font-bold text-pink-600">
+                  <span class="text-base sm:text-lg font-bold text-pink-600 truncate">
                     {{
                       formatCOP(
                         discountedPrice(
@@ -238,20 +238,20 @@
 
               <!-- Acciones de compra -->
               <div
-                class="pt-2 flex items-center gap-2 border-t border-gray-100 mt-2"
+                class="pt-2 flex flex-wrap items-center gap-2 border-t border-gray-100 mt-2"
               >
                 <input
                   v-model.number="quantities[offer.id_offer]"
                   type="number"
                   min="1"
                   :max="offer.product?.stock_quantity || 1"
-                  class="w-16 px-2 py-2 border border-gray-200 rounded-lg text-center focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                  class="w-14 sm:w-16 px-2 py-2 border border-gray-200 rounded-lg text-center text-sm focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                 />
                 <button
                   @click="addToCart(offer)"
-                  class="flex-1 inline-flex items-center justify-center px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors"
+                  class="flex-1 min-w-0 inline-flex items-center justify-center px-3 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors text-sm sm:text-base"
                 >
-                  <Icon name="heroicons:plus" class="w-5 h-5 mr-1" /> Agregar
+                  <Icon name="heroicons:plus" class="w-4 h-4 sm:w-5 sm:h-5 mr-1 shrink-0" /> Agregar
                 </button>
               </div>
 

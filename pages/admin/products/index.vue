@@ -1,23 +1,23 @@
 <template>
   <div>
     <!-- Header con botón de agregar producto -->
-    <div class="flex justify-between items-center mb-6">
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4 sm:mb-6">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900">Gestión de Productos</h1>
-        <p class="text-gray-600">Administra el catálogo de productos de tu tienda</p>
+        <h1 class="text-xl sm:text-2xl font-bold theme-text-primary">Gestión de Productos</h1>
+        <p class="text-sm sm:text-base theme-text-secondary mt-0.5">Administra el catálogo de productos de tu tienda</p>
       </div>
       <button
         @click="openCreateModal"
-        class="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors"
+        class="bg-pink-600 hover:bg-pink-700 text-white px-3 py-2 sm:px-4 rounded-lg flex items-center justify-center space-x-2 transition-colors text-sm sm:text-base w-full sm:w-auto shrink-0"
       >
-        <Icon name="heroicons:plus" class="w-5 h-5" />
+        <Icon name="heroicons:plus" class="w-5 h-5 shrink-0" />
         <span>Agregar Producto</span>
       </button>
     </div>
 
     <!-- Filtros y búsqueda -->
-    <div class="bg-white p-4 rounded-lg shadow-sm mb-6">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <div class="theme-card-bg p-3 sm:p-4 rounded-lg shadow-sm mb-4 sm:mb-6 border theme-border">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <!-- Búsqueda -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Buscar</label>
@@ -69,34 +69,22 @@
     </div>
 
     <!-- Tabla de productos -->
-    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
-      <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
+    <div class="rounded-lg overflow-hidden border theme-border">
+      <div class="overflow-x-auto -mx-3 sm:mx-0">
+        <table class="min-w-full admin-table">
+          <thead>
             <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Producto
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Categoría
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Precio
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Stock
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Estado
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Acciones
-              </th>
+              <th>Producto</th>
+              <th>Categoría</th>
+              <th>Precio</th>
+              <th>Stock</th>
+              <th>Estado</th>
+              <th>Acciones</th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
-            <tr v-for="product in filteredProducts.slice(startIndex, endIndex)" :key="product.id_product" class="hover:bg-gray-50">
-              <td class="px-6 py-4 whitespace-nowrap">
+          <tbody>
+            <tr v-for="product in filteredProducts.slice(startIndex, endIndex)" :key="product.id_product">
+              <td class="whitespace-nowrap">
                 <div class="flex items-center">
                   <div class="flex-shrink-0 h-12 w-12">
                     <img
@@ -113,20 +101,20 @@
                     </div>
                   </div>
                   <div class="ml-4">
-                    <div class="text-sm font-medium text-gray-900">{{ product.name }}</div>
-                    <div class="text-sm text-gray-500">{{ product.sku }}</div>
+                    <div class="text-sm font-medium theme-text-primary">{{ product.name }}</div>
+                    <div class="text-sm theme-text-muted">{{ product.sku }}</div>
                   </div>
                 </div>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+              <td class="whitespace-nowrap">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200">
                   {{ product.category?.name || 'Sin categoría' }}
                 </span>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <td class="whitespace-nowrap text-sm theme-text-primary">
                 {{ formatCOP(product.price) }}
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
+              <td class="whitespace-nowrap">
                 <span
                   :class="[
                     'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
@@ -138,17 +126,17 @@
                   {{ product.stock_quantity }}
                 </span>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
+              <td class="whitespace-nowrap">
                 <span
                   :class="[
                     'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
-                    product.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                    product.is_active ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200'
                   ]"
                 >
                   {{ product.is_active ? 'Activo' : 'Inactivo' }}
                 </span>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+              <td class="whitespace-nowrap text-sm font-medium">
                 <div class="flex space-x-2">
                   <button
                     @click="editProduct(product)"

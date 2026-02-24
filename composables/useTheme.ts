@@ -7,15 +7,12 @@ export const useTheme = () => {
   const theme = ref<'light' | 'dark'>('light')
   const isDark = computed(() => theme.value === 'dark')
 
-  // Inicializar tema desde localStorage o preferencia del sistema
+  // Inicializar tema: por defecto claro; oscuro solo si el usuario lo eligió antes
   const initTheme = () => {
     if (process.client) {
       const savedTheme = localStorage.getItem('theme')
-      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
       
-      if (savedTheme && (savedTheme === 'light' || savedTheme === 'dark')) {
-        theme.value = savedTheme as 'light' | 'dark'
-      } else if (systemPrefersDark) {
+      if (savedTheme === 'dark') {
         theme.value = 'dark'
       } else {
         theme.value = 'light'
@@ -55,7 +52,7 @@ export const useTheme = () => {
           // Actualizar meta theme-color para móviles (con transición suave)
           const metaThemeColor = document.querySelector('meta[name="theme-color"]')
           if (metaThemeColor) {
-            const newColor = isDark.value ? '#0f172a' : '#ffffff'
+            const newColor = isDark.value ? '#1e293b' : '#ffffff'
             metaThemeColor.setAttribute('content', newColor)
           }
           
@@ -88,23 +85,22 @@ export const useTheme = () => {
     }
   }
 
-  // Escuchar cambios en la preferencia del sistema
+  // Escuchar cambios en la preferencia del sistema (opcional: no aplicamos por defecto, tema por defecto es claro)
   const watchSystemTheme = () => {
     if (process.client) {
       const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
       
       const handleChange = (e: MediaQueryListEvent) => {
-        // Solo cambiar si no hay tema guardado en localStorage
+        // Solo cambiar si el usuario ya guardó preferencia explícita (no seguimos sistema por defecto)
         const savedTheme = localStorage.getItem('theme')
-        if (!savedTheme) {
-          theme.value = e.matches ? 'dark' : 'light'
+        if (savedTheme) {
+          theme.value = savedTheme as 'light' | 'dark'
           applyTheme()
         }
       }
       
       mediaQuery.addEventListener('change', handleChange)
       
-      // Cleanup function
       return () => {
         mediaQuery.removeEventListener('change', handleChange)
       }

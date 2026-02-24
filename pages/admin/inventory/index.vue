@@ -145,37 +145,23 @@
     </div>
 
     <!-- Tabla de inventario -->
-    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+    <div class="rounded-lg overflow-hidden border border-gray-200 dark:border-[var(--border-color)]">
       <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
+        <table class="min-w-full admin-table">
+          <thead>
             <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Producto
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Categoría
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Stock Actual
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Stock Mínimo
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Estado
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Último Movimiento
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Acciones
-              </th>
+              <th>Producto</th>
+              <th>Categoría</th>
+              <th>Stock Actual</th>
+              <th>Stock Mínimo</th>
+              <th>Estado</th>
+              <th>Último Movimiento</th>
+              <th>Acciones</th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
-            <tr v-for="product in filteredInventory.slice(startIndex, endIndex)" :key="product.id_product" class="hover:bg-gray-50">
-              <td class="px-6 py-4 whitespace-nowrap">
+          <tbody>
+            <tr v-for="product in filteredInventory.slice(startIndex, endIndex)" :key="product.id_product">
+              <td class="whitespace-nowrap">
                 <div class="flex items-center">
                   <div class="flex-shrink-0 h-12 w-12">
                     <img
@@ -186,30 +172,30 @@
                     />
                     <div
                       v-else
-                      class="h-12 w-12 rounded-lg bg-gray-200 flex items-center justify-center"
+                      class="h-12 w-12 rounded-lg bg-gray-200 dark:bg-white/10 flex items-center justify-center"
                     >
-                      <Icon name="heroicons:photo" class="w-6 h-6 text-gray-400" />
+                      <Icon name="heroicons:photo" class="w-6 h-6 theme-text-muted" />
                     </div>
                   </div>
                   <div class="ml-4">
-                    <div class="text-sm font-medium text-gray-900">{{ product.name }}</div>
-                    <div class="text-sm text-gray-500">{{ product.sku }}</div>
+                    <div class="text-sm font-medium theme-text-primary">{{ product.name }}</div>
+                    <div class="text-sm theme-text-muted">{{ product.sku }}</div>
                   </div>
                 </div>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+              <td class="whitespace-nowrap">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200">
                   {{ product.category?.name || 'Sin categoría' }}
                 </span>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm font-medium text-gray-900">{{ product.stock_quantity }}</div>
-                <div class="text-xs text-gray-500">unidades</div>
+              <td class="whitespace-nowrap">
+                <div class="text-sm font-medium theme-text-primary">{{ product.stock_quantity }}</div>
+                <div class="text-xs theme-text-muted">unidades</div>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-gray-900">{{ product.min_stock || 0 }}</div>
+              <td class="whitespace-nowrap">
+                <div class="text-sm theme-text-primary">{{ product.min_stock || 0 }}</div>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
+              <td class="whitespace-nowrap">
                 <span
                   :class="[
                     'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
@@ -219,10 +205,10 @@
                   {{ getStockStatusText(product.stock_quantity, product.min_stock) }}
                 </span>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td class="whitespace-nowrap text-sm theme-text-muted">
                 {{ formatDate(product.last_movement_date) }}
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+              <td class="whitespace-nowrap text-sm font-medium">
                 <div class="flex space-x-2">
                   <button
                     @click="viewMovements(product)"

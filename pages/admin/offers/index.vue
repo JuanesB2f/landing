@@ -19,34 +19,34 @@
         <button @click="clearFilters" class="px-4 py-2 border rounded">Limpiar</button>
       </div>
       <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
+        <table class="min-w-full admin-table">
+          <thead>
             <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Producto</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Descuento</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Vigencia</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
+              <th>Producto</th>
+              <th>Descuento</th>
+              <th>Vigencia</th>
+              <th>Estado</th>
+              <th>Acciones</th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
+          <tbody>
             <tr v-for="o in filteredOffersForTemplate" :key="o.id_offer">
-              <td class="px-6 py-4">
-                <div class="text-sm font-medium text-gray-900">{{ o.product?.name }}</div>
-                <div class="text-sm text-gray-500">SKU: {{ o.product?.sku }}</div>
+              <td>
+                <div class="text-sm font-medium theme-text-primary">{{ o.product?.name }}</div>
+                <div class="text-sm theme-text-muted">SKU: {{ o.product?.sku }}</div>
               </td>
-              <td class="px-6 py-4">
-                <span class="text-pink-600 font-semibold">-{{ o.discount_percent }}%</span>
+              <td>
+                <span class="text-pink-600 dark:text-pink-400 font-semibold">-{{ o.discount_percent }}%</span>
               </td>
-              <td class="px-6 py-4 text-sm text-gray-700">
+              <td class="text-sm theme-text-primary">
                 <div>{{ o.valid_from ? formatDate(o.valid_from) : '—' }} → {{ o.valid_to ? formatDate(o.valid_to) : '—' }}</div>
               </td>
-              <td class="px-6 py-4">
-                <span :class="o.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'" class="px-2 py-1 rounded text-xs">
+              <td>
+                <span :class="o.is_active ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200'" class="px-2 py-1 rounded text-xs">
                   {{ o.is_active ? 'Activa' : 'Inactiva' }}
                 </span>
               </td>
-              <td class="px-6 py-4 text-sm">
+              <td class="text-sm">
                 <div class="flex gap-2">
                   <button @click="edit(o)" class="text-indigo-600 hover:text-indigo-900">
                     <Icon name="heroicons:pencil-square" class="w-5 h-5" />

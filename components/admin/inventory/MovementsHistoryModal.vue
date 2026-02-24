@@ -8,26 +8,26 @@
         </button>
       </div>
       <div class="max-h-[60vh] overflow-y-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
+        <table class="min-w-full admin-table">
+          <thead>
             <tr>
-              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
-              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Tipo</th>
-              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Cantidad</th>
-              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Stock</th>
-              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Motivo</th>
+              <th>Fecha</th>
+              <th>Tipo</th>
+              <th>Cantidad</th>
+              <th>Stock</th>
+              <th>Motivo</th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
+          <tbody>
             <tr v-for="m in movements" :key="m.id_movement">
-              <td class="px-4 py-2 text-sm text-gray-700">{{ formatDate(m.movement_date || m.created_at) }}</td>
-              <td class="px-4 py-2 text-sm">{{ m.movement_type }}</td>
-              <td class="px-4 py-2 text-sm">{{ m.quantity }}</td>
-              <td class="px-4 py-2 text-sm">{{ m.stock_before }} → {{ m.stock_after }}</td>
-              <td class="px-4 py-2 text-sm">{{ m.reason }}</td>
+              <td class="text-sm">{{ formatDate(m.movement_date || m.created_at) }}</td>
+              <td class="text-sm">{{ m.movement_type }}</td>
+              <td class="text-sm">{{ m.quantity }}</td>
+              <td class="text-sm">{{ m.stock_before }} → {{ m.stock_after }}</td>
+              <td class="text-sm">{{ m.reason }}</td>
             </tr>
             <tr v-if="!loading && movements.length === 0">
-              <td colspan="5" class="px-4 py-6 text-center text-sm text-gray-500">Sin movimientos</td>
+              <td colspan="5" class="py-6 text-center text-sm theme-text-muted">Sin movimientos</td>
             </tr>
           </tbody>
         </table>

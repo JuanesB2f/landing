@@ -24,12 +24,17 @@ export default {
         'border-color': 'var(--border-color)',
         'accent': 'var(--accent)',
         'accent-hover': 'var(--accent-hover)',
+        'accent-soft': 'var(--accent-soft)',
+        'accent-secondary': 'var(--accent-secondary)',
       },
       backgroundColor: {
         'bg-primary': 'var(--bg-primary)',
         'bg-secondary': 'var(--bg-secondary)',
         'bg-card': 'var(--bg-card)',
         'bg-hover': 'var(--bg-hover)',
+        'accent': 'var(--accent)',
+        'accent-soft': 'var(--accent-soft)',
+        'accent-secondary': 'var(--accent-secondary)',
       },
       textColor: {
         'text-primary': 'var(--text-primary)',

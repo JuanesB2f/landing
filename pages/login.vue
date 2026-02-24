@@ -1,10 +1,10 @@
 <template>
   <div class="min-h-screen theme-login-bg relative overflow-hidden" :class="{ 'dark-theme': isDark }">
-    <!-- Animated Background -->
+    <!-- Animated Background: blobs con paleta mauve/rosa (tema claro y oscuro) -->
     <div class="absolute inset-0 overflow-hidden">
-      <div class="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
-      <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
-      <div class="absolute top-40 left-40 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
+      <div class="login-blob login-blob-1 absolute -top-40 -right-40 w-80 h-80 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
+      <div class="login-blob login-blob-2 absolute -bottom-40 -left-40 w-80 h-80 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
+      <div class="login-blob login-blob-3 absolute top-40 left-40 w-80 h-80 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
     </div>
 
     <!-- Main Content -->
@@ -26,7 +26,7 @@
         <div class="theme-login-card backdrop-blur-xl rounded-2xl shadow-2xl theme-login-border p-8">
           <!-- Header -->
           <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mb-6 shadow-lg">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-accent to-accent-secondary rounded-full mb-6 shadow-lg">
               <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
               </svg>
@@ -54,7 +54,7 @@
                   v-model="email"
                   type="email"
                   required
-                  class="w-full pl-10 pr-4 py-3 theme-login-input border theme-login-border rounded-xl theme-login-text placeholder-theme-login-placeholder focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 backdrop-blur-sm"
+                  class="w-full pl-10 pr-4 py-3 theme-login-input border theme-login-border rounded-xl theme-login-text placeholder-theme-login-placeholder focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300 backdrop-blur-sm"
                   placeholder="admin@ejemplo.com"
                   :disabled="loading"
                 />
@@ -77,7 +77,7 @@
                   v-model="password"
                   type="password"
                   required
-                  class="w-full pl-10 pr-4 py-3 theme-login-input border theme-login-border rounded-xl theme-login-text placeholder-theme-login-placeholder focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 backdrop-blur-sm"
+                  class="w-full pl-10 pr-4 py-3 theme-login-input border theme-login-border rounded-xl theme-login-text placeholder-theme-login-placeholder focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300 backdrop-blur-sm"
                   placeholder="••••••••"
                   :disabled="loading"
                 />
@@ -98,7 +98,7 @@
             <button
               type="submit"
               :disabled="loading"
-              class="group relative w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-4 focus:ring-blue-500/50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+              class="login-submit-btn group relative w-full bg-gradient-to-r from-accent to-accent-secondary text-white py-3 px-4 rounded-xl font-semibold hover:from-accent-hover hover:to-accent-secondary focus:outline-none focus:ring-4 focus:ring-accent/50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
             >
               <span v-if="loading" class="flex items-center justify-center">
                 <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns=" http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -143,9 +143,9 @@
     </div>
 
     <!-- Floating Elements -->
-    <div class="absolute top-20 left-10 w-2 h-2 bg-blue-400 rounded-full animate-ping"></div>
-    <div class="absolute top-40 right-20 w-3 h-3 bg-purple-400 rounded-full animate-ping animation-delay-1000"></div>
-    <div class="absolute bottom-20 left-20 w-2 h-2 bg-pink-400 rounded-full animate-ping animation-delay-2000"></div>
+    <div class="absolute top-20 left-10 w-2 h-2 login-dot login-dot-1 rounded-full animate-ping"></div>
+    <div class="absolute top-40 right-20 w-3 h-3 login-dot login-dot-2 rounded-full animate-ping animation-delay-1000"></div>
+    <div class="absolute bottom-20 left-20 w-2 h-2 login-dot login-dot-3 rounded-full animate-ping animation-delay-2000"></div>
     
     <!-- Theme Toggle Button - Bottom Right -->
     <div class="fixed bottom-6 right-6 z-50">
@@ -315,9 +315,23 @@ const loginWithGoogle = async () => {
   color: #1f2937 !important;
 }
 
-/* Estilos para tema oscuro en login */
+/* Tema claro: botón Iniciar sesión negro para que se vea */
+.theme-light .login-submit-btn {
+  background: #000 !important;
+  color: #fff !important;
+}
+.theme-light .login-submit-btn:hover:not(:disabled) {
+  background: #1a1a1a !important;
+  color: #fff !important;
+}
+.theme-light .login-submit-btn svg,
+.theme-light .login-submit-btn span {
+  color: #fff !important;
+}
+
+/* Tema oscuro en login: misma sensación que el claro, solo que oscuro (sin morado) */
 .dark-theme {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%) !important;
+  background: linear-gradient(to bottom right, #1e293b, #334155, #1e293b) !important;
 }
 
 .dark-theme .theme-login-card {

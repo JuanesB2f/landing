@@ -1,65 +1,65 @@
 <template>
   <div class="min-h-screen theme-container">
-    <div class="max-w-6xl mx-auto p-6">
-      <div class="flex items-center justify-between mb-6">
+    <div class="max-w-6xl mx-auto p-4 sm:p-6">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h1 class="text-3xl font-bold theme-text-primary">Mis Pedidos</h1>
-          <p class="text-theme-text-secondary mt-2">Historial completo de tus compras</p>
+          <h1 class="text-2xl sm:text-3xl font-bold theme-text-primary">Mis Pedidos</h1>
+          <p class="text-sm sm:text-base text-theme-text-secondary mt-1 sm:mt-2">Historial completo de tus compras</p>
         </div>
-        <div class="flex items-center gap-4">
-          <button @click="fetchMyOrders" :disabled="ordersLoading" class="inline-flex items-center px-4 py-2 theme-button hover:theme-button-hover transition-colors">
-            <Icon name="heroicons:arrow-path" class="w-4 h-4 mr-2" :class="{ 'animate-spin': ordersLoading }" />
+        <div class="flex flex-wrap items-center gap-2 sm:gap-4">
+          <button @click="fetchMyOrders" :disabled="ordersLoading" class="inline-flex items-center px-3 py-2 sm:px-4 theme-button hover:theme-button-hover transition-colors text-sm sm:text-base">
+            <Icon name="heroicons:arrow-path" class="w-4 h-4 mr-2 shrink-0" :class="{ 'animate-spin': ordersLoading }" />
             {{ ordersLoading ? 'Actualizando...' : 'Actualizar' }}
           </button>
-          <NuxtLink to="/shop/cart" class="inline-flex items-center px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors">
-            <Icon name="heroicons:shopping-cart" class="w-5 h-5 mr-2" /> Ir al carrito
+          <NuxtLink to="/shop/cart" class="inline-flex items-center px-3 py-2 sm:px-4 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors text-sm sm:text-base">
+            <Icon name="heroicons:shopping-cart" class="w-5 h-5 mr-2 shrink-0" /> Ir al carrito
           </NuxtLink>
         </div>
       </div>
 
       <!-- Estadísticas rápidas -->
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <div class="theme-card-bg rounded-lg p-4 border theme-card-border">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-              <Icon name="heroicons:clock" class="w-5 h-5 text-blue-600" />
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+        <div class="theme-card-bg rounded-lg p-3 sm:p-4 border theme-card-border">
+          <div class="flex items-center gap-2 sm:gap-3">
+            <div class="w-8 h-8 sm:w-10 sm:h-10 bg-blue-100 rounded-full flex items-center justify-center shrink-0">
+              <Icon name="heroicons:clock" class="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
             </div>
-            <div>
-              <div class="text-sm theme-text-secondary">Pendientes</div>
-              <div class="text-lg font-semibold theme-text-primary">{{ orderStats.pending }}</div>
-            </div>
-          </div>
-        </div>
-        <div class="theme-card-bg rounded-lg p-4 border theme-card-border">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-              <Icon name="heroicons:check-circle" class="w-5 h-5 text-green-600" />
-            </div>
-            <div>
-              <div class="text-sm theme-text-secondary">Entregados</div>
-              <div class="text-lg font-semibold theme-text-primary">{{ orderStats.delivered }}</div>
+            <div class="min-w-0">
+              <div class="text-xs sm:text-sm theme-text-secondary">Pendientes</div>
+              <div class="text-base sm:text-lg font-semibold theme-text-primary truncate">{{ orderStats.pending }}</div>
             </div>
           </div>
         </div>
-        <div class="theme-card-bg rounded-lg p-4 border theme-card-border">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-              <Icon name="heroicons:truck" class="w-5 h-5 text-purple-600" />
+        <div class="theme-card-bg rounded-lg p-3 sm:p-4 border theme-card-border">
+          <div class="flex items-center gap-2 sm:gap-3">
+            <div class="w-8 h-8 sm:w-10 sm:h-10 bg-green-100 rounded-full flex items-center justify-center shrink-0">
+              <Icon name="heroicons:check-circle" class="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
             </div>
-            <div>
-              <div class="text-sm theme-text-secondary">Enviados</div>
-              <div class="text-lg font-semibold theme-text-primary">{{ orderStats.shipped }}</div>
+            <div class="min-w-0">
+              <div class="text-xs sm:text-sm theme-text-secondary">Entregados</div>
+              <div class="text-base sm:text-lg font-semibold theme-text-primary truncate">{{ orderStats.delivered }}</div>
             </div>
           </div>
         </div>
-        <div class="theme-card-bg rounded-lg p-4 border theme-card-border">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center">
-              <Icon name="heroicons:currency-dollar" class="w-5 h-5 text-pink-600" />
+        <div class="theme-card-bg rounded-lg p-3 sm:p-4 border theme-card-border">
+          <div class="flex items-center gap-2 sm:gap-3">
+            <div class="w-8 h-8 sm:w-10 sm:h-10 bg-purple-100 rounded-full flex items-center justify-center shrink-0">
+              <Icon name="heroicons:truck" class="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
             </div>
-            <div>
-              <div class="text-sm theme-text-secondary">Total Gastado</div>
-              <div class="text-lg font-semibold theme-text-primary">{{ formatCOP(totalSpent) }}</div>
+            <div class="min-w-0">
+              <div class="text-xs sm:text-sm theme-text-secondary">Enviados</div>
+              <div class="text-base sm:text-lg font-semibold theme-text-primary truncate">{{ orderStats.shipped }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="theme-card-bg rounded-lg p-3 sm:p-4 border theme-card-border">
+          <div class="flex items-center gap-2 sm:gap-3">
+            <div class="w-8 h-8 sm:w-10 sm:h-10 bg-pink-100 rounded-full flex items-center justify-center shrink-0">
+              <Icon name="heroicons:currency-dollar" class="w-4 h-4 sm:w-5 sm:h-5 text-pink-600" />
+            </div>
+            <div class="min-w-0">
+              <div class="text-xs sm:text-sm theme-text-secondary">Total Gastado</div>
+              <div class="text-base sm:text-lg font-semibold theme-text-primary truncate">{{ formatCOP(totalSpent) }}</div>
             </div>
           </div>
         </div>
@@ -87,25 +87,25 @@
         </div>
         
         <div v-else class="divide-y theme-border">
-          <div v-for="order in orders" :key="order.id_order" class="p-6 hover:bg-gray-50 transition-colors">
-            <div class="flex items-start justify-between mb-4">
-              <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center">
-                  <Icon name="heroicons:receipt-percent" class="w-6 h-6 text-pink-600" />
+          <div v-for="order in orders" :key="order.id_order" class="p-4 sm:p-6 hover:bg-gray-50 transition-colors">
+            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
+              <div class="flex items-center gap-3 sm:gap-4">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-pink-100 rounded-full flex items-center justify-center shrink-0">
+                  <Icon name="heroicons:receipt-percent" class="w-5 h-5 sm:w-6 sm:h-6 text-pink-600" />
                 </div>
-                <div>
-                  <h3 class="text-lg font-semibold theme-text-primary">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-semibold theme-text-primary truncate">
                     Pedido #{{ (order.id_order || '').slice(0,8) }}
                   </h3>
-                  <p class="text-sm theme-text-secondary">{{ formatDate(order.created_at) }}</p>
+                  <p class="text-xs sm:text-sm theme-text-secondary">{{ formatDate(order.created_at) }}</p>
                 </div>
               </div>
-              <div class="flex items-center gap-3">
-                <span :class="getStatusClass(order.status)" class="px-3 py-1 text-sm font-medium rounded-full">
+              <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+                <span :class="getStatusClass(order.status)" class="px-2.5 py-1 text-xs sm:text-sm font-medium rounded-full shrink-0">
                   {{ getStatusText(order.status) }}
                 </span>
-                <div class="text-right">
-                  <div class="text-lg font-bold theme-text-primary">{{ formatCOP(order.total_amount || 0) }}</div>
+                <div class="text-left sm:text-right w-full sm:w-auto">
+                  <div class="text-base sm:text-lg font-bold theme-text-primary">{{ formatCOP(order.total_amount || 0) }}</div>
                   <div class="text-xs theme-text-secondary">{{ order.order_items?.length || 0 }} producto(s)</div>
                 </div>
               </div>
@@ -130,18 +130,18 @@
             </div>
             
             <!-- Acciones del pedido -->
-            <div class="flex items-center justify-between pt-4 border-t theme-border">
-              <div class="flex items-center gap-4">
-                <NuxtLink :to="`/orders/${order.id_order}`" class="inline-flex items-center px-3 py-2 text-sm theme-button hover:theme-button-hover transition-colors">
-                  <Icon name="heroicons:eye" class="w-4 h-4 mr-1" />
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-4 border-t theme-border">
+              <div class="flex flex-wrap items-center gap-2">
+                <NuxtLink :to="`/orders/${order.id_order}`" class="inline-flex items-center px-3 py-2 text-xs sm:text-sm theme-button hover:theme-button-hover transition-colors">
+                  <Icon name="heroicons:eye" class="w-4 h-4 mr-1 shrink-0" />
                   Ver Detalles
                 </NuxtLink>
-                <button v-if="order.status === 'pending'" @click="cancelOrder(order.id_order)" class="inline-flex items-center px-3 py-2 text-sm text-red-600 hover:text-red-700 transition-colors">
-                  <Icon name="heroicons:x-circle" class="w-4 h-4 mr-1" />
+                <button v-if="order.status === 'pending'" @click="cancelOrder(order.id_order)" class="inline-flex items-center px-3 py-2 text-xs sm:text-sm text-red-600 hover:text-red-700 transition-colors">
+                  <Icon name="heroicons:x-circle" class="w-4 h-4 mr-1 shrink-0" />
                   Cancelar
                 </button>
               </div>
-              <div class="text-sm theme-text-secondary">
+              <div class="text-xs sm:text-sm theme-text-secondary">
                 <div v-if="order.status === 'pending'">
                   <Icon name="heroicons:clock" class="w-4 h-4 inline mr-1" />
                   Pendiente de pago

@@ -55,55 +55,43 @@
     </div>
 
     <!-- Tabla de proveedores -->
-    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+    <div class="rounded-lg overflow-hidden border border-gray-200 dark:border-[var(--border-color)]">
       <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
+        <table class="min-w-full admin-table">
+          <thead>
             <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Proveedor
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Contacto
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Dirección
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Estado
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Productos
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Acciones
-              </th>
+              <th>Proveedor</th>
+              <th>Contacto</th>
+              <th>Dirección</th>
+              <th>Estado</th>
+              <th>Productos</th>
+              <th>Acciones</th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
-            <tr v-for="provider in filteredProviders.slice(startIndex, endIndex)" :key="provider.id_provider" class="hover:bg-gray-50">
-              <td class="px-6 py-4 whitespace-nowrap">
+          <tbody>
+            <tr v-for="provider in filteredProviders.slice(startIndex, endIndex)" :key="provider.id_provider">
+              <td class="whitespace-nowrap">
                 <div class="flex items-center">
                   <div class="flex-shrink-0 h-10 w-10">
-                    <div class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
-                      <Icon name="heroicons:truck" class="w-5 h-5 text-green-600" />
+                    <div class="h-10 w-10 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                      <Icon name="heroicons:truck" class="w-5 h-5 text-green-600 dark:text-green-300" />
                     </div>
                   </div>
                   <div class="ml-4">
-                    <div class="text-sm font-medium text-gray-900">{{ provider.name }}</div>
-                    <div class="text-sm text-gray-500">{{ provider.email }}</div>
+                    <div class="text-sm font-medium theme-text-primary">{{ provider.name }}</div>
+                    <div class="text-sm theme-text-muted">{{ provider.email }}</div>
                   </div>
                 </div>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-gray-900">{{ provider.contact_person || 'N/A' }}</div>
-                <div class="text-sm text-gray-500">{{ provider.phone || 'N/A' }}</div>
+              <td class="whitespace-nowrap">
+                <div class="text-sm theme-text-primary">{{ provider.contact_person || 'N/A' }}</div>
+                <div class="text-sm theme-text-muted">{{ provider.phone || 'N/A' }}</div>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-gray-900">{{ provider.address || 'N/A' }}</div>
-                <div class="text-sm text-gray-500">{{ provider.city || 'N/A' }}</div>
+              <td class="whitespace-nowrap">
+                <div class="text-sm theme-text-primary">{{ provider.address || 'N/A' }}</div>
+                <div class="text-sm theme-text-muted">{{ provider.city || 'N/A' }}</div>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
+              <td class="whitespace-nowrap">
                 <span
                   :class="[
                     'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
@@ -113,10 +101,10 @@
                   {{ provider.is_active ? 'Activo' : 'Inactivo' }}
                 </span>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td class="whitespace-nowrap text-sm theme-text-muted">
                 {{ provider.product_count || 0 }} productos
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+              <td class="whitespace-nowrap text-sm font-medium">
                 <div class="flex space-x-2">
                   <button
                     @click="openModal(provider)"

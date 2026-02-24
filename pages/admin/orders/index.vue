@@ -1,105 +1,104 @@
 <template>
   <div>
     <!-- Header con botones de acción -->
-    <div class="flex justify-between items-center mb-6">
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4 sm:mb-6">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900">Gestión de Pedidos</h1>
-        <p class="text-gray-600">Administra todos los pedidos de tu tienda</p>
+        <h1 class="text-xl sm:text-2xl font-bold theme-text-primary">Gestión de Pedidos</h1>
+        <p class="text-sm sm:text-base theme-text-secondary mt-0.5">Administra todos los pedidos de tu tienda</p>
       </div>
-      <div class="flex space-x-3">
+      <div class="flex flex-wrap gap-2 sm:space-x-3">
         <button
           @click="openOrderModal()"
-          class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors"
+          class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 sm:px-4 rounded-lg flex items-center justify-center space-x-2 transition-colors text-sm sm:text-base flex-1 sm:flex-none min-w-0"
         >
-          <Icon name="heroicons:plus-circle" class="w-5 h-5" />
+          <Icon name="heroicons:plus-circle" class="w-5 h-5 shrink-0" />
           <span>Nuevo Pedido</span>
         </button>
         <button
           @click="exportOrders"
-          class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors"
+          class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 sm:px-4 rounded-lg flex items-center justify-center space-x-2 transition-colors text-sm sm:text-base flex-1 sm:flex-none min-w-0"
         >
-          <Icon name="heroicons:arrow-down-tray" class="w-5 h-5" />
+          <Icon name="heroicons:arrow-down-tray" class="w-5 h-5 shrink-0" />
           <span>Exportar</span>
         </button>
       </div>
     </div>
 
-    
     <!-- Resumen de pedidos -->
-    <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-6">
-      <div class="bg-white p-6 rounded-lg shadow-sm">
-        <div class="flex items-center">
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-6 mb-4 sm:mb-6">
+      <div class="theme-card-bg p-3 sm:p-6 rounded-lg shadow-sm border theme-border">
+        <div class="flex items-center gap-2 sm:gap-4">
           <div class="flex-shrink-0">
-            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-              <Icon name="heroicons:shopping-bag" class="w-5 h-5 text-blue-600" />
+            <div class="w-7 h-7 sm:w-8 sm:h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+              <Icon name="heroicons:shopping-bag" class="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
             </div>
           </div>
-          <div class="ml-4">
-            <p class="text-sm font-medium text-gray-500">Total Pedidos</p>
-            <p class="text-2xl font-bold text-gray-900">{{ ordersSummary.total }}</p>
+          <div class="min-w-0">
+            <p class="text-xs sm:text-sm font-medium theme-text-muted">Total</p>
+            <p class="text-lg sm:text-2xl font-bold theme-text-primary truncate">{{ ordersSummary.total }}</p>
           </div>
         </div>
       </div>
 
-      <div class="bg-white p-6 rounded-lg shadow-sm">
-        <div class="flex items-center">
+      <div class="theme-card-bg p-3 sm:p-6 rounded-lg shadow-sm border theme-border">
+        <div class="flex items-center gap-2 sm:gap-4">
           <div class="flex-shrink-0">
-            <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
-              <Icon name="heroicons:clock" class="w-5 h-5 text-yellow-600" />
+            <div class="w-7 h-7 sm:w-8 sm:h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+              <Icon name="heroicons:clock" class="w-4 h-4 sm:w-5 sm:h-5 text-yellow-600" />
             </div>
           </div>
-          <div class="ml-4">
-            <p class="text-sm font-medium text-gray-500">Pendientes</p>
-            <p class="text-2xl font-bold text-gray-900">{{ ordersSummary.pending }}</p>
+          <div class="min-w-0">
+            <p class="text-xs sm:text-sm font-medium theme-text-muted">Pendientes</p>
+            <p class="text-lg sm:text-2xl font-bold theme-text-primary truncate">{{ ordersSummary.pending }}</p>
           </div>
         </div>
       </div>
 
-      <div class="bg-white p-6 rounded-lg shadow-sm">
-        <div class="flex items-center">
+      <div class="theme-card-bg p-3 sm:p-6 rounded-lg shadow-sm border theme-border">
+        <div class="flex items-center gap-2 sm:gap-4">
           <div class="flex-shrink-0">
-            <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-              <Icon name="heroicons:check-circle" class="w-5 h-5 text-green-600" />
+            <div class="w-7 h-7 sm:w-8 sm:h-8 bg-green-100 rounded-lg flex items-center justify-center">
+              <Icon name="heroicons:check-circle" class="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
             </div>
           </div>
-          <div class="ml-4">
-            <p class="text-sm font-medium text-gray-500">Entregados</p>
-            <p class="text-2xl font-bold text-gray-900">{{ ordersSummary.delivered }}</p>
+          <div class="min-w-0">
+            <p class="text-xs sm:text-sm font-medium theme-text-muted">Entregados</p>
+            <p class="text-lg sm:text-2xl font-bold theme-text-primary truncate">{{ ordersSummary.delivered }}</p>
           </div>
         </div>
       </div>
 
-      <div class="bg-white p-6 rounded-lg shadow-sm">
-        <div class="flex items-center">
+      <div class="theme-card-bg p-3 sm:p-6 rounded-lg shadow-sm border theme-border">
+        <div class="flex items-center gap-2 sm:gap-4">
           <div class="flex-shrink-0">
-            <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
-              <Icon name="heroicons:x-circle" class="w-5 h-5 text-red-600" />
+            <div class="w-7 h-7 sm:w-8 sm:h-8 bg-red-100 rounded-lg flex items-center justify-center">
+              <Icon name="heroicons:x-circle" class="w-4 h-4 sm:w-5 sm:h-5 text-red-600" />
             </div>
           </div>
-          <div class="ml-4">
-            <p class="text-sm font-medium text-gray-500">Cancelados</p>
-            <p class="text-2xl font-bold text-gray-900">{{ ordersSummary.cancelled }}</p>
+          <div class="min-w-0">
+            <p class="text-xs sm:text-sm font-medium theme-text-muted">Cancelados</p>
+            <p class="text-lg sm:text-2xl font-bold theme-text-primary truncate">{{ ordersSummary.cancelled }}</p>
           </div>
         </div>
       </div>
-      <div class="bg-white p-6 rounded-lg shadow-sm">
-        <div class="flex items-center">
+      <div class="theme-card-bg p-3 sm:p-6 rounded-lg shadow-sm border theme-border col-span-2 sm:col-span-1">
+        <div class="flex items-center gap-2 sm:gap-4">
           <div class="flex-shrink-0">
-            <div class="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
-              <Icon name="heroicons:banknotes" class="w-5 h-5 text-emerald-600" />
+            <div class="w-7 h-7 sm:w-8 sm:h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+              <Icon name="heroicons:banknotes" class="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600" />
             </div>
           </div>
-          <div class="ml-4">
-            <p class="text-sm font-medium text-gray-500">Pagados</p>
-            <p class="text-2xl font-bold text-gray-900">{{ ordersSummary.paid }}</p>
+          <div class="min-w-0">
+            <p class="text-xs sm:text-sm font-medium theme-text-muted">Pagados</p>
+            <p class="text-lg sm:text-2xl font-bold theme-text-primary truncate">{{ ordersSummary.paid }}</p>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Filtros y búsqueda -->
-    <div class="bg-white p-4 rounded-lg shadow-sm mb-6">
-      <div class="grid grid-cols-1 md:grid-cols-6 gap-4">
+    <div class="theme-card-bg p-3 sm:p-4 rounded-lg shadow-sm mb-4 sm:mb-6 border theme-border">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 sm:gap-4">
         <!-- Búsqueda -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Buscar</label>
@@ -180,61 +179,45 @@
     </div>
 
     <!-- Tabla de pedidos (combinada con reservas) -->
-    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+    <div class="rounded-lg overflow-hidden border border-gray-200 dark:border-[var(--border-color)]">
       <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
+        <table class="min-w-full admin-table">
+          <thead>
             <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Pedido
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Cliente
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Total
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Estado
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Pago
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Origen
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Fecha
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Acciones
-              </th>
+              <th>Pedido</th>
+              <th>Cliente</th>
+              <th>Total</th>
+              <th>Estado</th>
+              <th>Pago</th>
+              <th>Origen</th>
+              <th>Fecha</th>
+              <th>Acciones</th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
-            <tr v-for="row in filteredOrders" :key="row.id_order" class="hover:bg-gray-50">
-              <td class="px-6 py-4 whitespace-nowrap">
+          <tbody>
+            <tr v-for="row in filteredOrders" :key="row.id_order">
+              <td class="whitespace-nowrap">
                 <div class="flex items-center">
                   <div class="flex-shrink-0 h-10 w-10">
-                    <div class="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                      <Icon name="heroicons:shopping-bag" class="w-5 h-5 text-blue-600" />
+                    <div class="h-10 w-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                      <Icon name="heroicons:shopping-bag" class="w-5 h-5 text-blue-600 dark:text-blue-300" />
                     </div>
                   </div>
                   <div class="ml-4">
-                    <div class="text-sm font-medium text-gray-900">#{{ String(row.id_order || '').slice(0, 8) }}</div>
-                    <div class="text-sm text-gray-500">{{ row.tracking_number || (row._isReservation ? 'Reserva' : 'Sin tracking') }}</div>
+                    <div class="text-sm font-medium theme-text-primary">#{{ String(row.id_order || '').slice(0, 8) }}</div>
+                    <div class="text-sm theme-text-muted">{{ row.tracking_number || (row._isReservation ? 'Reserva' : 'Sin tracking') }}</div>
                   </div>
                 </div>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm font-medium text-gray-900">{{ row.customer?.first_name }} {{ row.customer?.last_name }}</div>
-                <div class="text-sm text-gray-500">{{ row.customer?.email }}</div>
+              <td class="whitespace-nowrap">
+                <div class="text-sm font-medium theme-text-primary">{{ row.customer?.first_name }} {{ row.customer?.last_name }}</div>
+                <div class="text-sm theme-text-muted">{{ row.customer?.email }}</div>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm font-medium text-gray-900">{{ formatCOP(row.total_amount) }}</div>
-                <div class="text-sm text-gray-500">{{ row.order_items?.length || 0 }} productos</div>
+              <td class="whitespace-nowrap">
+                <div class="text-sm font-medium theme-text-primary">{{ formatCOP(row.total_amount) }}</div>
+                <div class="text-sm theme-text-muted">{{ row.order_items?.length || 0 }} productos</div>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
+              <td class="whitespace-nowrap">
                 <div class="flex items-center gap-2">
                   <span
                     :class="[
@@ -248,7 +231,7 @@
                   <span v-if="row.status==='pending' && row.payment_status==='paid' && !row._isReservation" class="text-xs text-emerald-700">(pagado)</span>
                 </div>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
+              <td class="whitespace-nowrap">
                 <span
                   :class="[
                     'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
@@ -258,13 +241,13 @@
                   {{ getPaymentStatusText(row.payment_status) }}
                 </span>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td class="whitespace-nowrap text-sm theme-text-muted">
                 <span class="uppercase">{{ row._isReservation ? 'RESERVA' : (row.order_source || '') }}</span>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td class="whitespace-nowrap text-sm theme-text-muted">
                 {{ formatDate(row.created_at) }}
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+              <td class="whitespace-nowrap text-sm font-medium">
                 <div class="flex flex-wrap gap-2">
                   <!-- Aprobar -->
                   <button

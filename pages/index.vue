@@ -1,105 +1,104 @@
 <template>
-  <div class="min-h-screen bg-white overflow-hidden">
-    <!-- Hero Section -->
-    <section class="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-      <!-- Animated Background -->
+  <div class="min-h-screen theme-login-bg">
+    <!-- Hero Section (mismo fondo que login: gradiente + blobs) -->
+    <section class="relative min-h-[70vh] sm:min-h-[80vh] lg:min-h-[90vh] flex items-center justify-center overflow-hidden px-4">
+      <!-- Animated Background (igual que en login) -->
       <div class="absolute inset-0 overflow-hidden">
-        <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-pink-400/20 via-purple-400/20 to-pink-400/20 rounded-full blur-3xl animate-blob"></div>
-        <div class="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-purple-400/20 via-pink-400/20 to-purple-400/20 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
-        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-r from-pink-300/10 to-purple-300/10 rounded-full blur-3xl animate-blob animation-delay-4000"></div>
+        <div class="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
+        <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div class="absolute top-40 left-40 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
       </div>
 
-      <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
+      <div class="relative z-10 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20 text-center">
         <!-- Badge -->
-        <div class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-pink-100 to-purple-100 rounded-full mb-8 animate-fade-in-up">
-          <Icon name="heroicons:sparkles" class="w-5 h-5 text-pink-600" />
-          <span class="text-sm font-semibold text-pink-600">Nueva Colección 2024</span>
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-accent-soft dark:bg-gradient-to-r dark:from-accent/30 dark:to-accent-secondary/30 rounded-full mb-4 sm:mb-8 animate-fade-in-up">
+          <Icon name="heroicons:sparkles" class="w-4 h-4 sm:w-5 sm:h-5 text-accent" />
+          <span class="text-xs sm:text-sm font-semibold text-accent">Nueva Colección 2024</span>
         </div>
 
         <!-- Main Heading -->
-        <h1 class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight animate-fade-in-up animation-delay-200">
-          <span class="block text-gray-900 mb-2">Bienvenida a</span>
-          <span class="block bg-gradient-to-r from-pink-600 via-purple-600 to-pink-600 bg-clip-text text-transparent bg-300% animate-gradient">
+        <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold mb-4 sm:mb-6 leading-tight animate-fade-in-up animation-delay-200">
+          <span class="block text-gray-900 dark:text-gray-100 mb-1 sm:mb-2">Bienvenida a</span>
+          <span class="hero-byloto-text block bg-gradient-to-r from-accent via-accent-secondary to-accent bg-clip-text text-transparent bg-300% animate-gradient dark:bg-none dark:bg-transparent dark:bg-clip-border dark:text-[#F4E1E0]">
             BylotoStore
           </span>
         </h1>
 
         <!-- Subheading -->
-        <p class="text-xl sm:text-2xl md:text-3xl text-gray-600 max-w-3xl mx-auto mb-12 font-light leading-relaxed animate-fade-in-up animation-delay-400">
-          Descubre la elegancia y el estilo en cada detalle.<br />
-          Tu destino exclusivo de <span class="font-semibold text-pink-600">moda y belleza</span>.
+        <p class="text-base sm:text-xl md:text-2xl lg:text-3xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8 sm:mb-12 font-light leading-relaxed animate-fade-in-up animation-delay-400 px-1">
+          Descubre la elegancia y el estilo en cada detalle.<br class="hidden sm:block" />
+          <span class="sm:inline block">Tu destino exclusivo de <span class="font-semibold text-accent">moda y belleza</span>.</span>
         </p>
 
         <!-- CTA Buttons -->
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 animate-fade-in-up animation-delay-600">
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-10 sm:mb-16 animate-fade-in-up animation-delay-600 w-full max-w-md sm:max-w-none mx-auto">
           <NuxtLink
             to="/shop"
-            class="group relative px-8 py-4 bg-gradient-to-r from-pink-600 to-purple-600 text-white rounded-full font-semibold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 overflow-hidden"
+            class="hero-cta-primary group relative px-8 py-4 bg-black dark:bg-black text-white rounded-full font-semibold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 overflow-hidden hover:bg-gray-800 dark:hover:bg-gray-800"
           >
             <span class="relative z-10 flex items-center gap-2">
               Explorar Colección
               <Icon name="heroicons:arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </span>
-            <div class="absolute inset-0 bg-gradient-to-r from-pink-700 to-purple-700 opacity-0 group-hover:opacity-100 transition-opacity"></div>
           </NuxtLink>
           <NuxtLink
             to="/shop?sort=price_asc"
-            class="px-8 py-4 bg-white text-gray-900 rounded-full font-semibold text-lg border-2 border-gray-200 hover:border-pink-300 hover:bg-pink-50 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+            class="px-8 py-4 bg-white dark:bg-bg-card rounded-full font-semibold text-lg border-2 border-gray-300 dark:border-border-color hover:border-accent dark:hover:border-accent hover:bg-accent-soft dark:hover:bg-bg-hover transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl text-[#0E1627] dark:text-gray-100"
           >
             Ver Ofertas
           </NuxtLink>
         </div>
 
         <!-- Trust Indicators -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto animate-fade-in-up animation-delay-800">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8 max-w-4xl mx-auto animate-fade-in-up animation-delay-800">
           <div class="text-center">
-            <div class="text-3xl font-bold text-pink-600 mb-1">100%</div>
-            <div class="text-sm text-gray-600">Productos Originales</div>
+            <div class="text-2xl sm:text-3xl font-bold text-accent mb-0.5 sm:mb-1">100%</div>
+            <div class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Productos Originales</div>
           </div>
           <div class="text-center">
-            <div class="text-3xl font-bold text-pink-600 mb-1">24/7</div>
-            <div class="text-sm text-gray-600">Atención al Cliente</div>
+            <div class="text-2xl sm:text-3xl font-bold text-accent mb-0.5 sm:mb-1">24/7</div>
+            <div class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Atención al Cliente</div>
           </div>
           <div class="text-center">
-            <div class="text-3xl font-bold text-pink-600 mb-1">✓</div>
-            <div class="text-sm text-gray-600">Envío Gratis</div>
+            <div class="text-2xl sm:text-3xl font-bold text-accent mb-0.5 sm:mb-1">✓</div>
+            <div class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Envío Gratis</div>
           </div>
           <div class="text-center">
-            <div class="text-3xl font-bold text-pink-600 mb-1">★</div>
-            <div class="text-sm text-gray-600">Calidad Premium</div>
+            <div class="text-2xl sm:text-3xl font-bold text-accent mb-0.5 sm:mb-1">★</div>
+            <div class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Calidad Premium</div>
           </div>
         </div>
       </div>
 
       <!-- Scroll Indicator -->
-      <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-        <Icon name="heroicons:chevron-down" class="w-6 h-6 text-gray-400" />
+      <div class="absolute bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce hidden sm:block">
+        <Icon name="heroicons:chevron-down" class="w-6 h-6 text-gray-400 dark:text-gray-500" />
       </div>
     </section>
 
     <!-- Features Section -->
-    <section class="py-20 bg-gradient-to-b from-white to-gray-50">
+    <section class="features-section py-12 sm:py-16 lg:py-20 bg-gradient-to-b from-white to-gray-50">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-16">
-          <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            ¿Por qué elegir <span class="text-pink-600">BylotoStore</span>?
+        <div class="text-center mb-10 sm:mb-16">
+          <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4 px-2">
+            ¿Por qué elegir <span class="text-accent">BylotoStore</span>?
           </h2>
-          <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p class="text-base sm:text-lg md:text-xl text-gray-700 dark:text-gray-300 max-w-2xl mx-auto px-2">
             Ofrecemos una experiencia de compra única con los mejores productos y servicios
           </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
           <div
             v-for="(feature, index) in features"
             :key="index"
-            class="group p-8 bg-white rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 border border-gray-100"
+            class="group p-5 sm:p-6 lg:p-8 bg-white dark:bg-bg-card rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 border border-gray-100 dark:border-border-color"
           >
-            <div class="w-16 h-16 bg-gradient-to-br from-pink-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-              <Icon :name="feature.icon" class="w-8 h-8 text-white" />
+            <div class="feature-icon-box w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-2xl flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform shadow-md">
+              <Icon :name="feature.icon" class="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-white" />
             </div>
-            <h3 class="text-xl font-bold text-gray-900 mb-3">{{ feature.title }}</h3>
-            <p class="text-gray-600 leading-relaxed">{{ feature.description }}</p>
+            <h3 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 mb-2 sm:mb-3">{{ feature.title }}</h3>
+            <p class="text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed">{{ feature.description }}</p>
           </div>
         </div>
       </div>
@@ -107,37 +106,37 @@
 
 
     <!-- Special Offers Section -->
-    <section data-section="offers" v-if="activeOffers.length > 0" class="py-20 bg-gradient-to-br from-pink-50 via-purple-50 to-pink-50">
+    <section data-section="offers" v-if="activeOffers.length > 0" class="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-accent-soft/50 via-white to-accent-secondary/30 dark:from-bg-secondary dark:via-bg-primary dark:to-bg-secondary">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-16">
-          <div class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-pink-600 to-purple-600 text-white rounded-full mb-4">
-            <Icon name="heroicons:sparkles" class="w-5 h-5" />
-            <span class="font-semibold">Ofertas Especiales</span>
+        <div class="text-center mb-10 sm:mb-16">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-gradient-to-r from-accent to-accent-secondary text-white rounded-full mb-3 sm:mb-4">
+            <Icon name="heroicons:sparkles" class="w-4 h-4 sm:w-5 sm:h-5" />
+            <span class="text-sm sm:text-base font-semibold">Ofertas Especiales</span>
           </div>
-          <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Aprovecha Nuestras <span class="text-pink-600">Promociones</span>
+          <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4 px-2">
+            Aprovecha Nuestras <span class="text-accent">Promociones</span>
           </h2>
-          <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p class="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto px-2">
             Descuentos exclusivos en productos seleccionados
           </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           <div
             v-for="offer in activeOffers.slice(0, 3)"
             :key="offer.id_offer"
-            class="group relative bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 border-2 border-pink-200"
+            class="group relative bg-white dark:bg-bg-card rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 border-2 border-accent/30 dark:border-border-color"
           >
             <!-- Discount Badge -->
             <div class="absolute top-4 right-4 z-10">
-              <div class="bg-gradient-to-r from-pink-600 to-purple-600 text-white px-4 py-2 rounded-full font-bold text-lg shadow-lg">
+              <div class="bg-gradient-to-r from-accent to-accent-secondary text-white px-4 py-2 rounded-full font-bold text-lg shadow-lg">
                 -{{ offer.discount_percent }}%
               </div>
             </div>
 
-            <div class="p-6">
-              <div v-if="offer.product" class="mb-4">
-                <div class="h-48 bg-gradient-to-br from-pink-100 to-purple-100 rounded-xl overflow-hidden mb-4">
+            <div class="p-4 sm:p-6">
+              <div v-if="offer.product" class="mb-3 sm:mb-4">
+                <div class="h-40 sm:h-48 bg-gradient-to-br from-accent-soft to-accent-secondary/20 dark:from-accent/20 dark:to-accent-secondary/20 rounded-xl overflow-hidden mb-3 sm:mb-4">
                   <img
                     v-if="offer.product.image_url"
                     :src="offer.product.image_url"
@@ -147,21 +146,21 @@
                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                   <div v-else class="w-full h-full flex items-center justify-center">
-                    <Icon name="heroicons:photo" class="w-16 h-16 text-pink-300" />
+                    <Icon name="heroicons:photo" class="w-16 h-16 text-accent" />
                   </div>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-2">{{ offer.product.name }}</h3>
-                <div class="flex items-center gap-3 mb-4">
-                  <span class="text-2xl font-bold text-pink-600">
+                <h3 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 mb-1 sm:mb-2 line-clamp-2">{{ offer.product.name }}</h3>
+                <div class="flex flex-wrap items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                  <span class="text-xl sm:text-2xl font-bold text-accent">
                     {{ formatCOP(calculateDiscountedPrice(offer.product.price, offer.discount_percent)) }}
                   </span>
-                  <span class="text-lg text-gray-400 line-through">
+                  <span class="text-lg text-gray-400 dark:text-gray-500 line-through">
                     {{ formatCOP(offer.product.price) }}
                   </span>
                 </div>
                 <NuxtLink
                   to="/shop"
-                  class="block w-full text-center px-6 py-3 bg-gradient-to-r from-pink-600 to-purple-600 text-white rounded-xl font-semibold hover:from-pink-700 hover:to-purple-700 transition-all duration-300"
+                  class="block w-full text-center px-6 py-3 bg-gradient-to-r from-accent to-accent-secondary text-white rounded-xl font-semibold hover:from-accent-hover hover:to-accent-secondary transition-all duration-300"
                 >
                   Ver Oferta
                 </NuxtLink>
@@ -174,19 +173,19 @@
 
 
     <!-- CTA Section -->
-    <section class="py-20 bg-gradient-to-r from-pink-600 via-purple-600 to-pink-600 relative overflow-hidden">
+    <section class="py-12 sm:py-16 lg:py-20 bg-gradient-to-r from-accent via-accent-secondary to-accent relative overflow-hidden">
       <div class="absolute inset-0 bg-black/10"></div>
       <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">
+        <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6 px-1">
           ¿Lista para comenzar tu experiencia de compra?
         </h2>
-        <p class="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
+        <p class="text-base sm:text-lg md:text-xl text-black mb-6 sm:mb-8 max-w-2xl mx-auto px-1">
           Únete a miles de clientas que ya confían en BylotoStore para sus compras de moda y belleza
         </p>
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
           <NuxtLink
             to="/shop"
-            class="px-8 py-4 bg-white text-pink-600 rounded-full font-semibold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+            class="px-8 py-4 bg-white text-accent rounded-full font-semibold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
           >
             Explorar Tienda
           </NuxtLink>
@@ -201,13 +200,13 @@
     </section>
 
     <!-- Inspirational Quote -->
-    <section class="py-16 bg-gray-50">
+    <section class="py-10 sm:py-14 lg:py-16 bg-gray-50 dark:bg-bg-secondary">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <Icon name="lucide:quote" class="w-12 h-12 text-pink-400 mx-auto mb-6" />
-        <blockquote class="text-2xl md:text-3xl font-serif italic text-gray-700 leading-relaxed mb-4">
+        <Icon name="lucide:quote" class="w-10 h-10 sm:w-12 sm:h-12 text-accent mx-auto mb-4 sm:mb-6" />
+        <blockquote class="text-lg sm:text-xl md:text-2xl lg:text-3xl font-serif italic text-gray-700 dark:text-gray-300 leading-relaxed mb-3 sm:mb-4 px-2">
           "La belleza comienza en el momento en que decides ser tú misma."
         </blockquote>
-        <cite class="block text-lg text-pink-600 font-medium not-italic">
+        <cite class="block text-base sm:text-lg text-accent font-medium not-italic">
           — Coco Chanel
         </cite>
       </div>
@@ -414,5 +413,12 @@ onMounted(() => {
   will-change: transform, opacity;
   transform: translateZ(0);
   backface-visibility: hidden;
+}
+
+/* Tema oscuro: fondo de la sección "¿Por qué elegir BylotoStore?" */
+:global(.dark) .features-section,
+:global(.theme-dark) .features-section {
+  background: var(--bg-primary) !important;
+  background-image: none !important;
 }
 </style>

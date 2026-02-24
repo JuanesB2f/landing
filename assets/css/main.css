@@ -15,25 +15,27 @@
 }
 
 :root, .theme-light {
-  /* Base UI tokens */
-  --ui-bg: var(--color-custom-50);
-  --ui-text: var(--color-custom-500);
+  /* Base UI — paleta: Blush, Pink, Mauve, Navy (sin Prune/fucsia fuerte) */
+  --ui-bg: #F4E1E0;
+  --ui-text: #0E1627;
 
-  /* Design tokens para todo el sistema (Light) */
+  /* Tema claro: Blush #F4E1E0 + Navy para texto — comodidad visual */
   --bg-primary: #ffffff;
-  --bg-secondary: #f9fafb; /* slate-50 */
+  --bg-secondary: #F4E1E0; /* Blush (clarito) */
   --bg-card: #ffffff;
-  --bg-hover: #f3f4f6; /* slate-100 */
+  --bg-hover: #E5C5C1; /* Pink suave */
 
-  --text-primary: #111827; /* slate-900 */
-  --text-secondary: #374151; /* slate-700 */
-  --text-muted: #6b7280; /* slate-500 */
+  --text-primary: #0E1627; /* Navy (legible, no negro duro) */
+  --text-secondary: #4a5568;
+  --text-muted: #6b7280;
 
-  --border-color: #e5e7eb; /* slate-200 */
+  --border-color: #E5C5C1; /* Pink muy suave */
 
-  /* Marca (coincide con home: rosa/violeta) */
-  --accent: #ec4899; /* pink-500 */
-  --accent-hover: #db2777; /* pink-600 */
+  /* Acento: Mauve #BD8E89 — sin morado/fucsia (no Prune) */
+  --accent: #BD8E89;
+  --accent-hover: #ab7d78; /* Mauve un poco más profundo */
+  --accent-soft: #F4E1E0; /* Blush */
+  --accent-secondary: #E5C5C1; /* Pink para gradientes */
 
   font-family: Arial, Helvetica, sans-serif !important;
 }
@@ -43,24 +45,27 @@ body, html, * {
 }
 
 .dark, .theme-dark {
-  --ui-bg: var(--color-custom-500);
-  --ui-text: var(--color-custom-50);
-  --ui-primary: var(--color-custom-50);
+  --ui-bg: #1e293b;
+  --ui-text: #f1f5f9;
+  --ui-primary: #BD8E89;
 
-  /* Design tokens (Dark) */
-  --bg-primary: #0f172a; /* slate-900 */
-  --bg-secondary: #111827; /* slate-800 */
-  --bg-card: #0b1220; /* custom dark card */
-  --bg-hover: #1f2937; /* slate-700 */
+  /* Tema oscuro suave: slate (menos duro, más elegante) */
+  --bg-primary: #1e293b;   /* slate-800, no negro puro */
+  --bg-secondary: #334155; /* slate-700 */
+  --bg-card: #475569;      /* slate-600, tarjetas elevadas */
+  --bg-hover: #64748b;     /* slate-500, hover suave */
 
-  --text-primary: #f9fafb; /* slate-50 */
-  --text-secondary: #e5e7eb; /* slate-200 */
-  --text-muted: #9ca3af; /* slate-400 */
+  --text-primary: #f8fafc;   /* casi blanco, sin fatiga */
+  --text-secondary: #e2e8f0; /* slate-200 */
+  --text-muted: #cbd5e1;     /* slate-300 */
 
-  --border-color: #1f2937; /* slate-700 */
+  --border-color: #475569;   /* bordes visibles pero suaves */
 
-  --accent: #8b5cf6; /* violet-500 */
-  --accent-hover: #7c3aed; /* violet-600 */
+  /* Acento: Mauve y Pink */
+  --accent: #BD8E89;
+  --accent-hover: #E5C5C1;
+  --accent-soft: #334155;
+  --accent-secondary: #E5C5C1;
 }
 
 /* Estilos de utilidades para layouts Admin usando las variables */
@@ -73,6 +78,88 @@ body, html, * {
   background-color: var(--bg-secondary);
   color: var(--text-primary);
   border-color: var(--border-color);
+}
+
+/* Admin: header de título de sección sin color de fondo */
+.admin-page-header {
+  background-color: transparent;
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+.dark .admin-page-header,
+.theme-dark .admin-page-header {
+  background-color: transparent;
+  border-color: var(--border-color);
+}
+
+/* Tema claro: icono del carrito en header visible (fondo oscuro) */
+.theme-light .header-cart-icon-wrap {
+  background: #0E1627 !important;
+}
+.theme-light .header-cart-icon-wrap:hover {
+  background: #1a2742 !important;
+}
+.theme-light .header-cart-count {
+  background: #0E1627 !important;
+}
+
+/* Tablas admin: estilo sencillo tipo Word/Excel (grid simple, sin tantas divisiones) */
+.admin-table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 100%;
+  font-size: 0.875rem;
+}
+.admin-table th,
+.admin-table td {
+  border: 1px solid var(--border-color);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  vertical-align: middle;
+}
+.admin-table thead th {
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-muted);
+  background-color: transparent;
+  padding: 0.5rem 0.75rem;
+}
+.admin-table tbody tr:hover {
+  background-color: var(--bg-hover);
+}
+.admin-table tbody td {
+  color: var(--text-primary);
+}
+
+/* Header difuminado: sin color, solo cristal; la animación rosada va detrás */
+.header-diffused {
+  color: var(--text-primary);
+  background-color: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: none;
+  transition: border-color 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+.dark .header-diffused,
+.theme-dark .header-diffused {
+  background-color: rgba(30, 41, 59, 0.75);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Tema oscuro: "BylotoStore" en header siempre visible (no se pierde) */
+.dark .header-logo-text,
+.theme-dark .header-logo-text {
+  background: none !important;
+  background-image: none !important;
+  -webkit-background-clip: unset !important;
+  background-clip: unset !important;
+  color: #f8fafc !important;
+  -webkit-text-fill-color: #f8fafc !important;
 }
 
 .theme-sidebar {
@@ -96,6 +183,25 @@ body, html, * {
 
 .theme-text-primary { color: var(--text-primary); }
 .theme-text-secondary { color: var(--text-secondary); }
+
+/* Unificar rosa/violeta de marca con acento pastel (confianza, calma, cuidado) */
+:root .text-pink-600,
+:root .text-pink-500,
+.theme-light .text-pink-600,
+.theme-light .text-pink-500 { color: var(--accent) !important; }
+.dark .text-pink-400,
+.theme-dark .text-pink-400,
+.theme-dark .text-pink-500 { color: var(--accent) !important; }
+:root .bg-pink-500,
+:root .bg-pink-600,
+.theme-light .bg-pink-500,
+.theme-light .bg-pink-600 { background-color: var(--accent) !important; }
+.dark .bg-pink-500,
+.theme-dark .bg-pink-500 { background-color: var(--accent) !important; }
+:root .border-pink-500,
+.theme-light .border-pink-500 { border-color: var(--accent) !important; }
+.theme-light .hover\:text-pink-600:hover,
+.theme-light .hover\:text-pink-500:hover { color: var(--accent) !important; }
 
 /* Botones unificados */
 .btn {
@@ -134,9 +240,49 @@ body, html, * {
 }
 .btn-danger:hover { background-color: #dc2626; }
 
+/* Cuadro de iconos en tarjetas "¿Por qué elegir BylotoStore?": fondo siempre visible */
+.feature-icon-box {
+  background: #8B6B6A; /* mauve oscuro en tema claro para que el icono blanco se vea */
+}
+.dark .feature-icon-box,
+.theme-dark .feature-icon-box {
+  background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+}
+
+/* Tema claro: "BylotoStore" en hero siempre visible (sin gradiente que se pierda en blanco) */
+.theme-light .hero-byloto-text {
+  background: none !important;
+  background-image: none !important;
+  -webkit-background-clip: unset !important;
+  background-clip: unset !important;
+  color: var(--accent) !important;
+  -webkit-text-fill-color: var(--accent) !important;
+}
+
+/* Tema claro: logo del header legible */
+.theme-light .header-logo-text {
+  background: none !important;
+  background-image: none !important;
+  -webkit-background-clip: unset !important;
+  background-clip: unset !important;
+  color: var(--text-primary) !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+}
+
+/* Tema claro: icono del logo con más contraste (fondo más oscuro para el blanco) */
+.theme-light .logo-icon-wrap {
+  background: linear-gradient(to right, var(--accent-hover), var(--accent)) !important;
+}
+
 /* Overrides para clases tailwind comunes en admin (modo oscuro) */
 .theme-dark .bg-white { background-color: var(--bg-card) !important; }
 .theme-dark .bg-gray-50 { background-color: var(--bg-secondary) !important; }
+/* Sección "¿Por qué elegir BylotoStore?" en inicio: fondo oscuro en tema oscuro */
+.dark .features-section,
+.theme-dark .features-section {
+  background: var(--bg-primary) !important;
+  background-image: none !important;
+}
 .theme-dark .hover\:bg-gray-50:hover { background-color: var(--bg-hover) !important; }
 .theme-dark .text-gray-900 { color: var(--text-primary) !important; }
 .theme-dark .text-gray-700 { color: var(--text-secondary) !important; }
@@ -280,24 +426,37 @@ select:focus {
   font-variant-numeric: normal !important;
 }
 
-/* Optimizaciones de rendimiento */
+/* Viewport: sin desplazamiento horizontal; scroll vertical normal (rueda del ratón) */
 html {
   scroll-behavior: smooth;
-  /* Forzar GPU acceleration para transiciones de tema */
-  transform: translateZ(0);
-  backface-visibility: hidden;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* No usar transform: rompe position:fixed y el menú inferior se mueve al hacer scroll */
+}
+
+body {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+  min-height: 100vh;
+  overscroll-behavior: none;
+  position: relative;
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Contenedor raíz Nuxt: no tocar overflow para que el scroll sea del documento */
+#__nuxt {
+  max-width: 100vw;
+  width: 100%;
 }
 
 /* Evitar efectos scroll-linked problemáticos */
 * {
   scroll-behavior: auto;
-}
-
-/* Optimizar transiciones de tema globalmente */
-html,
-body {
-  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-              color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Optimizar animaciones */
@@ -311,10 +470,7 @@ body {
   }
 }
 
-/* Performance: contain para secciones */
-section {
-  contain: layout style;
-}
+/* No usar contain en section: puede interferir con el scroll del documento (rueda del ratón) */
 
 /* Performance: will-change solo cuando sea necesario */
 .hover-lift,

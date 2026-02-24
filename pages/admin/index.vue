@@ -1,101 +1,100 @@
 <template>
-  <div class="min-h-screen p-6 transition-colors duration-300 theme-container">
+  <div class="min-h-screen p-3 sm:p-4 lg:p-6 transition-colors duration-300 theme-container">
     <!-- Header del Dashboard -->
-    <div class="mb-8">
-      <div class="flex items-center justify-between">
+    <div class="mb-6 sm:mb-8">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <div>
-          <h1 class="text-3xl font-bold mb-2 transition-colors theme-text-primary">Dashboard</h1>
-          <p class="transition-colors theme-text-secondary">Bienvenido de vuelta, {{ userName || 'Admin' }}! Aquí tienes un resumen de tu negocio.</p>
+          <h1 class="text-2xl sm:text-3xl font-bold mb-1 sm:mb-2 transition-colors theme-text-primary">Dashboard</h1>
+          <p class="text-sm sm:text-base transition-colors theme-text-secondary">Bienvenido de vuelta, {{ userName || 'Admin' }}! Aquí tienes un resumen de tu negocio.</p>
         </div>
-        <div class="flex items-center space-x-4"></div>
       </div>
     </div>
 
     <!-- Tarjetas de KPI principales -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
       <!-- Tarjeta de Usuarios -->
       <div class="card card-hover hover:shadow-lg transition-all duration-300">
-        <div class="flex items-center justify-between mb-4">
-          <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-xl flex items-center justify-center">
-            <Icon name="heroicons:users" class="w-6 h-6 text-blue-600 dark:text-blue-400" />
+        <div class="flex items-center justify-between mb-2 sm:mb-4">
+          <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 dark:bg-blue-900/20 rounded-xl flex items-center justify-center shrink-0">
+            <Icon name="heroicons:users" class="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400" />
           </div>
-          <div class="text-right">
-            <p class="text-2xl font-bold theme-text-primary">{{ dashboardStats.totalUsers || 0 }}</p>
+          <div class="text-right min-w-0">
+            <p class="text-xl sm:text-2xl font-bold theme-text-primary truncate">{{ dashboardStats.totalUsers || 0 }}</p>
             <p class="text-green-600 dark:text-green-400 text-sm font-medium">+12% este mes</p>
           </div>
         </div>
-        <p class="text-sm font-medium theme-text-secondary">Total Usuarios</p>
-        <div class="mt-4 flex items-center space-x-2">
-          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-            <div class="bg-blue-600 dark:bg-blue-400 h-2 rounded-full transition-all duration-500" style="width: 75%"></div>
+        <p class="text-xs sm:text-sm font-medium theme-text-secondary">Total Usuarios</p>
+        <div class="mt-2 sm:mt-4 flex items-center space-x-2">
+          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 sm:h-2">
+            <div class="bg-blue-600 dark:bg-blue-400 h-1.5 sm:h-2 rounded-full transition-all duration-500" style="width: 75%"></div>
           </div>
-          <span class="text-xs theme-text-muted">75%</span>
+          <span class="text-[10px] sm:text-xs theme-text-muted shrink-0">75%</span>
         </div>
       </div>
 
       <!-- Tarjeta de Productos -->
       <div class="card card-hover hover:shadow-lg transition-all duration-300">
-        <div class="flex items-center justify-between mb-4">
-          <div class="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-xl flex items-center justify-center">
-            <Icon name="heroicons:cube" class="w-6 h-6 text-green-600 dark:text-green-400" />
+        <div class="flex items-center justify-between mb-2 sm:mb-4">
+          <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 dark:bg-green-900/20 rounded-xl flex items-center justify-center shrink-0">
+            <Icon name="heroicons:cube" class="w-5 h-5 sm:w-6 sm:h-6 text-green-600 dark:text-green-400" />
           </div>
-          <div class="text-right">
-            <p class="text-2xl font-bold theme-text-primary">{{ dashboardStats.totalProducts || 0 }}</p>
+          <div class="text-right min-w-0">
+            <p class="text-xl sm:text-2xl font-bold theme-text-primary truncate">{{ dashboardStats.totalProducts || 0 }}</p>
             <p class="text-green-600 dark:text-green-400 text-sm font-medium">+8% este mes</p>
           </div>
         </div>
-        <p class="text-sm font-medium theme-text-secondary">Total Productos</p>
-        <div class="mt-4 flex items-center space-x-2">
-          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-            <div class="bg-green-600 dark:bg-green-400 h-2 rounded-full transition-all duration-500" style="width: 60%"></div>
+        <p class="text-xs sm:text-sm font-medium theme-text-secondary">Total Productos</p>
+        <div class="mt-2 sm:mt-4 flex items-center space-x-2">
+          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 sm:h-2">
+            <div class="bg-green-600 dark:bg-green-400 h-1.5 sm:h-2 rounded-full transition-all duration-500" style="width: 60%"></div>
           </div>
-          <span class="text-xs theme-text-muted">60%</span>
+          <span class="text-[10px] sm:text-xs theme-text-muted shrink-0">60%</span>
         </div>
       </div>
 
       <!-- Tarjeta de Órdenes -->
       <div class="card card-hover hover:shadow-lg transition-all duration-300">
-        <div class="flex items-center justify-between mb-4">
-          <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/20 rounded-xl flex items-center justify-center">
-            <Icon name="heroicons:shopping-cart" class="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
+        <div class="flex items-center justify-between mb-2 sm:mb-4">
+          <div class="w-10 h-10 sm:w-12 sm:h-12 bg-yellow-100 dark:bg-yellow-900/20 rounded-xl flex items-center justify-center shrink-0">
+            <Icon name="heroicons:shopping-cart" class="w-5 h-5 sm:w-6 sm:h-6 text-yellow-600 dark:text-yellow-400" />
           </div>
-          <div class="text-right">
-            <p class="text-2xl font-bold theme-text-primary">{{ dashboardStats.totalOrders || 0 }}</p>
+          <div class="text-right min-w-0">
+            <p class="text-xl sm:text-2xl font-bold theme-text-primary truncate">{{ dashboardStats.totalOrders || 0 }}</p>
             <p class="text-green-600 dark:text-green-400 text-sm font-medium">+15% este mes</p>
           </div>
         </div>
-        <p class="text-sm font-medium theme-text-secondary">Total Órdenes</p>
-        <div class="mt-4 flex items-center space-x-2">
-          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-            <div class="bg-yellow-600 dark:bg-yellow-400 h-2 rounded-full transition-all duration-500" style="width: 85%"></div>
+        <p class="text-xs sm:text-sm font-medium theme-text-secondary">Total Órdenes</p>
+        <div class="mt-2 sm:mt-4 flex items-center space-x-2">
+          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 sm:h-2">
+            <div class="bg-yellow-600 dark:bg-yellow-400 h-1.5 sm:h-2 rounded-full transition-all duration-500" style="width: 85%"></div>
           </div>
-          <span class="text-xs theme-text-muted">85%</span>
+          <span class="text-[10px] sm:text-xs theme-text-muted shrink-0">85%</span>
         </div>
       </div>
 
       <!-- Tarjeta de Ingresos -->
       <div class="card card-hover hover:shadow-lg transition-all duration-300">
-        <div class="flex items-center justify-between mb-4">
-          <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-xl flex items-center justify-center">
-            <Icon name="heroicons:currency-dollar" class="w-6 h-6 text-purple-600 dark:text-purple-400" />
+        <div class="flex items-center justify-between mb-2 sm:mb-4">
+          <div class="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 dark:bg-purple-900/20 rounded-xl flex items-center justify-center shrink-0">
+            <Icon name="heroicons:currency-dollar" class="w-5 h-5 sm:w-6 sm:h-6 text-purple-600 dark:text-purple-400" />
           </div>
-          <div class="text-right">
-            <p class="text-2xl font-bold theme-text-primary">${{ formatCurrency(dashboardStats.totalRevenue || 0) }}</p>
+          <div class="text-right min-w-0">
+            <p class="text-lg sm:text-2xl font-bold theme-text-primary truncate">${{ formatCurrency(dashboardStats.totalRevenue || 0) }}</p>
             <p class="text-green-600 dark:text-green-400 text-sm font-medium">+20% este mes</p>
           </div>
         </div>
-        <p class="text-sm font-medium theme-text-secondary">Ingresos Totales</p>
-        <div class="mt-4 flex items-center space-x-2">
-          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-            <div class="bg-purple-600 dark:bg-purple-400 h-2 rounded-full transition-all duration-500" style="width: 90%"></div>
+        <p class="text-xs sm:text-sm font-medium theme-text-secondary">Ingresos Totales</p>
+        <div class="mt-2 sm:mt-4 flex items-center space-x-2">
+          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 sm:h-2">
+            <div class="bg-purple-600 dark:bg-purple-400 h-1.5 sm:h-2 rounded-full transition-all duration-500" style="width: 90%"></div>
           </div>
-          <span class="text-xs theme-text-muted">90%</span>
+          <span class="text-[10px] sm:text-xs theme-text-muted shrink-0">90%</span>
         </div>
       </div>
     </div>
 
     <!-- Tarjetas de gráficos y estadísticas -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
       <!-- Gráfico de Ventas -->
       <div class="card">
         <div class="flex items-center justify-between mb-6">

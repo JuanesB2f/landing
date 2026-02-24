@@ -137,55 +137,43 @@
     </div>
 
     <!-- Tabla de clientes -->
-    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+    <div class="rounded-lg overflow-hidden border border-gray-200 dark:border-[var(--border-color)]">
       <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
+        <table class="min-w-full admin-table">
+          <thead>
             <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Cliente
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Contacto
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Ubicación
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Estado
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Pedidos
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Acciones
-              </th>
+              <th>Cliente</th>
+              <th>Contacto</th>
+              <th>Ubicación</th>
+              <th>Estado</th>
+              <th>Pedidos</th>
+              <th>Acciones</th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
-            <tr v-for="customer in filteredCustomers.slice(startIndex, endIndex)" :key="customer.id_customer" class="hover:bg-gray-50">
-              <td class="px-6 py-4 whitespace-nowrap">
+          <tbody>
+            <tr v-for="customer in filteredCustomers.slice(startIndex, endIndex)" :key="customer.id_customer">
+              <td class="whitespace-nowrap">
                 <div class="flex items-center">
                   <div class="flex-shrink-0 h-10 w-10">
-                    <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                      <Icon name="heroicons:user" class="w-5 h-5 text-blue-600" />
+                    <div class="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                      <Icon name="heroicons:user" class="w-5 h-5 text-blue-600 dark:text-blue-300" />
                     </div>
                   </div>
                   <div class="ml-4">
-                    <div class="text-sm font-medium text-gray-900">{{ customer.first_name }} {{ customer.last_name }}</div>
-                    <div class="text-sm text-gray-500">{{ customer.email }}</div>
+                    <div class="text-sm font-medium theme-text-primary">{{ customer.first_name }} {{ customer.last_name }}</div>
+                    <div class="text-sm theme-text-muted">{{ customer.email }}</div>
                   </div>
                 </div>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-gray-900">{{ customer.phone || 'N/A' }}</div>
-                <div class="text-sm text-gray-500">{{ customer.user?.role || 'Cliente' }}</div>
+              <td class="whitespace-nowrap">
+                <div class="text-sm theme-text-primary">{{ customer.phone || 'N/A' }}</div>
+                <div class="text-sm theme-text-muted">{{ customer.user?.role || 'Cliente' }}</div>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-gray-900">{{ customer.city || 'N/A' }}</div>
-                <div class="text-sm text-gray-500">{{ customer.state || 'N/A' }}</div>
+              <td class="whitespace-nowrap">
+                <div class="text-sm theme-text-primary">{{ customer.city || 'N/A' }}</div>
+                <div class="text-sm theme-text-muted">{{ customer.state || 'N/A' }}</div>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
+              <td class="whitespace-nowrap">
                 <span
                   :class="[
                     'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
@@ -195,10 +183,10 @@
                   {{ customer.is_active ? 'Activo' : 'Inactivo' }}
                 </span>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td class="whitespace-nowrap text-sm theme-text-muted">
                 {{ customer.order_count || 0 }} pedidos
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+              <td class="whitespace-nowrap text-sm font-medium">
                 <div class="flex space-x-2">
                   <button
                     @click="viewCustomer(customer)"

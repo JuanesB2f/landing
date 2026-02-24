@@ -3,52 +3,50 @@
  * Soporte completo para modo claro y oscuro
  */
 
-/* Variables CSS base con transiciones suaves */
+/* Variables CSS — paleta: Navy, Blush, Pink, Mauve (sin Prune) */
 :root {
-  /* Valores por defecto (light) */
   --theme-bg-primary: #ffffff;
-  --theme-bg-secondary: #f8fafc;
-  --theme-bg-tertiary: #f1f5f9;
-  --theme-text-primary: #1e293b;
-  --theme-text-secondary: #64748b;
-  --theme-text-tertiary: #94a3b8;
-  --theme-border: #e5e7eb;
-  --theme-border-light: #e5e7eb;
-  --theme-shadow: rgba(0, 0, 0, 0.1);
-  --theme-shadow-lg: rgba(0, 0, 0, 0.15);
+  --theme-bg-secondary: #F4E1E0; /* Blush */
+  --theme-bg-tertiary: #E5C5C1; /* Pink */
+  --theme-text-primary: #0E1627; /* Navy */
+  --theme-text-secondary: #4a5568;
+  --theme-text-tertiary: #6b7280;
+  --theme-border: #E5C5C1;
+  --theme-border-light: #E5C5C1;
+  --theme-shadow: rgba(14, 22, 39, 0.06);
+  --theme-shadow-lg: rgba(14, 22, 39, 0.1);
   
-  /* Transiciones suaves para todas las propiedades de tema */
   transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
               color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
               border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Variables CSS para tema claro */
+/* Tema claro: Blush + Navy */
 .theme-light {
   --theme-bg-primary: #ffffff;
-  --theme-bg-secondary: #f8fafc;
-  --theme-bg-tertiary: #f1f5f9;
-  --theme-text-primary: #1e293b;
-  --theme-text-secondary: #64748b;
-  --theme-text-tertiary: #94a3b8;
-  --theme-border: #e5e7eb;
-  --theme-border-light: #e5e7eb;
-  --theme-shadow: rgba(0, 0, 0, 0.1);
-  --theme-shadow-lg: rgba(0, 0, 0, 0.15);
+  --theme-bg-secondary: #F4E1E0;
+  --theme-bg-tertiary: #E5C5C1;
+  --theme-text-primary: #0E1627;
+  --theme-text-secondary: #4a5568;
+  --theme-text-tertiary: #6b7280;
+  --theme-border: #E5C5C1;
+  --theme-border-light: #E5C5C1;
+  --theme-shadow: rgba(14, 22, 39, 0.06);
+  --theme-shadow-lg: rgba(14, 22, 39, 0.1);
 }
 
-/* Variables CSS para tema oscuro - Negro Minimalista */
+/* Tema oscuro suave: slate (elegante, sin fatiga visual) */
 .theme-dark {
-  --theme-bg-primary: #09090b; /* Negro suave (Zinc 950) */
-  --theme-bg-secondary: #18181b; /* Gris muy oscuro (Zinc 900) */
-  --theme-bg-tertiary: #27272a; /* Gris oscuro (Zinc 800) */
-  --theme-text-primary: #fafafa; /* Blanco casi puro */
-  --theme-text-secondary: #a1a1aa; /* Gris medio (Zinc 400) */
-  --theme-text-tertiary: #71717a; /* Gris oscuro (Zinc 500) */
-  --theme-border: #27272a; /* Borde sutil */
-  --theme-border-light: #3f3f46; /* Borde más claro */
-  --theme-shadow: rgba(0, 0, 0, 0.5);
-  --theme-shadow-lg: rgba(0, 0, 0, 0.7);
+  --theme-bg-primary: #1e293b;
+  --theme-bg-secondary: #334155;
+  --theme-bg-tertiary: #475569;
+  --theme-text-primary: #f8fafc;
+  --theme-text-secondary: #e2e8f0;
+  --theme-text-tertiary: #cbd5e1;
+  --theme-border: #475569;
+  --theme-border-light: #64748b;
+  --theme-shadow: rgba(0, 0, 0, 0.25);
+  --theme-shadow-lg: rgba(0, 0, 0, 0.35);
 }
 
 /* Clases de utilidad para temas con transiciones suaves */
@@ -89,7 +87,7 @@
 }
 
 .theme-nav-item:hover {
-  color: #ec4899;
+  color: var(--accent);
   transition: color 0.2s ease;
 }
 
@@ -139,17 +137,17 @@
 
 .theme-section-overlay {
   background: linear-gradient(to right, 
-    rgba(236, 72, 153, 0.05), 
-    rgba(147, 51, 234, 0.05)
+    rgba(189, 142, 137, 0.06), 
+    rgba(229, 197, 193, 0.06)
   );
 }
 
-/* Hero section */
+/* Hero section — mauve/rosa, sin morado */
 .theme-hero-bg {
   background: linear-gradient(to bottom right, 
-    rgba(236, 72, 153, 0.1), 
+    rgba(189, 142, 137, 0.12), 
     var(--theme-bg-primary), 
-    rgba(147, 51, 234, 0.1)
+    rgba(229, 197, 193, 0.12)
   );
 }
 
@@ -163,18 +161,44 @@
   border-color: var(--theme-border-light);
 }
 
-/* Login específico */
+/* Login: mismo tipo de animación en claro y oscuro (sin morado) */
 .theme-login-bg {
-  background: linear-gradient(to bottom right, #0f0518, #2e1065, #0f0518);
+  /* Por defecto: oscuro suave (slate), misma estructura que el tema claro */
+  background: linear-gradient(to bottom right, #1e293b, #334155, #1e293b);
 }
 
 .theme-dark .theme-login-bg {
-  background: linear-gradient(to bottom right, #0f0518, #4c1d95, #0f0518);
+  /* Oscuro: igual que por defecto — muy parecido al tema claro pero en tonos dark */
+  background: linear-gradient(to bottom right, #1e293b, #334155, #1e293b);
 }
 
 .theme-light .theme-login-bg {
-  background: linear-gradient(to bottom right, #f8fafc, #e0e7ff, #f8fafc);
+  /* Claro: suave, blush/pink */
+  background: linear-gradient(to bottom right, #f8fafc, #f1e8e8, #f8fafc);
 }
+
+/* Blobs del login: misma animación en claro y oscuro, solo cambia el color */
+.theme-light .login-blob-1 { background-color: #BD8E89; }   /* mauve */
+.theme-light .login-blob-2 { background-color: #8B6B6A; }   /* mauve oscuro */
+.theme-light .login-blob-3 { background-color: #E5C5C1; }  /* pink */
+.theme-dark .login-blob-1,
+.dark .login-blob-1 { background-color: #475569; }         /* slate-600 */
+.theme-dark .login-blob-2,
+.dark .login-blob-2 { background-color: #64748b; }         /* slate-500 */
+.theme-dark .login-blob-3,
+.dark .login-blob-3 { background-color: #334155; }        /* slate-700 */
+.theme-dark .login-blob,
+.dark .login-blob { mix-blend-mode: soft-light; opacity: 0.35; }
+/* Puntos flotantes login */
+.theme-light .login-dot-1 { background-color: #BD8E89; }
+.theme-light .login-dot-2 { background-color: #8B6B6A; }
+.theme-light .login-dot-3 { background-color: #E5C5C1; }
+.theme-dark .login-dot-1,
+.dark .login-dot-1 { background-color: #94a3b8; }
+.theme-dark .login-dot-2,
+.dark .login-dot-2 { background-color: #cbd5e1; }
+.theme-dark .login-dot-3,
+.dark .login-dot-3 { background-color: #64748b; }
 
 .theme-login-card {
   background-color: rgba(255, 255, 255, 0.1);
@@ -381,24 +405,24 @@ textarea {
   box-shadow: 0 4px 12px var(--theme-shadow-lg);
 }
 
-/* CTA Section */
+/* CTA Section - pastel (rosa polvo → lavanda) */
 .theme-cta-bg {
-  background: linear-gradient(to right, #ec4899, #8b5cf6);
+  background: linear-gradient(to right, var(--accent), var(--accent-secondary));
 }
 
 .theme-dark .theme-cta-bg {
-  background: linear-gradient(to right, #ec4899, #8b5cf6);
+  background: linear-gradient(to right, var(--accent), var(--accent-secondary));
 }
 
 .theme-light .theme-cta-bg {
-  background: linear-gradient(to right, #ec4899, #8b5cf6);
+  background: linear-gradient(to right, var(--accent), var(--accent-secondary));
 }
 
 .theme-cta-overlay {
   background: linear-gradient(
     to right,
-    rgba(236, 72, 153, 0.2),
-    rgba(147, 51, 234, 0.2)
+    rgba(244, 225, 224, 0.2),
+    rgba(189, 142, 137, 0.15)
   );
 }
 
@@ -424,7 +448,7 @@ textarea {
 
 .theme-cta-button {
   background-color: white;
-  color: #ec4899;
+  color: var(--accent);
 }
 
 .theme-cta-button:hover {

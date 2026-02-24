@@ -12,7 +12,7 @@ useHead({
   title: 'BylotoStore - Tu E-commerce Femenino',
   meta: [
     { name: 'description', content: 'Tu tienda de belleza y moda femenina con los mejores productos seleccionados especialmente para la mujer moderna y elegante.' },
-    { name: 'viewport', content: 'width=device-width, initial-scale=1' }
+    { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' }
   ]
 })
 </script>

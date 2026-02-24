@@ -1,70 +1,76 @@
 <template>
-  <div class="min-h-screen transition-colors duration-300 theme-container">
-    <!-- Header (oculto para customers) -->
+  <div class="min-h-screen w-full max-w-[100vw] transition-colors duration-300 theme-container pb-20 md:pb-0">
+    <!-- Header: sin color + animación de puntos/blobs rosados detrás -->
     <header
       v-if="!isCustomer"
-      class="theme-header backdrop-blur-md shadow-lg border-b theme-border sticky top-0 z-50"
+      class="header-diffused sticky top-0 z-50"
     >
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-20">
+      <!-- Animación de blobs en rosa (detrás del contenido) -->
+      <div class="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        <div class="absolute -top-20 right-0 w-64 h-64 sm:w-80 sm:h-80 bg-gradient-to-br from-accent/25 via-accent-secondary/20 to-accent/25 rounded-full blur-3xl animate-blob"></div>
+        <div class="absolute -bottom-16 left-0 w-56 h-56 sm:w-72 sm:h-72 bg-gradient-to-tr from-accent-secondary/25 via-accent/20 to-accent-secondary/25 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 sm:w-60 sm:h-60 bg-gradient-to-r from-accent/15 to-accent-secondary/15 rounded-full blur-3xl animate-blob animation-delay-4000"></div>
+      </div>
+      <div class="relative z-10 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-14 sm:h-16 lg:h-20 gap-2">
           <!-- Logo -->
-          <div class="flex items-center">
-            <NuxtLink to="/" class="flex items-center space-x-2 group">
+          <div class="flex items-center min-w-0 flex-shrink-0">
+            <NuxtLink to="/" class="flex items-center space-x-1.5 sm:space-x-2 group">
               <div
-                class="w-10 h-10 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300"
+                class="w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 bg-gradient-to-r from-accent to-accent-secondary rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 flex-shrink-0 logo-icon-wrap"
               >
-                <Icon name="heroicons:sparkles" class="w-6 h-6 text-white" />
+                <Icon name="heroicons:sparkles" class="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white dark:text-white logo-icon" />
               </div>
               <span
-                class="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent"
+                class="header-logo-text text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-accent to-accent-secondary bg-clip-text text-transparent truncate dark:bg-clip-text dark:text-transparent"
               >
                 BylotoStore
               </span>
             </NuxtLink>
           </div>
 
-          <!-- Navigation -->
-          <nav class="hidden md:flex space-x-8">
+          <!-- Navigation (solo desktop; en móvil va la barra inferior) -->
+          <nav class="hidden md:flex space-x-6 lg:space-x-8">
             <button
               v-if="isUser"
               @click="navigateToOffers"
-              class="relative theme-nav-item hover:text-pink-600 transition-colors font-medium group"
+              class="relative theme-nav-item hover:text-accent transition-colors font-medium group"
             >
               Mis Ofertas
               <span
-                class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-pink-500 to-purple-600 group-hover:w-full transition-all duration-300"
+                class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-accent to-accent-secondary group-hover:w-full transition-all duration-300"
               ></span>
             </button>
 
             <NuxtLink
               v-if="isUser || isAdmin"
               to="/shop"
-              class="relative theme-nav-item hover:text-pink-600 transition-colors font-medium group"
+              class="relative theme-nav-item hover:text-accent transition-colors font-medium group"
             >
               Productos
               <span
-                class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-pink-500 to-purple-600 group-hover:w-full transition-all duration-300"
+                class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-accent to-accent-secondary group-hover:w-full transition-all duration-300"
               ></span>
             </NuxtLink>
 
             <NuxtLink
               v-if="isUser || isAdmin"
               to="/about"
-              class="relative theme-nav-item hover:text-pink-600 transition-colors font-medium group"
+              class="relative theme-nav-item hover:text-accent transition-colors font-medium group"
             >
               Nosotros
               <span
-                class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-pink-500 to-purple-600 group-hover:w-full transition-all duration-300"
+                class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-accent to-accent-secondary group-hover:w-full transition-all duration-300"
               ></span>
             </NuxtLink>
           </nav>
 
-          <!-- User Menu -->
-          <div class="flex items-center space-x-6">
-            <!-- Theme Toggle -->
+          <!-- Botón cambio de tema: visible en móvil (parte derecha) y desktop -->
+          <div class="flex items-center gap-2">
             <button
               @click="optimizedToggleTheme"
-              class="p-2 rounded-full theme-button hover:theme-button-hover transition-all duration-300"
+              class="p-2.5 rounded-full theme-button hover:theme-button-hover transition-all duration-300 flex items-center justify-center"
+              :aria-label="isDark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'"
             >
               <Icon
                 :name="isDark ? 'heroicons:sun' : 'heroicons:moon'"
@@ -72,14 +78,17 @@
               />
             </button>
 
+          <!-- User Menu (cart + login; en desktop va junto al tema, en móvil solo tema a la derecha) -->
+          <div class="hidden md:flex items-center space-x-4 lg:space-x-6">
+
             <!-- Cart (solo usuarios) -->
             <button
               v-if="isUser"
               @click="navigateToCart"
-              class="relative theme-text-primary hover:text-pink-600 transition-colors group"
+              class="relative theme-text-primary hover:text-accent transition-colors group"
             >
               <div
-                class="p-2 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 group-hover:from-pink-600 group-hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+                class="header-cart-icon-wrap p-2 rounded-full bg-gradient-to-r from-accent to-accent-secondary group-hover:from-accent-hover group-hover:to-accent-secondary transition-all duration-300 shadow-lg hover:shadow-xl"
               >
                 <Icon
                   name="heroicons:shopping-cart"
@@ -88,7 +97,7 @@
               </div>
               <span
                 v-if="cartItemsCount > 0"
-                class="absolute -top-1 -right-1 bg-gradient-to-r from-pink-500 to-purple-600 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold shadow-lg animate-pulse"
+                class="header-cart-count absolute -top-1 -right-1 bg-gradient-to-r from-accent to-accent-secondary text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold shadow-lg animate-pulse"
               >
                 {{ cartItemsCount }}
               </span>
@@ -98,7 +107,7 @@
             <NuxtLink
               v-if="!authUser"
               to="/login"
-              class="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-2 rounded-full font-medium hover:from-pink-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              class="px-4 py-2 sm:px-6 rounded-full font-medium transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-sm sm:text-base bg-accent-soft border-2 border-accent text-[#0E1627] hover:bg-accent hover:text-white dark:bg-gradient-to-r dark:from-accent dark:to-accent-secondary dark:border-0 dark:text-white dark:hover:from-accent-hover dark:hover:to-accent-secondary"
             >
               Iniciar Sesión
             </NuxtLink>
@@ -107,14 +116,84 @@
             <button
               v-else
               @click="handleLogout"
-              class="theme-button text-theme-text-primary px-6 py-2 rounded-full font-medium hover:theme-button-hover transition-all duration-300 shadow-sm"
+              class="theme-button text-theme-text-primary px-4 py-2 sm:px-6 rounded-full font-medium hover:theme-button-hover transition-all duration-300 shadow-sm text-sm sm:text-base"
             >
               Cerrar sesión
             </button>
           </div>
+          </div>
         </div>
       </div>
     </header>
+
+    <!-- Barra inferior tipo iPhone: siempre fija al viewport (solo móvil) -->
+    <nav
+      class="md:hidden fixed bottom-0 left-0 right-0 z-[100] theme-header border-t theme-border w-full max-w-[100vw]"
+      style="padding-bottom: env(safe-area-inset-bottom, 0);"
+    >
+      <div class="flex items-stretch justify-around h-14">
+        <NuxtLink
+          to="/"
+          class="flex flex-col items-center justify-center flex-1 py-1.5 min-w-0 text-[10px] font-medium transition-colors theme-nav-item"
+          :class="{ 'theme-nav-active text-accent': $route.path === '/' }"
+        >
+          <Icon name="heroicons:home" class="w-6 h-6 mb-0.5 shrink-0" />
+          <span>Inicio</span>
+        </NuxtLink>
+        <NuxtLink
+          to="/shop"
+          class="flex flex-col items-center justify-center flex-1 py-1.5 min-w-0 text-[10px] font-medium transition-colors theme-nav-item"
+          :class="{ 'theme-nav-active text-accent': $route.path.startsWith('/shop') && $route.path !== '/shop/cart' }"
+        >
+          <Icon name="heroicons:shopping-bag" class="w-6 h-6 mb-0.5 shrink-0" />
+          <span>Tienda</span>
+        </NuxtLink>
+        <NuxtLink
+          v-if="isUser"
+          to="/shop/cart"
+          class="flex flex-col items-center justify-center flex-1 py-1.5 min-w-0 text-[10px] font-medium transition-colors theme-nav-item relative"
+          :class="{ 'theme-nav-active text-accent': $route.path === '/shop/cart' }"
+        >
+          <span class="relative inline-block">
+            <Icon name="heroicons:shopping-cart" class="w-6 h-6 mb-0.5 shrink-0" />
+            <span
+              v-if="cartItemsCount > 0"
+              class="absolute -top-2 -right-2 bg-accent text-white text-[10px] rounded-full min-w-[14px] h-[14px] flex items-center justify-center px-0.5 font-bold"
+            >
+              {{ cartItemsCount > 99 ? '99+' : cartItemsCount }}
+            </span>
+          </span>
+          <span>Carrito</span>
+        </NuxtLink>
+        <NuxtLink
+          v-if="isUser || isAdmin"
+          to="/user"
+          class="flex flex-col items-center justify-center flex-1 py-1.5 min-w-0 text-[10px] font-medium transition-colors theme-nav-item"
+          :class="{ 'theme-nav-active text-accent': $route.path.startsWith('/user') }"
+        >
+          <Icon name="heroicons:user-circle" class="w-6 h-6 mb-0.5 shrink-0" />
+          <span>Cuenta</span>
+        </NuxtLink>
+        <NuxtLink
+          v-else
+          to="/login"
+          class="flex flex-col items-center justify-center flex-1 py-1.5 min-w-0 text-[10px] font-medium transition-colors theme-nav-item"
+          :class="{ 'theme-nav-active text-accent': $route.path === '/login' }"
+        >
+          <Icon name="heroicons:user" class="w-6 h-6 mb-0.5 shrink-0" />
+          <span>Cuenta</span>
+        </NuxtLink>
+        <button
+          v-if="authUser"
+          type="button"
+          @click="handleLogout"
+          class="flex flex-col items-center justify-center flex-1 py-1.5 min-w-0 text-[10px] font-medium transition-colors theme-nav-item text-red-600 dark:text-red-400"
+        >
+          <Icon name="heroicons:arrow-right-on-rectangle" class="w-6 h-6 mb-0.5 shrink-0" />
+          <span>Salir</span>
+        </button>
+      </div>
+    </nav>
 
     <!-- Main Content -->
     <main :key="`${$route.fullPath}-${refreshKey}`">
@@ -123,47 +202,47 @@
 
     <!-- Footer -->
     <footer
-      class="bg-gradient-to-r from-gray-900 via-purple-900 to-pink-900 text-white relative overflow-hidden"
+      class="footer-theme bg-gradient-to-r from-accent-soft to-accent-secondary dark:from-bg-primary dark:to-bg-secondary text-[#0E1627] dark:text-white relative overflow-hidden"
     >
       <!-- Background decoration -->
       <div
-        class="absolute inset-0 bg-gradient-to-r from-pink-500/10 to-purple-500/10"
+        class="absolute inset-0 bg-gradient-to-r from-accent/10 to-accent-secondary/10"
       ></div>
       <div
-        class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-500 via-purple-500 to-pink-500"
+        class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-accent via-accent-secondary to-accent"
       ></div>
 
-      <div class="relative max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
-          <div class="space-y-4">
+      <div class="relative max-w-7xl mx-auto py-10 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 lg:gap-12">
+          <div class="space-y-4 sm:col-span-2 lg:col-span-1">
             <div class="flex items-center space-x-2">
               <div
-                class="w-8 h-8 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center"
+                class="w-8 h-8 bg-gradient-to-r from-accent to-accent-secondary rounded-full flex items-center justify-center"
               >
                 <Icon name="heroicons:sparkles" class="w-5 h-5 text-white" />
               </div>
-              <h3 class="text-xl font-bold">BylotoStore</h3>
+              <h3 class="text-lg sm:text-xl font-bold text-[#0E1627] dark:text-white">BylotoStore</h3>
             </div>
-            <p class="text-gray-300 leading-relaxed">
+            <p class="text-gray-600 dark:text-gray-300 leading-relaxed text-sm sm:text-base">
               Tu tienda de belleza y moda femenina con los mejores productos
               seleccionados especialmente para la mujer moderna y elegante.
             </p>
             <div class="flex space-x-4">
               <a
                 href="#"
-                class="w-10 h-10 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-300"
+                class="w-10 h-10 bg-gradient-to-r from-accent to-accent-secondary rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-300"
               >
                 <Icon name="heroicons:globe-alt" class="w-5 h-5 text-white" />
               </a>
               <a
                 href="#"
-                class="w-10 h-10 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-300"
+                class="w-10 h-10 bg-gradient-to-r from-accent to-accent-secondary rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-300"
               >
                 <Icon name="heroicons:heart" class="w-5 h-5 text-white" />
               </a>
               <a
                 href="#"
-                class="w-10 h-10 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-300"
+                class="w-10 h-10 bg-gradient-to-r from-accent to-accent-secondary rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-300"
               >
                 <Icon name="heroicons:star" class="w-5 h-5 text-white" />
               </a>
@@ -171,12 +250,12 @@
           </div>
 
           <div>
-            <h4 class="text-lg font-semibold mb-6 text-pink-300">Productos</h4>
+            <h4 class="text-base sm:text-lg font-semibold mb-4 sm:mb-6 text-accent dark:text-accent">Productos</h4>
             <ul class="space-y-3">
               <li>
                 <NuxtLink
                   to="/shop/category/1"
-                  class="text-gray-300 hover:text-pink-300 transition-colors flex items-center space-x-2 group"
+                  class="text-gray-600 dark:text-gray-300 hover:text-accent transition-colors flex items-center space-x-2 group"
                 >
                   <Icon
                     name="heroicons:sparkles"
@@ -188,7 +267,7 @@
               <li>
                 <NuxtLink
                   to="/shop/category/2"
-                  class="text-gray-300 hover:text-pink-300 transition-colors flex items-center space-x-2 group"
+                  class="text-gray-600 dark:text-gray-300 hover:text-accent transition-colors flex items-center space-x-2 group"
                 >
                   <Icon
                     name="heroicons:tag"
@@ -200,7 +279,7 @@
               <li>
                 <NuxtLink
                   to="/shop/category/3"
-                  class="text-gray-300 hover:text-pink-300 transition-colors flex items-center space-x-2 group"
+                  class="text-gray-600 dark:text-gray-300 hover:text-accent transition-colors flex items-center space-x-2 group"
                 >
                   <Icon
                     name="heroicons:eye"
@@ -212,7 +291,7 @@
               <li>
                 <NuxtLink
                   to="/shop/category/4"
-                  class="text-gray-300 hover:text-pink-300 transition-colors flex items-center space-x-2 group"
+                  class="text-gray-600 dark:text-gray-300 hover:text-accent transition-colors flex items-center space-x-2 group"
                 >
                   <Icon
                     name="heroicons:shopping-bag"
@@ -225,12 +304,12 @@
           </div>
 
           <div>
-            <h4 class="text-lg font-semibold mb-6 text-pink-300">Soporte</h4>
+            <h4 class="text-base sm:text-lg font-semibold mb-4 sm:mb-6 text-accent dark:text-accent">Soporte</h4>
             <ul class="space-y-3">
               <li>
                 <a
                   href="#"
-                  class="text-gray-300 hover:text-pink-300 transition-colors flex items-center space-x-2 group"
+                  class="text-gray-600 dark:text-gray-300 hover:text-accent transition-colors flex items-center space-x-2 group"
                 >
                   <Icon
                     name="heroicons:envelope"
@@ -242,7 +321,7 @@
               <li>
                 <a
                   href="#"
-                  class="text-gray-300 hover:text-pink-300 transition-colors flex items-center space-x-2 group"
+                  class="text-gray-600 dark:text-gray-300 hover:text-accent transition-colors flex items-center space-x-2 group"
                 >
                   <Icon
                     name="heroicons:truck"
@@ -254,7 +333,7 @@
               <li>
                 <a
                   href="#"
-                  class="text-gray-300 hover:text-pink-300 transition-colors flex items-center space-x-2 group"
+                  class="text-gray-600 dark:text-gray-300 hover:text-accent transition-colors flex items-center space-x-2 group"
                 >
                   <Icon
                     name="heroicons:arrow-path"
@@ -266,7 +345,7 @@
               <li>
                 <a
                   href="#"
-                  class="text-gray-300 hover:text-pink-300 transition-colors flex items-center space-x-2 group"
+                  class="text-gray-600 dark:text-gray-300 hover:text-accent transition-colors flex items-center space-x-2 group"
                 >
                   <Icon
                     name="heroicons:question-mark-circle"
@@ -278,19 +357,19 @@
             </ul>
           </div>
 
-          <div>
-            <h4 class="text-lg font-semibold mb-6 text-pink-300">Newsletter</h4>
-            <p class="text-gray-300 mb-4">
+          <div class="sm:col-span-2 lg:col-span-1">
+            <h4 class="text-base sm:text-lg font-semibold mb-4 sm:mb-6 text-accent dark:text-accent">Newsletter</h4>
+            <p class="text-gray-600 dark:text-gray-300 mb-3 sm:mb-4 text-sm sm:text-base">
               Suscríbete para recibir ofertas exclusivas
             </p>
-            <div class="flex space-x-2">
+            <div class="flex flex-col sm:flex-row gap-2 sm:space-x-2 sm:gap-0">
               <input
                 type="email"
                 placeholder="Tu email"
-                class="flex-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 text-white placeholder-gray-400"
+                class="flex-1 min-w-0 px-3 py-2 sm:px-4 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent text-[#0E1627] dark:text-white placeholder-gray-500 dark:placeholder-gray-400 text-sm sm:text-base"
               />
               <button
-                class="px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-lg hover:from-pink-600 hover:to-purple-700 transition-all duration-300"
+                class="px-4 py-2 bg-gradient-to-r from-accent to-accent-secondary text-white rounded-lg hover:from-accent-hover hover:to-accent-secondary transition-all duration-300 flex items-center justify-center shrink-0"
               >
                 <Icon name="heroicons:paper-airplane" class="w-5 h-5" />
               </button>
@@ -298,8 +377,8 @@
           </div>
         </div>
 
-        <div class="border-t border-gray-700 mt-12 pt-8 text-center">
-          <p class="text-gray-300">
+        <div class="border-t border-gray-300 dark:border-gray-700 mt-8 sm:mt-12 pt-6 sm:pt-8 text-center">
+          <p class="text-gray-600 dark:text-gray-300 text-sm sm:text-base">
             &copy; 2024 BylotoStore. Todos los derechos reservados.
           </p>
         </div>
@@ -309,7 +388,8 @@
 </template>
 
 <script setup>
-const cartItemsCount = ref(0)
+const cartStore = useCartStore?.() ?? null
+const cartItemsCount = computed(() => cartStore?.count ?? 0)
 
 // Ocultar botón de login cuando hay sesión
 const authUser = useSupabaseUser()
@@ -460,9 +540,6 @@ const navigateToCart = async () => {
 
 // Inicializar datos básicos
 onMounted(() => {
-  // Simular datos de carrito
-  cartItemsCount.value = 0
-
   // Eventos para detectar actividad
   const events = ['click', 'mousemove', 'keydown', 'scroll', 'touchstart']
   events.forEach(event => {

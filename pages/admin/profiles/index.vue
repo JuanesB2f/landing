@@ -137,53 +137,41 @@
     </div>
 
     <!-- Tabla de usuarios -->
-    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+    <div class="rounded-lg overflow-hidden border border-gray-200 dark:border-[var(--border-color)]">
       <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
+        <table class="min-w-full admin-table">
+          <thead>
             <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Usuario
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Información
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Rol
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Estado
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Último Acceso
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Acciones
-              </th>
+              <th>Usuario</th>
+              <th>Información</th>
+              <th>Rol</th>
+              <th>Estado</th>
+              <th>Último Acceso</th>
+              <th>Acciones</th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
-            <tr v-for="user in filteredUsers.slice(startIndex, endIndex)" :key="user.id" class="hover:bg-gray-50">
-              <td class="px-6 py-4 whitespace-nowrap">
+          <tbody>
+            <tr v-for="user in filteredUsers.slice(startIndex, endIndex)" :key="user.id">
+              <td class="whitespace-nowrap">
                 <div class="flex items-center">
                   <div class="flex-shrink-0 h-10 w-10">
-                    <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                      <Icon name="heroicons:user" class="w-5 h-5 text-blue-600" />
+                    <div class="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                      <Icon name="heroicons:user" class="w-5 h-5 text-blue-600 dark:text-blue-300" />
                     </div>
                   </div>
                   <div class="ml-4">
-                    <div class="text-sm font-medium text-gray-900">
+                    <div class="text-sm font-medium theme-text-primary">
                       {{ user.full_name || user.email }}
                     </div>
-                    <div class="text-sm text-gray-500">{{ user.email }}</div>
+                    <div class="text-sm theme-text-muted">{{ user.email }}</div>
                   </div>
                 </div>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-gray-900">{{ user.phone || 'N/A' }}</div>
-                <div class="text-sm text-gray-500">{{ user.city || 'N/A' }}</div>
+              <td class="whitespace-nowrap">
+                <div class="text-sm theme-text-primary">{{ user.phone || 'N/A' }}</div>
+                <div class="text-sm theme-text-muted">{{ user.city || 'N/A' }}</div>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
+              <td class="whitespace-nowrap">
                 <span
                   :class="[
                     'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
@@ -203,10 +191,10 @@
                   {{ user.is_active ? 'Activo' : 'Inactivo' }}
                 </span>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td class="whitespace-nowrap text-sm theme-text-muted">
                 {{ formatDate(user.last_sign_in_at) }}
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+              <td class="whitespace-nowrap text-sm font-medium">
                 <div class="flex space-x-2">
                   <button
                     @click="viewUser(user)"

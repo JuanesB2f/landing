@@ -1,23 +1,23 @@
 <template>
   <div>
     <!-- Header con botón de agregar categoría -->
-    <div class="flex justify-between items-center mb-6">
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4 sm:mb-6">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900">Gestión de Categorías</h1>
-        <p class="text-gray-600">Administra las categorías de productos de tu tienda</p>
+        <h1 class="text-xl sm:text-2xl font-bold theme-text-primary">Gestión de Categorías</h1>
+        <p class="text-sm sm:text-base theme-text-secondary mt-0.5">Administra las categorías de productos de tu tienda</p>
       </div>
       <button
         @click="openCreateModal"
-        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 sm:px-4 rounded-lg flex items-center justify-center space-x-2 transition-colors text-sm sm:text-base w-full sm:w-auto"
       >
-        <Icon name="heroicons:plus" class="w-5 h-5" />
+        <Icon name="heroicons:plus" class="w-5 h-5 shrink-0" />
         <span>Agregar Categoría</span>
       </button>
     </div>
 
     <!-- Filtros y búsqueda -->
-    <div class="bg-white p-4 rounded-lg shadow-sm mb-6">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="theme-card-bg p-3 sm:p-4 rounded-lg shadow-sm mb-4 sm:mb-6 border theme-border">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
         <!-- Búsqueda -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Buscar</label>
@@ -55,56 +55,44 @@
     </div>
 
     <!-- Tabla de categorías -->
-    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+    <div class="rounded-lg overflow-hidden border border-gray-200 dark:border-[var(--border-color)]">
       <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
+        <table class="min-w-full admin-table">
+          <thead>
             <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Categoría
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Descripción
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Productos
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Estado
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Fecha Creación
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Acciones
-              </th>
+              <th>Categoría</th>
+              <th>Descripción</th>
+              <th>Productos</th>
+              <th>Estado</th>
+              <th>Fecha Creación</th>
+              <th>Acciones</th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
-            <tr v-for="category in filteredCategories.slice(startIndex, endIndex)" :key="category.id_category" class="hover:bg-gray-50">
-              <td class="px-6 py-4 whitespace-nowrap">
+          <tbody>
+            <tr v-for="category in filteredCategories.slice(startIndex, endIndex)" :key="category.id_category">
+              <td class="whitespace-nowrap">
                 <div class="flex items-center">
                   <div class="flex-shrink-0 h-10 w-10">
-                    <div class="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                      <Icon name="heroicons:tag" class="w-5 h-5 text-blue-600" />
+                    <div class="h-10 w-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                      <Icon name="heroicons:tag" class="w-5 h-5 text-blue-600 dark:text-blue-300" />
                     </div>
                   </div>
                   <div class="ml-4">
-                    <div class="text-sm font-medium text-gray-900">{{ category.name }}</div>
+                    <div class="text-sm font-medium theme-text-primary">{{ category.name }}</div>
                   </div>
                 </div>
               </td>
-              <td class="px-6 py-4">
-                <div class="text-sm text-gray-900 max-w-xs truncate">
+              <td>
+                <div class="text-sm max-w-xs truncate theme-text-primary">
                   {{ category.description || 'Sin descripción' }}
                 </div>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
+              <td class="whitespace-nowrap">
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
                   {{ category.product_count || 0 }} productos
                 </span>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
+              <td class="whitespace-nowrap">
                 <span
                   :class="[
                     'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
@@ -114,10 +102,10 @@
                   {{ category.is_active ? 'Activa' : 'Inactiva' }}
                 </span>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td class="whitespace-nowrap text-sm theme-text-muted">
                 {{ formatDate(category.created_at) }}
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+              <td class="whitespace-nowrap text-sm font-medium">
                 <div class="flex space-x-2">
                   <button
                     @click="editCategory(category)"
