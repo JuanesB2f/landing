@@ -26,8 +26,8 @@
         <div class="theme-login-card backdrop-blur-xl rounded-2xl shadow-2xl theme-login-border p-8">
           <!-- Header -->
           <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-accent to-accent-secondary rounded-full mb-6 shadow-lg">
-              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="login-card-icon inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-accent to-accent-secondary rounded-full mb-6 shadow-lg">
+              <svg class="w-8 h-8 text-white login-card-icon-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
               </svg>
             </div>
@@ -313,6 +313,13 @@ const loginWithGoogle = async () => {
 
 .theme-light .back-to-home-btn span {
   color: #1f2937 !important;
+}
+
+/* Tema claro: icono del candado en negro para que se vea sobre el círculo */
+.theme-light .login-card-icon-svg,
+.theme-light .login-card-icon svg {
+  color: #000 !important;
+  stroke: #000 !important;
 }
 
 /* Tema claro: botón Iniciar sesión negro para que se vea */

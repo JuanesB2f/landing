@@ -19,18 +19,29 @@
           class="flex flex-col md:flex-row gap-6 justify-between items-start md:items-center mb-6"
         >
           <!-- Search -->
-          <div class="relative w-full md:w-96">
+          <div class="relative w-full md:w-96 shop-search-wrap">
+            <Icon
+              name="heroicons:magnifying-glass"
+              class="shop-search-icon absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 pointer-events-none"
+              aria-hidden
+            />
             <input
               v-model="searchQuery"
               @input="debouncedSearch"
               type="text"
               placeholder="Buscar productos..."
-              class="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all bg-gray-50 focus:bg-white"
+              class="shop-search-input w-full pl-12 pr-10 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all bg-gray-50 focus:bg-white text-gray-900 placeholder-gray-500"
+              aria-label="Buscar productos"
             />
-            <Icon
-              name="heroicons:magnifying-glass"
-              class="absolute left-4 top-3.5 w-5 h-5 text-gray-400"
-            />
+            <button
+              v-if="searchQuery"
+              type="button"
+              @click="clearSearch"
+              class="shop-search-clear absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-1 transition-colors"
+              aria-label="Limpiar búsqueda"
+            >
+              <Icon name="heroicons:x-mark" class="w-5 h-5" />
+            </button>
           </div>
 
           <!-- Sort -->
@@ -54,17 +65,17 @@
         </div>
 
         <!-- Category Pills -->
-        <div class="space-y-3">
+        <div class="space-y-3 shop-category-filters">
           <h3
             class="text-sm font-medium text-gray-500 uppercase tracking-wider"
           >
             Categorías
           </h3>
-          <div class="flex flex-wrap gap-2">
+          <div class="flex flex-wrap gap-2 shop-category-pills">
             <button
               @click="selectedCategory = ''"
               :class="[
-                'px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border',
+                'shop-category-pill px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border',
                 selectedCategory === ''
                   ? 'bg-pink-600 text-white border-pink-600 shadow-md transform scale-105'
                   : 'bg-white text-gray-600 border-gray-200 hover:border-pink-300 hover:text-pink-600 hover:bg-pink-50',
@@ -77,7 +88,7 @@
               :key="cat.id_category"
               @click="selectedCategory = cat.id_category"
               :class="[
-                'px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border',
+                'shop-category-pill px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border',
                 selectedCategory === cat.id_category
                   ? 'bg-pink-600 text-white border-pink-600 shadow-md transform scale-105'
                   : 'bg-white text-gray-600 border-gray-200 hover:border-pink-300 hover:text-pink-600 hover:bg-pink-50',
@@ -294,6 +305,12 @@ const debouncedSearch = () => {
     page.value = 1
     fetchProducts()
   }, 500)
+}
+
+const clearSearch = () => {
+  searchQuery.value = ''
+  page.value = 1
+  fetchProducts()
 }
 
 // Watchers

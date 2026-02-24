@@ -1,0 +1,1 @@
+import{b5 as n,j as i,b6 as c,y as a}from"./V-7GhWU_.js";const h=n(async f=>{var u,s;let t,o;const{user:r,checkAuth:l}=i();let e=(u=r.value)==null?void 0:u.role;if(e||(e=([t,o]=c(()=>l()),t=await t,o(),t)?(s=r.value)==null?void 0:s.role:null),!e)return a("/login");if(e!=="user"&&e!=="customer")return a("/unauthorized")});export{h as default};

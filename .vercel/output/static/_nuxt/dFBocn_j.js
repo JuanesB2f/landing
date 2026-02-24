@@ -1,0 +1,1 @@
+const s=()=>({formatCOP:(r,t={})=>{const e=typeof r=="string"?parseFloat(r):r||0;return new Intl.NumberFormat("es-CO",{style:"currency",currency:"COP",minimumFractionDigits:0,maximumFractionDigits:0,...t}).format(e)}});export{s as u};

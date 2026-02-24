@@ -336,9 +336,60 @@ body, html, * {
 .theme-dark .hover\:bg-gray-50:hover { background-color: var(--bg-hover) !important; }
 .theme-dark .text-gray-900 { color: var(--text-primary) !important; }
 .theme-dark .text-gray-700 { color: var(--text-secondary) !important; }
+.theme-dark .text-gray-400 { color: var(--text-muted) !important; }
 .theme-dark .text-gray-500 { color: var(--text-muted) !important; }
-.theme-dark .border-gray-200, .theme-dark .border-gray-300 { border-color: var(--border-color) !important; }
+.theme-dark .text-gray-600 { color: var(--text-secondary) !important; }
+.theme-dark .border-gray-100, .theme-dark .border-gray-200, .theme-dark .border-gray-300 { border-color: var(--border-color) !important; }
 .theme-dark .divide-gray-200 > :not([hidden]) ~ :not([hidden]) { border-color: var(--border-color) !important; }
+
+/* Catálogo shop: botones de categoría visibles en tema oscuro (fondo + borde como la letra corregida) */
+.theme-dark .shop-category-pills .shop-category-pill {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-secondary) !important;
+  border-color: var(--border-color) !important;
+}
+.theme-dark .shop-category-pills .shop-category-pill:hover {
+  background-color: var(--bg-hover) !important;
+  color: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+.theme-dark .shop-category-pills .shop-category-pill.bg-pink-600 {
+  background-color: var(--accent) !important;
+  color: #fff !important;
+  border-color: var(--accent) !important;
+}
+
+/* Catálogo shop: buscador con buen contraste en tema claro y oscuro */
+.shop-search-input::placeholder {
+  color: #6b7280;
+}
+.theme-dark .shop-search-wrap .shop-search-input {
+  background-color: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+.theme-dark .shop-search-wrap .shop-search-input::placeholder {
+  color: var(--text-muted) !important;
+}
+.theme-dark .shop-search-wrap .shop-search-input:focus {
+  background-color: var(--bg-secondary) !important;
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 2px rgba(189, 142, 137, 0.25);
+}
+.theme-dark .shop-search-wrap .shop-search-icon {
+  color: var(--text-muted) !important;
+}
+.theme-dark .shop-search-wrap .shop-search-clear {
+  color: var(--text-muted) !important;
+}
+.theme-dark .shop-search-wrap .shop-search-clear:hover {
+  color: var(--text-primary) !important;
+  background-color: var(--bg-hover) !important;
+}
+.theme-dark .shop-search-wrap .shop-search-clear:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent);
+}
 
 /* Selects y opciones: forzar colores del tema en modo oscuro y claro */
 select {

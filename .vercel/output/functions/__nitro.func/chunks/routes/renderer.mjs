@@ -1,2 +1,568 @@
-import{createRenderer as e,getRequestDependencies as t,getPreloadLinks as n,getPrefetchLinks as r}from"vue-bundle-renderer/runtime";import{b as o,a as s,d as a,c as i,g as l,e as d,f as u,u as c,h as p,i as h}from"../_/nitro.mjs";import{renderToString as f}from"vue/server-renderer";import{createHead as m,propsToString as y,renderSSRHead as g}from"unhead/server";import{stringify as b,uneval as w}from"devalue";import{walkResolver as _}from"unhead/utils";import{toValue as v,isRef as C,hasInjectionContext as S,inject as x,ref as T,watchEffect as j,getCurrentInstance as R,onBeforeUnmount as A,onDeactivated as k,onActivated as P}from"vue";import{DeprecationsPlugin as H,PromisesPlugin as $,TemplateParamsPlugin as L,AliasSortingPlugin as z}from"unhead/plugins";const VueResolver=(e,t)=>C(t)?v(t):t,U="usehead";function useHead(e,t={}){const n=t.head||function(){if(S()){const e=x(U);if(!e)throw new Error("useHead() was called without provide context, ensure you call it through the setup() function.");return e}throw new Error("useHead() was called without provide context, ensure you call it through the setup() function.")}();return n.ssr?n.push(e||{},t):function(e,t,n={}){const r=T(!1);let o;j(()=>{const s=r.value?{}:_(t,VueResolver);o?o.patch(s):o=e.push(s,n)});R()&&(A(()=>{o.dispose()}),k(()=>{r.value=!0}),P(()=>{r.value=!1}));return o}(n,e,t)}function createHead(e={}){const t=m({...e,propResolvers:[VueResolver]});return t.install=function(e){return{install(t){t.config.globalProperties.$unhead=e,t.config.globalProperties.$head=e,t.provide(U,e)}}.install}(t),t}const O={meta:[{charset:"utf-8"},{name:"viewport",content:"width=device-width, initial-scale=1"},{name:"description",content:"Tu tienda de belleza y moda femenina con los mejores productos seleccionados especialmente para la mujer moderna y elegante."},{name:"theme-color",content:"#ec4899"}],link:[{rel:"icon",href:"/favicon.ico"},{rel:"preconnect",href:"https://fonts.googleapis.com"},{rel:"preconnect",href:"https://fonts.gstatic.com",crossorigin:""},{rel:"stylesheet",href:"https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap"}],style:[],script:[],noscript:[],title:"BeautyStore - Tu E-commerce Femenino"},M={id:"teleports"},E=`<div${y({id:"__nuxt",class:"isolate"})}>`,F="</div>",getClientManifest=()=>import("../build/client.manifest.mjs").then(e=>e.default||e).then(e=>"function"==typeof e?e():e),N=lazyCachedFunction(async()=>{const t=await getClientManifest();if(!t)throw new Error("client.manifest is not available");const n=await import("../build/server.mjs").then(e=>e.default||e);if(!n)throw new Error("Server bundle is not available");return e(n,{manifest:t,renderToString:async function(e,t){const n=await f(e,t);return E+n+F},buildAssetsURL:o})}),B=lazyCachedFunction(async()=>{const t=await getClientManifest(),n=await import("../virtual/_virtual_spa-template.mjs").then(e=>e.template).catch(()=>"").then(e=>E+e+F),r=e(()=>()=>{},{manifest:t,renderToString:()=>n,buildAssetsURL:o}),a=await r.renderToString({});return{rendererContext:r.rendererContext,renderToString:e=>{const t=s(e.event);return e.modules||=new Set,e.payload.serverRendered=!1,e.config={public:t.public,app:t.app},Promise.resolve(a)}}});function lazyCachedFunction(e){let t=null;return()=>(null===t&&(t=e().catch(e=>{throw t=null,e})),t)}const D=lazyCachedFunction(()=>import("../build/styles.mjs").then(e=>e.default||e));function renderPayloadJsonScript(e){const t={type:"application/json",innerHTML:e.data?b(e.data,e.ssrContext._payloadReducers):"","data-nuxt-data":"nuxt-app","data-ssr":!e.ssrContext.noSSR,id:"__NUXT_DATA__"};e.src&&(t["data-src"]=e.src);return[t,{innerHTML:`window.__NUXT__={};window.__NUXT__.config=${w(e.ssrContext.config)}`}]}const X={disableDefaults:!0,disableCapoSorting:!1,plugins:[H,$,L,z]};const I={omitLineBreaks:!1};globalThis.__buildAssetsURL=o,globalThis.__publicAssetsURL=i;const J=!!M.id,q=J?`<div${y(M)}>`:"",W=J?"</div>":"",Y=a(async e=>{const a=c(),i=e.path.startsWith("/__nuxt_error")?l(e):null;if(i&&!("__unenv__"in e.node.req))throw d({statusCode:404,statusMessage:"Page Not Found: /__nuxt_error"});const f=function(e){return{url:e.path,event:e,runtimeConfig:s(e),noSSR:e.context.nuxt?.noSSR||!1,head:createHead(X),error:!1,nuxt:void 0,payload:{},_payloadReducers:Object.create(null),modules:new Set}}(e),m={mode:"server"};f.head.push(O,m),i&&(i.statusCode&&=Number.parseInt(i.statusCode),function(e,t){e.error=!0,e.payload={error:t},e.url=t.url}(f,i));const y=u(e);!1===y.ssr&&(f.noSSR=!0);const b=await function(e){return e.noSSR?B():N()}(f);for(const e of await getClientManifest().then(e=>Object.values(e).filter(e=>e._globalCSS).map(e=>e.src)))f.modules.add(e);const w=await b.renderToString(f).catch(async e=>{if(f._renderResponse&&"skipping render"===e.message)return{};const t=!i&&f.payload?.error||e;throw await(f.nuxt?.hooks.callHook("app:error",t)),t}),_=f._renderResponse?[]:await async function(e){const t=await D(),n=new Set;for(const r of e)if(r in t&&t[r])for(const e of await t[r]())n.add(e);return Array.from(n).map(e=>({innerHTML:e}))}(f.modules??[]);if(await(f.nuxt?.hooks.callHook("app:rendered",{ssrContext:f,renderResult:w})),f._renderResponse)return f._renderResponse;if(f.payload?.error&&!i)throw f.payload.error;const v=y.noScripts,{styles:C,scripts:S}=t(f,b.rendererContext);f._preloadManifest&&!v&&f.head.push({link:[{rel:"preload",as:"fetch",fetchpriority:"low",crossorigin:"anonymous",href:o(`builds/meta/${f.runtimeConfig.app.buildId}.json`)}]},{...m,tagPriority:"low"}),_.length&&f.head.push({style:_});const x=[];for(const e of Object.values(C))x.push({rel:"stylesheet",href:b.rendererContext.buildAssetsURL(e.file),crossorigin:""});if(x.length&&f.head.push({link:x},m),v||(f.head.push({link:n(f,b.rendererContext)},m),f.head.push({link:r(f,b.rendererContext)},m),f.head.push({script:renderPayloadJsonScript({ssrContext:f,data:f.payload})},{...m,tagPosition:"bodyClose",tagPriority:"high"})),!y.noScripts){const e="head";f.head.push({script:Object.values(S).map(t=>({type:t.module?"module":null,src:b.rendererContext.buildAssetsURL(t.file),defer:!t.module||null,tagPosition:e,crossorigin:""}))},m)}const{headTags:T,bodyTags:j,bodyTagsOpen:R,htmlAttrs:A,bodyAttrs:k}=await g(f.head,I),P={htmlAttrs:A?[A]:[],head:normalizeChunks([T]),bodyAttrs:k?[k]:[],bodyPrepend:normalizeChunks([R,f.teleports?.body]),body:[w.html,q+(J?joinTags([f.teleports?.[`#${M.id}`]]):"")+W],bodyAppend:[j]};return await a.hooks.callHook("render:html",P,{event:e}),{body:(H=P,`<!DOCTYPE html><html${joinAttrs(H.htmlAttrs)}><head>${joinTags(H.head)}</head><body${joinAttrs(H.bodyAttrs)}>${joinTags(H.bodyPrepend)}${joinTags(H.body)}${joinTags(H.bodyAppend)}</body></html>`),statusCode:h(e),statusMessage:p(e),headers:{"content-type":"text/html;charset=utf-8","x-powered-by":"Nuxt"}};var H});function normalizeChunks(e){return e.filter(Boolean).map(e=>e.trim())}function joinTags(e){return e.join("")}function joinAttrs(e){return 0===e.length?"":" "+e.join(" ")}const G=Object.freeze(Object.defineProperty({__proto__:null,default:Y},Symbol.toStringTag,{value:"Module"}));export{U as h,G as r,useHead as u};
+import { createRenderer, getRequestDependencies, getPreloadLinks, getPrefetchLinks } from 'vue-bundle-renderer/runtime';
+import { o as buildAssetsURL, f as useRuntimeConfig, q as defineRenderHandler, v as publicAssetsURL, m as getQuery, n as createError, w as getRouteRules, u as useNitroApp, x as getResponseStatusText, y as getResponseStatus } from '../_/nitro.mjs';
+import { renderToString } from 'vue/server-renderer';
+import { createHead as createHead$1, propsToString, renderSSRHead } from 'unhead/server';
+import { walkResolver } from 'unhead/utils';
+import { toValue, isRef, hasInjectionContext, inject, ref, watchEffect, getCurrentInstance, onBeforeUnmount, onDeactivated, onActivated } from 'vue';
+import { DeprecationsPlugin, PromisesPlugin, TemplateParamsPlugin, AliasSortingPlugin } from 'unhead/plugins';
+
+const VueResolver = (_, value) => {
+  return isRef(value) ? toValue(value) : value;
+};
+
+const headSymbol = "usehead";
+function vueInstall(head) {
+  const plugin = {
+    install(app) {
+      app.config.globalProperties.$unhead = head;
+      app.config.globalProperties.$head = head;
+      app.provide(headSymbol, head);
+    }
+  };
+  return plugin.install;
+}
+
+function injectHead() {
+  if (hasInjectionContext()) {
+    const instance = inject(headSymbol);
+    if (!instance) {
+      throw new Error("useHead() was called without provide context, ensure you call it through the setup() function.");
+    }
+    return instance;
+  }
+  throw new Error("useHead() was called without provide context, ensure you call it through the setup() function.");
+}
+function useHead(input, options = {}) {
+  const head = options.head || injectHead();
+  return head.ssr ? head.push(input || {}, options) : clientUseHead(head, input, options);
+}
+function clientUseHead(head, input, options = {}) {
+  const deactivated = ref(false);
+  let entry;
+  watchEffect(() => {
+    const i = deactivated.value ? {} : walkResolver(input, VueResolver);
+    if (entry) {
+      entry.patch(i);
+    } else {
+      entry = head.push(i, options);
+    }
+  });
+  const vm = getCurrentInstance();
+  if (vm) {
+    onBeforeUnmount(() => {
+      entry.dispose();
+    });
+    onDeactivated(() => {
+      deactivated.value = true;
+    });
+    onActivated(() => {
+      deactivated.value = false;
+    });
+  }
+  return entry;
+}
+
+function createHead(options = {}) {
+  const head = createHead$1({
+    ...options,
+    propResolvers: [VueResolver]
+  });
+  head.install = vueInstall(head);
+  return head;
+}
+
+const appHead = {"meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"},{"name":"description","content":"Tu tienda de belleza y moda femenina con los mejores productos seleccionados especialmente para la mujer moderna y elegante."},{"name":"theme-color","content":"#F4E1E0"}],"link":[{"rel":"icon","href":"/favicon.ico"}],"style":[],"script":[{"tagPosition":"head","children":";(function(){try{var t=localStorage.getItem('theme');var d=t==='dark';var e=document.documentElement;e.classList.remove('theme-light','theme-dark','dark');if(d){e.classList.add('theme-dark');e.classList.add('dark');}else{e.classList.add('theme-light');}}catch(_e){}})();"}],"noscript":[],"title":"BylotoStore - Tu E-commerce Femenino"};
+
+const appRootTag = "div";
+
+const appRootAttrs = {"id":"__nuxt","class":"isolate"};
+
+const appTeleportTag = "div";
+
+const appTeleportAttrs = {"id":"teleports"};
+
+const appId = "nuxt-app";
+
+const APP_ROOT_OPEN_TAG = `<${appRootTag}${propsToString(appRootAttrs)}>`;
+const APP_ROOT_CLOSE_TAG = `</${appRootTag}>`;
+const getServerEntry = () => import('../build/server.mjs').then((r) => r.default || r);
+const getClientManifest = () => import('../build/client.manifest.mjs').then((r) => r.default || r).then((r) => typeof r === "function" ? r() : r);
+const getSSRRenderer = lazyCachedFunction(async () => {
+  const manifest = await getClientManifest();
+  if (!manifest) {
+    throw new Error("client.manifest is not available");
+  }
+  const createSSRApp = await getServerEntry();
+  if (!createSSRApp) {
+    throw new Error("Server bundle is not available");
+  }
+  const options = {
+    manifest,
+    renderToString: renderToString$1,
+    buildAssetsURL
+  };
+  const renderer = createRenderer(createSSRApp, options);
+  async function renderToString$1(input, context) {
+    const html = await renderToString(input, context);
+    return APP_ROOT_OPEN_TAG + html + APP_ROOT_CLOSE_TAG;
+  }
+  return renderer;
+});
+const getSPARenderer = lazyCachedFunction(async () => {
+  const manifest = await getClientManifest();
+  const spaTemplate = await import('../virtual/_virtual_spa-template.mjs').then((r) => r.template).catch(() => "").then((r) => {
+    {
+      return APP_ROOT_OPEN_TAG + r + APP_ROOT_CLOSE_TAG;
+    }
+  });
+  const options = {
+    manifest,
+    renderToString: () => spaTemplate,
+    buildAssetsURL
+  };
+  const renderer = createRenderer(() => () => {
+  }, options);
+  const result = await renderer.renderToString({});
+  const renderToString = (ssrContext) => {
+    const config = useRuntimeConfig(ssrContext.event);
+    ssrContext.modules ||= /* @__PURE__ */ new Set();
+    ssrContext.payload.serverRendered = false;
+    ssrContext.config = {
+      public: config.public,
+      app: config.app
+    };
+    return Promise.resolve(result);
+  };
+  return {
+    rendererContext: renderer.rendererContext,
+    renderToString
+  };
+});
+function lazyCachedFunction(fn) {
+  let res = null;
+  return () => {
+    if (res === null) {
+      res = fn().catch((err) => {
+        res = null;
+        throw err;
+      });
+    }
+    return res;
+  };
+}
+function getRenderer(ssrContext) {
+  return ssrContext.noSSR ? getSPARenderer() : getSSRRenderer();
+}
+
+const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_$";
+const unsafeChars = /[<>\b\f\n\r\t\0\u2028\u2029]/g;
+const reserved = /^(?:do|if|in|for|int|let|new|try|var|byte|case|char|else|enum|goto|long|this|void|with|await|break|catch|class|const|final|float|short|super|throw|while|yield|delete|double|export|import|native|return|switch|throws|typeof|boolean|default|extends|finally|package|private|abstract|continue|debugger|function|volatile|interface|protected|transient|implements|instanceof|synchronized)$/;
+const escaped = {
+  "<": "\\u003C",
+  ">": "\\u003E",
+  "/": "\\u002F",
+  "\\": "\\\\",
+  "\b": "\\b",
+  "\f": "\\f",
+  "\n": "\\n",
+  "\r": "\\r",
+  "	": "\\t",
+  "\0": "\\0",
+  "\u2028": "\\u2028",
+  "\u2029": "\\u2029"
+};
+const objectProtoOwnPropertyNames = Object.getOwnPropertyNames(Object.prototype).sort().join("\0");
+function devalue(value) {
+  const counts = /* @__PURE__ */ new Map();
+  let logNum = 0;
+  function log(message) {
+    if (logNum < 100) {
+      console.warn(message);
+      logNum += 1;
+    }
+  }
+  function walk(thing) {
+    if (typeof thing === "function") {
+      log(`Cannot stringify a function ${thing.name}`);
+      return;
+    }
+    if (counts.has(thing)) {
+      counts.set(thing, counts.get(thing) + 1);
+      return;
+    }
+    counts.set(thing, 1);
+    if (!isPrimitive(thing)) {
+      const type = getType(thing);
+      switch (type) {
+        case "Number":
+        case "String":
+        case "Boolean":
+        case "Date":
+        case "RegExp":
+          return;
+        case "Array":
+          thing.forEach(walk);
+          break;
+        case "Set":
+        case "Map":
+          Array.from(thing).forEach(walk);
+          break;
+        default:
+          const proto = Object.getPrototypeOf(thing);
+          if (proto !== Object.prototype && proto !== null && Object.getOwnPropertyNames(proto).sort().join("\0") !== objectProtoOwnPropertyNames) {
+            if (typeof thing.toJSON !== "function") {
+              log(`Cannot stringify arbitrary non-POJOs ${thing.constructor.name}`);
+            }
+          } else if (Object.getOwnPropertySymbols(thing).length > 0) {
+            log(`Cannot stringify POJOs with symbolic keys ${Object.getOwnPropertySymbols(thing).map((symbol) => symbol.toString())}`);
+          } else {
+            Object.keys(thing).forEach((key) => walk(thing[key]));
+          }
+      }
+    }
+  }
+  walk(value);
+  const names = /* @__PURE__ */ new Map();
+  Array.from(counts).filter((entry) => entry[1] > 1).sort((a, b) => b[1] - a[1]).forEach((entry, i) => {
+    names.set(entry[0], getName(i));
+  });
+  function stringify(thing) {
+    if (names.has(thing)) {
+      return names.get(thing);
+    }
+    if (isPrimitive(thing)) {
+      return stringifyPrimitive(thing);
+    }
+    const type = getType(thing);
+    switch (type) {
+      case "Number":
+      case "String":
+      case "Boolean":
+        return `Object(${stringify(thing.valueOf())})`;
+      case "RegExp":
+        return thing.toString();
+      case "Date":
+        return `new Date(${thing.getTime()})`;
+      case "Array":
+        const members = thing.map((v, i) => i in thing ? stringify(v) : "");
+        const tail = thing.length === 0 || thing.length - 1 in thing ? "" : ",";
+        return `[${members.join(",")}${tail}]`;
+      case "Set":
+      case "Map":
+        return `new ${type}([${Array.from(thing).map(stringify).join(",")}])`;
+      default:
+        if (thing.toJSON) {
+          let json = thing.toJSON();
+          if (getType(json) === "String") {
+            try {
+              json = JSON.parse(json);
+            } catch (e) {
+            }
+          }
+          return stringify(json);
+        }
+        if (Object.getPrototypeOf(thing) === null) {
+          if (Object.keys(thing).length === 0) {
+            return "Object.create(null)";
+          }
+          return `Object.create(null,{${Object.keys(thing).map((key) => `${safeKey(key)}:{writable:true,enumerable:true,value:${stringify(thing[key])}}`).join(",")}})`;
+        }
+        return `{${Object.keys(thing).map((key) => `${safeKey(key)}:${stringify(thing[key])}`).join(",")}}`;
+    }
+  }
+  const str = stringify(value);
+  if (names.size) {
+    const params = [];
+    const statements = [];
+    const values = [];
+    names.forEach((name, thing) => {
+      params.push(name);
+      if (isPrimitive(thing)) {
+        values.push(stringifyPrimitive(thing));
+        return;
+      }
+      const type = getType(thing);
+      switch (type) {
+        case "Number":
+        case "String":
+        case "Boolean":
+          values.push(`Object(${stringify(thing.valueOf())})`);
+          break;
+        case "RegExp":
+          values.push(thing.toString());
+          break;
+        case "Date":
+          values.push(`new Date(${thing.getTime()})`);
+          break;
+        case "Array":
+          values.push(`Array(${thing.length})`);
+          thing.forEach((v, i) => {
+            statements.push(`${name}[${i}]=${stringify(v)}`);
+          });
+          break;
+        case "Set":
+          values.push("new Set");
+          statements.push(`${name}.${Array.from(thing).map((v) => `add(${stringify(v)})`).join(".")}`);
+          break;
+        case "Map":
+          values.push("new Map");
+          statements.push(`${name}.${Array.from(thing).map(([k, v]) => `set(${stringify(k)}, ${stringify(v)})`).join(".")}`);
+          break;
+        default:
+          values.push(Object.getPrototypeOf(thing) === null ? "Object.create(null)" : "{}");
+          Object.keys(thing).forEach((key) => {
+            statements.push(`${name}${safeProp(key)}=${stringify(thing[key])}`);
+          });
+      }
+    });
+    statements.push(`return ${str}`);
+    return `(function(${params.join(",")}){${statements.join(";")}}(${values.join(",")}))`;
+  } else {
+    return str;
+  }
+}
+function getName(num) {
+  let name = "";
+  do {
+    name = chars[num % chars.length] + name;
+    num = ~~(num / chars.length) - 1;
+  } while (num >= 0);
+  return reserved.test(name) ? `${name}0` : name;
+}
+function isPrimitive(thing) {
+  return Object(thing) !== thing;
+}
+function stringifyPrimitive(thing) {
+  if (typeof thing === "string") {
+    return stringifyString(thing);
+  }
+  if (thing === void 0) {
+    return "void 0";
+  }
+  if (thing === 0 && 1 / thing < 0) {
+    return "-0";
+  }
+  const str = String(thing);
+  if (typeof thing === "number") {
+    return str.replace(/^(-)?0\./, "$1.");
+  }
+  return str;
+}
+function getType(thing) {
+  return Object.prototype.toString.call(thing).slice(8, -1);
+}
+function escapeUnsafeChar(c) {
+  return escaped[c] || c;
+}
+function escapeUnsafeChars(str) {
+  return str.replace(unsafeChars, escapeUnsafeChar);
+}
+function safeKey(key) {
+  return /^[_$a-zA-Z][_$a-zA-Z0-9]*$/.test(key) ? key : escapeUnsafeChars(JSON.stringify(key));
+}
+function safeProp(key) {
+  return /^[_$a-zA-Z][_$a-zA-Z0-9]*$/.test(key) ? `.${key}` : `[${escapeUnsafeChars(JSON.stringify(key))}]`;
+}
+function stringifyString(str) {
+  let result = '"';
+  for (let i = 0; i < str.length; i += 1) {
+    const char = str.charAt(i);
+    const code = char.charCodeAt(0);
+    if (char === '"') {
+      result += '\\"';
+    } else if (char in escaped) {
+      result += escaped[char];
+    } else if (code >= 55296 && code <= 57343) {
+      const next = str.charCodeAt(i + 1);
+      if (code <= 56319 && (next >= 56320 && next <= 57343)) {
+        result += char + str[++i];
+      } else {
+        result += `\\u${code.toString(16).toUpperCase()}`;
+      }
+    } else {
+      result += char;
+    }
+  }
+  result += '"';
+  return result;
+}
+
+function renderPayloadScript(opts) {
+  opts.data.config = opts.ssrContext.config;
+  const nuxtData = devalue(opts.data);
+  const singleAppPayload = `window.__NUXT__=${nuxtData}`;
+  `window.__NUXT__=window.__NUXT__||{};window.__NUXT__[${JSON.stringify(appId)}]=${nuxtData}`;
+  return [
+    {
+      innerHTML: singleAppPayload
+    }
+  ];
+}
+
+const unheadOptions = {
+  disableDefaults: true,
+  disableCapoSorting: true,
+  plugins: [DeprecationsPlugin, PromisesPlugin, TemplateParamsPlugin, AliasSortingPlugin],
+};
+
+function createSSRContext(event) {
+  const ssrContext = {
+    url: event.path,
+    event,
+    runtimeConfig: useRuntimeConfig(event),
+    noSSR: event.context.nuxt?.noSSR || (false),
+    head: createHead(unheadOptions),
+    error: false,
+    nuxt: void 0,
+    /* NuxtApp */
+    payload: {},
+    _payloadReducers: /* @__PURE__ */ Object.create(null),
+    modules: /* @__PURE__ */ new Set()
+  };
+  return ssrContext;
+}
+function setSSRError(ssrContext, error) {
+  ssrContext.error = true;
+  ssrContext.payload = { error };
+  ssrContext.url = error.url;
+}
+
+const renderSSRHeadOptions = {"omitLineBreaks":false};
+
+globalThis.__buildAssetsURL = buildAssetsURL;
+globalThis.__publicAssetsURL = publicAssetsURL;
+const HAS_APP_TELEPORTS = !!(appTeleportAttrs.id);
+const APP_TELEPORT_OPEN_TAG = HAS_APP_TELEPORTS ? `<${appTeleportTag}${propsToString(appTeleportAttrs)}>` : "";
+const APP_TELEPORT_CLOSE_TAG = HAS_APP_TELEPORTS ? `</${appTeleportTag}>` : "";
+const renderer = defineRenderHandler(async (event) => {
+  const nitroApp = useNitroApp();
+  const ssrError = event.path.startsWith("/__nuxt_error") ? getQuery(event) : null;
+  if (ssrError && !("__unenv__" in event.node.req)) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: "Page Not Found: /__nuxt_error"
+    });
+  }
+  const ssrContext = createSSRContext(event);
+  const headEntryOptions = { mode: "server" };
+  ssrContext.head.push(appHead, headEntryOptions);
+  if (ssrError) {
+    ssrError.statusCode &&= Number.parseInt(ssrError.statusCode);
+    setSSRError(ssrContext, ssrError);
+  }
+  const routeOptions = getRouteRules(event);
+  if (routeOptions.ssr === false) {
+    ssrContext.noSSR = true;
+  }
+  const renderer = await getRenderer(ssrContext);
+  const _rendered = await renderer.renderToString(ssrContext).catch(async (error) => {
+    if (ssrContext._renderResponse && error.message === "skipping render") {
+      return {};
+    }
+    const _err = !ssrError && ssrContext.payload?.error || error;
+    await ssrContext.nuxt?.hooks.callHook("app:error", _err);
+    throw _err;
+  });
+  const inlinedStyles = [];
+  await ssrContext.nuxt?.hooks.callHook("app:rendered", { ssrContext, renderResult: _rendered });
+  if (ssrContext._renderResponse) {
+    return ssrContext._renderResponse;
+  }
+  if (ssrContext.payload?.error && !ssrError) {
+    throw ssrContext.payload.error;
+  }
+  const NO_SCRIPTS = routeOptions.noScripts;
+  const { styles, scripts } = getRequestDependencies(ssrContext, renderer.rendererContext);
+  if (ssrContext._preloadManifest && !NO_SCRIPTS) {
+    ssrContext.head.push({
+      link: [
+        { rel: "preload", as: "fetch", fetchpriority: "low", crossorigin: "anonymous", href: buildAssetsURL(`builds/meta/${ssrContext.runtimeConfig.app.buildId}.json`) }
+      ]
+    }, { ...headEntryOptions, tagPriority: "low" });
+  }
+  if (inlinedStyles.length) {
+    ssrContext.head.push({ style: inlinedStyles });
+  }
+  const link = [];
+  for (const resource of Object.values(styles)) {
+    link.push({ rel: "stylesheet", href: renderer.rendererContext.buildAssetsURL(resource.file), crossorigin: "" });
+  }
+  if (link.length) {
+    ssrContext.head.push({ link }, headEntryOptions);
+  }
+  if (!NO_SCRIPTS) {
+    ssrContext.head.push({
+      link: getPreloadLinks(ssrContext, renderer.rendererContext)
+    }, headEntryOptions);
+    ssrContext.head.push({
+      link: getPrefetchLinks(ssrContext, renderer.rendererContext)
+    }, headEntryOptions);
+    ssrContext.head.push({
+      script: renderPayloadScript({ ssrContext, data: ssrContext.payload })
+    }, {
+      ...headEntryOptions,
+      // this should come before another end of body scripts
+      tagPosition: "bodyClose",
+      tagPriority: "high"
+    });
+  }
+  if (!routeOptions.noScripts) {
+    const tagPosition = "head";
+    ssrContext.head.push({
+      script: Object.values(scripts).map((resource) => ({
+        type: resource.module ? "module" : null,
+        src: renderer.rendererContext.buildAssetsURL(resource.file),
+        defer: resource.module ? null : true,
+        // if we are rendering script tag payloads that import an async payload
+        // we need to ensure this resolves before executing the Nuxt entry
+        tagPosition,
+        crossorigin: ""
+      }))
+    }, headEntryOptions);
+  }
+  const { headTags, bodyTags, bodyTagsOpen, htmlAttrs, bodyAttrs } = await renderSSRHead(ssrContext.head, renderSSRHeadOptions);
+  const htmlContext = {
+    htmlAttrs: htmlAttrs ? [htmlAttrs] : [],
+    head: normalizeChunks([headTags]),
+    bodyAttrs: bodyAttrs ? [bodyAttrs] : [],
+    bodyPrepend: normalizeChunks([bodyTagsOpen, ssrContext.teleports?.body]),
+    body: [
+      _rendered.html,
+      APP_TELEPORT_OPEN_TAG + (HAS_APP_TELEPORTS ? joinTags([ssrContext.teleports?.[`#${appTeleportAttrs.id}`]]) : "") + APP_TELEPORT_CLOSE_TAG
+    ],
+    bodyAppend: [bodyTags]
+  };
+  await nitroApp.hooks.callHook("render:html", htmlContext, { event });
+  return {
+    body: renderHTMLDocument(htmlContext),
+    statusCode: getResponseStatus(event),
+    statusMessage: getResponseStatusText(event),
+    headers: {
+      "content-type": "text/html;charset=utf-8",
+      "x-powered-by": "Nuxt"
+    }
+  };
+});
+function normalizeChunks(chunks) {
+  return chunks.filter(Boolean).map((i) => i.trim());
+}
+function joinTags(tags) {
+  return tags.join("");
+}
+function joinAttrs(chunks) {
+  if (chunks.length === 0) {
+    return "";
+  }
+  return " " + chunks.join(" ");
+}
+function renderHTMLDocument(html) {
+  return `<!DOCTYPE html><html${joinAttrs(html.htmlAttrs)}><head>${joinTags(html.head)}</head><body${joinAttrs(html.bodyAttrs)}>${joinTags(html.bodyPrepend)}${joinTags(html.body)}${joinTags(html.bodyAppend)}</body></html>`;
+}
+
+const renderer$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: renderer
+}, Symbol.toStringTag, { value: 'Module' }));
+
+export { headSymbol as h, renderer$1 as r, useHead as u };
 //# sourceMappingURL=renderer.mjs.map
