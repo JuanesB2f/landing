@@ -79,6 +79,8 @@ export default defineNuxtConfig({
     public: {
       supabaseUrl: process.env.NUXT_SUPABASE_URL || process.env.NUXT_PUBLIC_SUPABASE_URL || '',
       supabaseKey: process.env.NUXT_SUPABASE_KEY || process.env.NUXT_PUBLIC_SUPABASE_KEY || '',
+      /** URL pública del sitio (ej. https://tu-app.vercel.app). En Vercel: NUXT_PUBLIC_SITE_URL. */
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || '',
     }
   },
   

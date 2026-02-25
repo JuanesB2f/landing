@@ -12,6 +12,10 @@ const preference = new Preference(client)
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
+  const config = useRuntimeConfig()
+  const requestUrl = getRequestURL(event)
+  const baseUrl = (config.public.siteUrl || requestUrl.origin).replace(/\/$/, '')
+
   const supabase = await serverSupabaseClient(event)
 
   if (method !== 'POST') {
@@ -151,12 +155,12 @@ export default defineEventHandler(async (event) => {
         }
       },
       back_urls: {
-        success: `${process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/checkout/success?order_id=${orderData.id_order}`,
-        failure: `${process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/shop/cart?error=payment_failed`,
-        pending: `${process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/checkout/pending?order_id=${orderData.id_order}`
+        success: `${baseUrl}/checkout/success?order_id=${orderData.id_order}`,
+        failure: `${baseUrl}/shop/cart?error=payment_failed`,
+        pending: `${baseUrl}/checkout/pending?order_id=${orderData.id_order}`
       },
       auto_return: 'approved',
-      notification_url: `${process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/mercadopago/webhook`,
+      notification_url: `${baseUrl}/api/mercadopago/webhook`,
       external_reference: orderData.id_order,
       metadata: {
         order_id: orderData.id_order,
