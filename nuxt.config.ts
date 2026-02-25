@@ -1,35 +1,13 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import { createRequire } from 'node:module'
-import { fileURLToPath } from 'node:url'
-import { resolve, dirname } from 'node:path'
-
-const require = createRequire(import.meta.url)
-const __dirname = dirname(fileURLToPath(import.meta.url))
-
 export default defineNuxtConfig({
   ssr: true,
   compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
 
-  hooks: {
-    'nitro:config'(config: any) {
-      config.externals = config.externals || {}
-      config.externals.inline = config.externals.inline || []
-      try {
-        const pkgPath = dirname(require.resolve('@supabase/supabase-js/package.json'))
-        if (!config.externals.inline.includes(pkgPath)) {
-          config.externals.inline.push(pkgPath)
-        }
-      } catch {
-        config.externals.inline.push('@supabase/supabase-js')
-      }
-    }
-  },
-  
   modules: [
+    "@nuxtjs/supabase",
     "@nuxt/ui",
-    "@pinia/nuxt",
-    "@nuxtjs/supabase"
+    "@pinia/nuxt"
   ],
   
   // Configuración de Supabase (el módulo usa runtimeConfig en servidor; aquí solo para build/dev)
@@ -95,7 +73,14 @@ export default defineNuxtConfig({
   },
 
   colorMode: { preference: "light" },
-  
+
+  // Nuxt UI (como en proyecto de referencia)
+  ui: {
+    colorMode: true,
+    fonts: true,
+    theme: { transitions: true },
+  },
+
   // Runtime config: acepta NUXT_SUPABASE_* (local .env) y NUXT_PUBLIC_SUPABASE_* (Vercel)
   runtimeConfig: {
     supabaseServiceKey: process.env.NUXT_SUPABASE_SERVICE_KEY || '',
@@ -111,31 +96,9 @@ export default defineNuxtConfig({
     transpile: ["vue-chartjs", "@iconify/utils"]
   },
   
-  // Configuración de Nitro
+  // Nitro: mismo patrón que el proyecto de referencia (solo preset vercel)
   nitro: {
-    // Solo usar preset de Vercel en producción/build, no en desarrollo
-    ...(process.env.NODE_ENV === 'production' ? { preset: 'vercel' } : {}),
-    experimental: {
-      // Algoritmo legacy de externals: puede empaquetar correctamente @supabase/supabase-js en Vercel
-      legacyExternals: true,
-    },
-    // Incluir @supabase/supabase-js en el bundle del servidor (evita ERR_MODULE_NOT_FOUND en Vercel)
-    externals: { inline: ['@supabase/supabase-js'] },
-    // Comprimir assets solo en producción
-    compressPublicAssets: process.env.NODE_ENV === 'production',
-    routeRules: {
-      // Cache para APIs (solo en producción)
-      ...(process.env.NODE_ENV === 'production' ? {
-        '/api/**': { headers: { 'cache-control': 's-maxage=60' } },
-        '/_nuxt/**': { headers: { 'cache-control': 'max-age=31536000' } }
-      } : {}),
-      // Prerenderizar páginas públicas SOLO en build, no en desarrollo
-      ...(process.env.NODE_ENV === 'production' ? {
-        '/': { prerender: true },
-        '/shop': { prerender: true },
-        '/about': { prerender: true }
-      } : {})
-    }
+    preset: 'vercel',
   },
   
   vite: {
