@@ -1,1 +1,0 @@
-import{x as t,c as r,y as o,o as s}from"./V-7GhWU_.js";const i={__name:"dashboard",async setup(c){let e,a;return[e,a]=t(()=>o("/admin",{replace:!0})),await e,a(),(n,_)=>(s(),r("div"))}};export{i as default};

@@ -1,1 +1,0 @@
-const e="add-intent",o=()=>({setAddIntent:t=>{localStorage.setItem(e,JSON.stringify(t||{}))},consumeAddIntent:()=>{try{const t=localStorage.getItem(e);return t?(localStorage.removeItem(e),JSON.parse(t||"{}")):null}catch{return null}}});export{o as u};
