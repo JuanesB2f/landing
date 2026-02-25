@@ -1,8 +1,30 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { createRequire } from 'node:module'
+import { fileURLToPath } from 'node:url'
+import { resolve, dirname } from 'node:path'
+
+const require = createRequire(import.meta.url)
+const __dirname = dirname(fileURLToPath(import.meta.url))
+
 export default defineNuxtConfig({
   ssr: true,
   compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
+
+  hooks: {
+    'nitro:config'(config: any) {
+      config.externals = config.externals || {}
+      config.externals.inline = config.externals.inline || []
+      try {
+        const pkgPath = dirname(require.resolve('@supabase/supabase-js/package.json'))
+        if (!config.externals.inline.includes(pkgPath)) {
+          config.externals.inline.push(pkgPath)
+        }
+      } catch {
+        config.externals.inline.push('@supabase/supabase-js')
+      }
+    }
+  },
   
   modules: [
     "@nuxt/ui",
@@ -92,6 +114,10 @@ export default defineNuxtConfig({
   nitro: {
     // Solo usar preset de Vercel en producción/build, no en desarrollo
     ...(process.env.NODE_ENV === 'production' ? { preset: 'vercel' } : {}),
+    experimental: {
+      // Algoritmo legacy de externals: puede empaquetar correctamente @supabase/supabase-js en Vercel
+      legacyExternals: true,
+    },
     // Incluir @supabase/supabase-js en el bundle del servidor (evita ERR_MODULE_NOT_FOUND en Vercel)
     externals: { inline: ['@supabase/supabase-js'] },
     // Comprimir assets solo en producción
