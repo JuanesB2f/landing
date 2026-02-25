@@ -6,8 +6,10 @@ yarn-error.log*
 
 # Archivos de construcción
 .nuxt
+.nitro
 .output
 dist
+.vercel
 
 # Archivos de desarrollo
 .git

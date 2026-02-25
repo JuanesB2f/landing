@@ -13,13 +13,13 @@ COPY nuxt.config.ts ./
 COPY tailwind.config.ts ./
 COPY tsconfig.json ./
 
-# Instalar dependencias
-RUN npm ci --only=production
+# Instalar todas las dependencias (incl. devDependencies para el build)
+RUN npm ci
 
 # Copiar código fuente
 COPY . .
 
-# Construir la aplicación
+# Construir la aplicación (NODE_ENV no es production aquí para que Nitro use preset Node, no Vercel)
 RUN npm run build
 
 # Etapa de producción
@@ -47,7 +47,7 @@ USER nuxt
 # Exponer puerto
 EXPOSE 3000
 
-# Variables de entorno
+# Variables de entorno (Supabase se pasa en runtime: -e NUXT_SUPABASE_URL=... etc.)
 ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 ENV PORT=3000

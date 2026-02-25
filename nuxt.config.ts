@@ -92,6 +92,8 @@ export default defineNuxtConfig({
   nitro: {
     // Solo usar preset de Vercel en producción/build, no en desarrollo
     ...(process.env.NODE_ENV === 'production' ? { preset: 'vercel' } : {}),
+    // Incluir @supabase/supabase-js en el bundle del servidor (evita ERR_MODULE_NOT_FOUND en Vercel)
+    externals: { inline: ['@supabase/supabase-js'] },
     // Comprimir assets solo en producción
     compressPublicAssets: process.env.NODE_ENV === 'production',
     routeRules: {
