@@ -233,10 +233,9 @@ const loginWithGoogle = async () => {
   try {
     loading.value = true
     error.value = ''
-    // En producción usar la URL del sitio (Vercel) para que Supabase redirija al deploy, no a localhost
-    const config = useRuntimeConfig()
-    const baseUrl = (config.public.siteUrl || (typeof window !== 'undefined' ? window.location.origin : '')).replace(/\/$/, '')
-    const redirectTo = `${baseUrl}/callback`
+    // Siempre usar la URL actual del navegador para que Supabase redirija al mismo sitio (evita localhost en producción)
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
+    const redirectTo = baseUrl ? `${baseUrl.replace(/\/$/, '')}/callback` : '/callback'
     await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo } })
   } catch (e) {
     console.error('Google sign-in error', e)
