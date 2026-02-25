@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
     const user = await serverSupabaseUser(event)
     if (!user) return respondError('No autenticado')
 
-    const adminClient = getServiceClient() as any
+    const adminClient = getServiceClient(event) as any
 
     // Upsert profile with role 'user' (if role already admin, keep admin)
     const { data: existing } = await adminClient

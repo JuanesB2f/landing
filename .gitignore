@@ -6,6 +6,9 @@
 .cache
 dist
 
+# Vercel build output (no versionar)
+.vercel
+
 # Node dependencies
 node_modules
 
@@ -17,6 +20,7 @@ logs
 .DS_Store
 .fleet
 .idea
+nul
 
 # Local env files
 .env

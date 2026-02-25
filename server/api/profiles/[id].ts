@@ -1,5 +1,4 @@
-import { serverSupabaseClient } from '#supabase/server'
-import { createClient } from '@supabase/supabase-js'
+import { serverSupabaseClient, serverSupabaseServiceRole } from '#supabase/server'
 import { requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
@@ -126,12 +125,7 @@ export default defineEventHandler(async (event) => {
     try {
       await requireAdmin(event)
       // Usar service role para operaciones administrativas y evitar bloqueos por RLS / FKs
-      const config = useRuntimeConfig()
-      const adminClient = createClient(
-        config.public.supabaseUrl,
-        config.supabaseServiceKey,
-        { auth: { persistSession: false } }
-      ) as any
+      const adminClient = serverSupabaseServiceRole(event) as any
 
       // 0) Intentar eliminar auth user primero (si no existe, continuar)
       const delAuth = await adminClient.auth.admin.deleteUser(id)

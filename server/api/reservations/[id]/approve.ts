@@ -1,5 +1,4 @@
-import { serverSupabaseClient } from '#supabase/server'
-import { createClient } from '@supabase/supabase-js'
+import { serverSupabaseClient, serverSupabaseServiceRole } from '#supabase/server'
 import { requireAdmin, respondError, respondSuccess } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
@@ -12,12 +11,7 @@ export default defineEventHandler(async (event) => {
   try {
     await requireAdmin(event)
     // Service client to bypass RLS when creating customers/orders for other users
-    const config = useRuntimeConfig()
-    const adminClient = createClient(
-      config.public.supabaseUrl,
-      config.supabaseServiceKey,
-      { auth: { persistSession: false } }
-    ) as any
+    const adminClient = serverSupabaseServiceRole(event) as any
 
     // Obtener reserva
     const res = await supabase

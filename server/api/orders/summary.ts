@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js'
+import { serverSupabaseServiceRole } from '#supabase/server'
 import { requireAdmin, respondError, respondSuccess } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
@@ -9,12 +9,7 @@ export default defineEventHandler(async (event) => {
     await requireAdmin(event)
 
     // Usar service role para contar sin restricciones de RLS
-    const config = useRuntimeConfig()
-    const admin = createClient(
-      config.public.supabaseUrl,
-      config.supabaseServiceKey,
-      { auth: { persistSession: false } }
-    ) as any
+    const admin = serverSupabaseServiceRole(event) as any
 
     const [
       { count: total },

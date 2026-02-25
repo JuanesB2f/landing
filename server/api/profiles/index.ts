@@ -1,16 +1,10 @@
-import { serverSupabaseClient } from '#supabase/server'
-import { createClient } from '@supabase/supabase-js'
+import { serverSupabaseClient, serverSupabaseServiceRole } from '#supabase/server'
 import { requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
   const supabase = await serverSupabaseClient(event)
-  const config = useRuntimeConfig()
-  const serviceClient = createClient(
-    config.public.supabaseUrl,
-    config.supabaseServiceKey,
-    { auth: { persistSession: false } }
-  )
+  const serviceClient = serverSupabaseServiceRole(event)
 
   if (method === 'GET') {
     try {
@@ -73,12 +67,6 @@ export default defineEventHandler(async (event) => {
       }
 
       // Crear usuario en Supabase Auth usando service role
-      const config = useRuntimeConfig()
-      const serviceClient = createClient(
-        config.public.supabaseUrl,
-        config.supabaseServiceKey,
-        { auth: { persistSession: false } }
-      )
       const { data: authData, error: authError } = await serviceClient.auth.admin.createUser({
         email: body.email.trim().toLowerCase(),
         password: body.password,

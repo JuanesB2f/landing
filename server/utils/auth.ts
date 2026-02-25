@@ -1,20 +1,8 @@
-import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server'
-import { createClient } from '@supabase/supabase-js'
+import { serverSupabaseClient, serverSupabaseUser, serverSupabaseServiceRole } from '#supabase/server'
 
-/** Cliente de Supabase con service role (solo servidor). Lanza 503 si faltan env. */
-export function getServiceClient() {
-  const config = useRuntimeConfig()
-  const url = config.public?.supabaseUrl
-  const key = config.supabaseServiceKey
-  if (!url || !key) {
-    console.error('[auth] Faltan NUXT_SUPABASE_URL o NUXT_SUPABASE_SERVICE_KEY en el servidor (ej. Vercel)')
-    throw createError({
-      statusCode: 503,
-      statusMessage: 'Server configuration error',
-      message: 'Missing Supabase configuration. Set NUXT_SUPABASE_URL and NUXT_SUPABASE_SERVICE_KEY in Vercel.'
-    })
-  }
-  return createClient(url, key, { auth: { persistSession: false } })
+/** Cliente de Supabase con service role (solo servidor). Usa el del módulo @nuxtjs/supabase para evitar import directo en Vercel. */
+export function getServiceClient(event: any) {
+  return serverSupabaseServiceRole(event)
 }
 
 /**
@@ -24,17 +12,18 @@ export function getServiceClient() {
 export async function requireAdmin(event: any) {
   const { user } = await requireAuth(event)
 
-  const serviceClient = getServiceClient()
-  const { data: profile, error } = await serviceClient
+  const serviceClient = getServiceClient(event)
+  const { data: profileData, error } = await serviceClient
     .from('profiles')
     .select('role, is_active')
     .eq('id', user.id)
     .single()
 
-  if (error || !profile) {
+  if (error || !profileData) {
     throw createError({ statusCode: 403, statusMessage: 'Perfil no encontrado' })
   }
 
+  const profile = profileData as { role?: string; is_active?: boolean }
   if (!profile.is_active) {
     throw createError({ statusCode: 403, statusMessage: 'Usuario inactivo' })
   }
