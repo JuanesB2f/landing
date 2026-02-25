@@ -266,8 +266,8 @@
 const route = useRoute()
 const moreOpen = ref(false)
 
-// Composable para manejar el tema
-const { isDark, toggleTheme } = useTheme()
+// Composable para manejar el tema (initTheme sincroniza con localStorage para que el primer clic funcione)
+const { isDark, toggleTheme, initTheme } = useTheme()
 const { $themeOptimizer } = useNuxtApp()
 
 // Usar toggle optimizado si está disponible
@@ -300,6 +300,7 @@ const handleUserActivity = () => {
 
 // Eventos para detectar actividad (reducidos)
 onMounted(() => {
+  initTheme()
   const events = ['click', 'keydown'] // Solo eventos importantes
   events.forEach(event => {
     document.addEventListener(event, handleUserActivity, { passive: true })

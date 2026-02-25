@@ -426,6 +426,73 @@ select:focus {
   border-color: var(--accent) !important;
 }
 
+/* Admin modals (agregar/editar): en tema oscuro las casillas se ven claras para no perderse */
+.theme-dark .fixed.inset-0 div.max-w-2xl.rounded-lg input,
+.theme-dark .fixed.inset-0 div.max-w-2xl.rounded-lg select,
+.theme-dark .fixed.inset-0 div.max-w-2xl.rounded-lg textarea,
+.theme-dark .fixed.inset-0 div.max-w-2xl.rounded-md input,
+.theme-dark .fixed.inset-0 div.max-w-2xl.rounded-md select,
+.theme-dark .fixed.inset-0 div.max-w-2xl.rounded-md textarea,
+.theme-dark .fixed.inset-0 div.max-w-xl.rounded-lg input,
+.theme-dark .fixed.inset-0 div.max-w-xl.rounded-lg select,
+.theme-dark .fixed.inset-0 div.max-w-xl.rounded-lg textarea,
+.theme-dark .fixed.inset-0 div.max-w-xl.rounded-md input,
+.theme-dark .fixed.inset-0 div.max-w-xl.rounded-md select,
+.theme-dark .fixed.inset-0 div.max-w-xl.rounded-md textarea {
+  background-color: #64748b !important;  /* slate-500: más claro que el fondo del modal */
+  color: #f1f5f9 !important;
+  border-color: #94a3b8 !important;      /* slate-400: borde visible */
+}
+.theme-dark .fixed.inset-0 div.max-w-2xl.rounded-lg input::placeholder,
+.theme-dark .fixed.inset-0 div.max-w-2xl.rounded-lg textarea::placeholder,
+.theme-dark .fixed.inset-0 div.max-w-2xl.rounded-md input::placeholder,
+.theme-dark .fixed.inset-0 div.max-w-2xl.rounded-md textarea::placeholder,
+.theme-dark .fixed.inset-0 div.max-w-xl.rounded-lg input::placeholder,
+.theme-dark .fixed.inset-0 div.max-w-xl.rounded-lg textarea::placeholder,
+.theme-dark .fixed.inset-0 div.max-w-xl.rounded-md input::placeholder,
+.theme-dark .fixed.inset-0 div.max-w-xl.rounded-md textarea::placeholder {
+  color: #cbd5e1 !important;             /* placeholder legible */
+}
+.theme-dark .fixed.inset-0 div.max-w-2xl.rounded-lg input:focus,
+.theme-dark .fixed.inset-0 div.max-w-2xl.rounded-lg select:focus,
+.theme-dark .fixed.inset-0 div.max-w-2xl.rounded-lg textarea:focus,
+.theme-dark .fixed.inset-0 div.max-w-2xl.rounded-md input:focus,
+.theme-dark .fixed.inset-0 div.max-w-2xl.rounded-md select:focus,
+.theme-dark .fixed.inset-0 div.max-w-2xl.rounded-md textarea:focus,
+.theme-dark .fixed.inset-0 div.max-w-xl.rounded-lg input:focus,
+.theme-dark .fixed.inset-0 div.max-w-xl.rounded-lg select:focus,
+.theme-dark .fixed.inset-0 div.max-w-xl.rounded-lg textarea:focus,
+.theme-dark .fixed.inset-0 div.max-w-xl.rounded-md input:focus,
+.theme-dark .fixed.inset-0 div.max-w-xl.rounded-md select:focus,
+.theme-dark .fixed.inset-0 div.max-w-xl.rounded-md textarea:focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 2px rgba(189, 142, 137, 0.35) !important;
+}
+.theme-dark .fixed.inset-0 div.max-w-2xl.rounded-lg option,
+.theme-dark .fixed.inset-0 div.max-w-2xl.rounded-md option,
+.theme-dark .fixed.inset-0 div.max-w-xl.rounded-lg option,
+.theme-dark .fixed.inset-0 div.max-w-xl.rounded-md option {
+  background-color: #64748b;
+  color: #f1f5f9;
+}
+/* Labels y títulos dentro del mismo modal (tema oscuro) */
+.theme-dark .fixed.inset-0 div.max-w-2xl.rounded-lg label,
+.theme-dark .fixed.inset-0 div.max-w-2xl.rounded-lg h3,
+.theme-dark .fixed.inset-0 div.max-w-2xl.rounded-md label,
+.theme-dark .fixed.inset-0 div.max-w-2xl.rounded-md h3,
+.theme-dark .fixed.inset-0 div.max-w-xl.rounded-lg label,
+.theme-dark .fixed.inset-0 div.max-w-xl.rounded-lg h3,
+.theme-dark .fixed.inset-0 div.max-w-xl.rounded-md label,
+.theme-dark .fixed.inset-0 div.max-w-xl.rounded-md h3 {
+  color: var(--text-primary) !important;
+}
+.theme-dark .fixed.inset-0 div.max-w-2xl.rounded-lg .text-gray-500,
+.theme-dark .fixed.inset-0 div.max-w-2xl.rounded-md .text-gray-500,
+.theme-dark .fixed.inset-0 div.max-w-xl.rounded-lg .text-gray-500,
+.theme-dark .fixed.inset-0 div.max-w-xl.rounded-md .text-gray-500 {
+  color: var(--text-muted) !important;
+}
+
 /* Custom Animations */
 @keyframes blob {
   0% {
