@@ -233,13 +233,15 @@ const loginWithGoogle = async () => {
   try {
     loading.value = true
     error.value = ''
-    // En flujos OAuth, no bloquear UI esperando respuesta; el evento onAuthStateChange manejará la redirección
-    await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin + '/login' } })
+    // En producción usar la URL del sitio (Vercel) para que Supabase redirija al deploy, no a localhost
+    const config = useRuntimeConfig()
+    const baseUrl = (config.public.siteUrl || (typeof window !== 'undefined' ? window.location.origin : '')).replace(/\/$/, '')
+    const redirectTo = `${baseUrl}/callback`
+    await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo } })
   } catch (e) {
     console.error('Google sign-in error', e)
     error.value = 'No se pudo iniciar sesión con Google'
   } finally {
-    // Liberar el loading tras breve delay para permitir transición visual si no hay redirección inmediata
     setTimeout(() => { loading.value = false }, 300)
   }
 }
