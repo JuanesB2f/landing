@@ -16,18 +16,19 @@ definePageMeta({
 
 const router = useRouter()
 const supabase = useSupabaseClient()
-const user = useSupabaseUser()
 const error = ref('')
 
 // Esperar a que Supabase procese el callback (hash/query) y haya sesión, luego redirigir
-const resolveRedirect = async () => {
+const resolveRedirect = () => {
   if (!import.meta.client) return
 
   const maxWait = 8000
   const start = Date.now()
-  while (Date.now() - start < maxWait) {
-    const { data: { session } } = await supabase.auth.getSession()
-    if (session?.user) {
+
+  const checkSession = async () => {
+    const res = await supabase.auth.getSession()
+    const session = res.data ? res.data.session : null
+    if (session && session.user) {
       try {
         await $fetch('/api/auth/upsert-profile', { method: 'POST' })
       } catch (_e) {}
@@ -37,24 +38,34 @@ const resolveRedirect = async () => {
           .select('role')
           .eq('id', session.user.id)
           .maybeSingle()
-        const role = (profile as { role?: string } | null)?.role
+        const role = profile ? profile.role : null
         if (role === 'admin') {
           await router.replace('/dashboard')
-          return
+          return true
         }
         if (role === 'user' || role === 'customer') {
           await router.replace('/user')
-          return
+          return true
         }
       } catch (_e) {}
       await router.replace('/')
-      return
+      return true
     }
-    await new Promise(r => setTimeout(r, 150))
+    return false
   }
 
-  error.value = 'No se pudo completar el inicio de sesión.'
-  setTimeout(() => router.replace('/login'), 2000)
+  const poll = async () => {
+    if (Date.now() - start > maxWait) {
+      error.value = 'No se pudo completar el inicio de sesión.'
+      setTimeout(() => router.replace('/login'), 2000)
+      return
+    }
+    const done = await checkSession()
+    if (done) return
+    setTimeout(poll, 150)
+  }
+
+  poll()
 }
 
 onMounted(() => {
