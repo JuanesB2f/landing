@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen w-full max-w-[100vw] transition-colors duration-300 theme-container pb-20 lg:pb-0">
+  <div class="min-h-screen w-full max-w-[100vw] min-w-0 overflow-x-hidden transition-colors duration-300 theme-container pb-20 lg:pb-0">
     <!-- Sidebar (solo desktop; en móvil se usa la barra inferior) -->
     <aside
       class="hidden lg:flex fixed inset-y-0 left-0 z-40 w-64 shadow-lg transition-all duration-300 theme-sidebar flex-col translate-x-0"
@@ -125,7 +125,7 @@
     </aside>
 
     <!-- Main Content -->
-    <div class="lg:ml-64 min-h-screen flex flex-col">
+    <div class="lg:ml-64 min-h-screen flex flex-col min-w-0 max-w-full">
       <!-- Header sin color de fondo (solo borde y título) -->
       <header class="admin-page-header shadow-sm border-b transition-colors duration-300 sticky top-0 z-30">
         <div class="flex justify-center items-center h-14 sm:h-16 px-3 sm:px-4 lg:px-6">
@@ -136,7 +136,7 @@
       </header>
 
       <!-- Page Content (forzar re-render para evitar botones trabados) -->
-      <main class="flex-1 p-3 sm:p-4 lg:p-6 min-h-0" :key="`${$route.fullPath}-${refreshKey}`">
+      <main class="flex-1 p-3 sm:p-4 lg:p-6 min-h-0 min-w-0 w-full overflow-x-hidden" :key="`${$route.fullPath}-${refreshKey}`">
         <slot />
       </main>
     </div>
@@ -146,48 +146,48 @@
       class="lg:hidden fixed bottom-0 left-0 right-0 z-[100] theme-header border-t theme-border w-full max-w-[100vw]"
       style="padding-bottom: env(safe-area-inset-bottom, 0);"
     >
-      <div class="flex items-stretch justify-around h-14">
+      <div class="flex items-stretch justify-around h-12 sm:h-14 gap-0.5 px-0.5 sm:px-0">
         <NuxtLink
           to="/dashboard"
-          class="flex flex-col items-center justify-center flex-1 py-1.5 min-w-0 text-[10px] font-medium transition-colors theme-nav-item"
+          class="flex flex-col items-center justify-center flex-1 py-1 min-w-0 text-[9px] sm:text-[10px] leading-tight font-medium transition-colors theme-nav-item"
           :class="{ 'theme-nav-active text-accent': $route.path === '/dashboard' || $route.path === '/admin' }"
         >
-          <Icon name="heroicons:home" class="w-6 h-6 mb-0.5 shrink-0" />
-          <span>Inicio</span>
+          <Icon name="heroicons:home" class="w-5 h-5 sm:w-6 sm:h-6 mb-0.5 shrink-0" />
+          <span class="truncate max-w-full px-0.5">Inicio</span>
         </NuxtLink>
         <NuxtLink
           to="/admin/products"
-          class="flex flex-col items-center justify-center flex-1 py-1.5 min-w-0 text-[10px] font-medium transition-colors theme-nav-item"
+          class="flex flex-col items-center justify-center flex-1 py-1 min-w-0 text-[9px] sm:text-[10px] leading-tight font-medium transition-colors theme-nav-item"
           :class="{ 'theme-nav-active text-accent': $route.path.startsWith('/admin/products') }"
         >
-          <Icon name="heroicons:cube" class="w-6 h-6 mb-0.5 shrink-0" />
-          <span>Productos</span>
+          <Icon name="heroicons:cube" class="w-5 h-5 sm:w-6 sm:h-6 mb-0.5 shrink-0" />
+          <span class="truncate max-w-full px-0.5">Productos</span>
         </NuxtLink>
         <NuxtLink
           to="/admin/orders"
-          class="flex flex-col items-center justify-center flex-1 py-1.5 min-w-0 text-[10px] font-medium transition-colors theme-nav-item"
+          class="flex flex-col items-center justify-center flex-1 py-1 min-w-0 text-[9px] sm:text-[10px] leading-tight font-medium transition-colors theme-nav-item"
           :class="{ 'theme-nav-active text-accent': $route.path.startsWith('/admin/orders') }"
         >
-          <Icon name="heroicons:shopping-bag" class="w-6 h-6 mb-0.5 shrink-0" />
-          <span>Pedidos</span>
+          <Icon name="heroicons:shopping-bag" class="w-5 h-5 sm:w-6 sm:h-6 mb-0.5 shrink-0" />
+          <span class="truncate max-w-full px-0.5">Pedidos</span>
         </NuxtLink>
         <button
           type="button"
-          class="flex flex-col items-center justify-center flex-1 py-1.5 min-w-0 text-[10px] font-medium transition-colors theme-nav-item"
+          class="flex flex-col items-center justify-center flex-1 py-1 min-w-0 text-[9px] sm:text-[10px] leading-tight font-medium transition-colors theme-nav-item"
           :class="{ 'theme-nav-active text-accent': moreOpen }"
           @click="moreOpen = !moreOpen"
         >
-          <Icon name="heroicons:squares-2x2" class="w-6 h-6 mb-0.5 shrink-0" />
-          <span>Más</span>
+          <Icon name="heroicons:squares-2x2" class="w-5 h-5 sm:w-6 sm:h-6 mb-0.5 shrink-0" />
+          <span class="truncate max-w-full px-0.5">Más</span>
         </button>
         <button
           type="button"
-          class="flex flex-col items-center justify-center flex-1 py-1.5 min-w-0 text-[10px] font-medium text-red-600 dark:text-red-400 hover:opacity-80 transition-opacity"
+          class="flex flex-col items-center justify-center flex-1 py-1 min-w-0 text-[9px] sm:text-[10px] leading-tight font-medium text-red-600 dark:text-red-400 hover:opacity-80 transition-opacity"
           @click="handleLogout"
           title="Cerrar sesión"
         >
-          <Icon name="heroicons:arrow-right-on-rectangle" class="w-6 h-6 mb-0.5 shrink-0" />
-          <span>Salir</span>
+          <Icon name="heroicons:arrow-right-on-rectangle" class="w-5 h-5 sm:w-6 sm:h-6 mb-0.5 shrink-0" />
+          <span class="truncate max-w-full px-0.5">Salir</span>
         </button>
       </div>
     </nav>

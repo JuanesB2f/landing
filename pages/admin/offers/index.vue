@@ -18,7 +18,7 @@
         <button @click="fetchOffers" class="px-4 py-2 border rounded">Aplicar</button>
         <button @click="clearFilters" class="px-4 py-2 border rounded">Limpiar</button>
       </div>
-      <div class="overflow-x-auto">
+      <div class="admin-table-scroll">
         <table class="min-w-full admin-table">
           <thead>
             <tr>

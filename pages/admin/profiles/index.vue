@@ -138,7 +138,7 @@
 
     <!-- Tabla de usuarios -->
     <div class="rounded-lg overflow-hidden border border-gray-200 dark:border-[var(--border-color)]">
-      <div class="overflow-x-auto">
+      <div class="admin-table-scroll">
         <table class="min-w-full admin-table">
           <thead>
             <tr>

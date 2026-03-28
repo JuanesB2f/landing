@@ -70,7 +70,7 @@
 
     <!-- Tabla de productos -->
     <div class="rounded-lg overflow-hidden border theme-border">
-      <div class="overflow-x-auto -mx-3 sm:mx-0">
+      <div class="admin-table-scroll -mx-3 sm:mx-0">
         <table class="min-w-full admin-table">
           <thead>
             <tr>

@@ -1,8 +1,6 @@
 {
   "typescript.tsdk": "node_modules/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": false
-}
-{
+  "typescript.enablePromptUseWorkspaceTsdk": true,
   "css.validate": false,
   "less.validate": false,
   "scss.validate": false,
@@ -18,4 +16,3 @@
     "vue": "html"
   }
 }
-

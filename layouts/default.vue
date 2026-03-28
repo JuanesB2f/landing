@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen w-full max-w-[100vw] transition-colors duration-300 theme-container pb-20 md:pb-0">
+  <div class="min-h-screen w-full max-w-[100vw] min-w-0 overflow-x-hidden transition-colors duration-300 theme-container pb-20 md:pb-0">
     <!-- Header: sin color + animación de puntos/blobs rosados detrás -->
     <header
       v-if="!isCustomer"
@@ -131,31 +131,31 @@
       class="md:hidden fixed bottom-0 left-0 right-0 z-[100] theme-header border-t theme-border w-full max-w-[100vw]"
       style="padding-bottom: env(safe-area-inset-bottom, 0);"
     >
-      <div class="flex items-stretch justify-around h-14">
+      <div class="flex items-stretch justify-around h-12 sm:h-14 gap-0.5 px-0.5 sm:px-0">
         <NuxtLink
           to="/"
-          class="flex flex-col items-center justify-center flex-1 py-1.5 min-w-0 text-[10px] font-medium transition-colors theme-nav-item"
+          class="flex flex-col items-center justify-center flex-1 py-1 min-w-0 text-[9px] sm:text-[10px] leading-tight font-medium transition-colors theme-nav-item"
           :class="{ 'theme-nav-active text-accent': $route.path === '/' }"
         >
-          <Icon name="heroicons:home" class="w-6 h-6 mb-0.5 shrink-0" />
-          <span>Inicio</span>
+          <Icon name="heroicons:home" class="w-5 h-5 sm:w-6 sm:h-6 mb-0.5 shrink-0" />
+          <span class="truncate max-w-full px-0.5">Inicio</span>
         </NuxtLink>
         <NuxtLink
           to="/shop"
-          class="flex flex-col items-center justify-center flex-1 py-1.5 min-w-0 text-[10px] font-medium transition-colors theme-nav-item"
+          class="flex flex-col items-center justify-center flex-1 py-1 min-w-0 text-[9px] sm:text-[10px] leading-tight font-medium transition-colors theme-nav-item"
           :class="{ 'theme-nav-active text-accent': $route.path.startsWith('/shop') && $route.path !== '/shop/cart' }"
         >
-          <Icon name="heroicons:shopping-bag" class="w-6 h-6 mb-0.5 shrink-0" />
-          <span>Tienda</span>
+          <Icon name="heroicons:shopping-bag" class="w-5 h-5 sm:w-6 sm:h-6 mb-0.5 shrink-0" />
+          <span class="truncate max-w-full px-0.5">Tienda</span>
         </NuxtLink>
         <NuxtLink
           v-if="isUser"
           to="/shop/cart"
-          class="flex flex-col items-center justify-center flex-1 py-1.5 min-w-0 text-[10px] font-medium transition-colors theme-nav-item relative"
+          class="flex flex-col items-center justify-center flex-1 py-1 min-w-0 text-[9px] sm:text-[10px] leading-tight font-medium transition-colors theme-nav-item relative"
           :class="{ 'theme-nav-active text-accent': $route.path === '/shop/cart' }"
         >
           <span class="relative inline-block">
-            <Icon name="heroicons:shopping-cart" class="w-6 h-6 mb-0.5 shrink-0" />
+            <Icon name="heroicons:shopping-cart" class="w-5 h-5 sm:w-6 sm:h-6 mb-0.5 shrink-0" />
             <span
               v-if="cartItemsCount > 0"
               class="absolute -top-2 -right-2 bg-accent text-white text-[10px] rounded-full min-w-[14px] h-[14px] flex items-center justify-center px-0.5 font-bold"
@@ -163,40 +163,40 @@
               {{ cartItemsCount > 99 ? '99+' : cartItemsCount }}
             </span>
           </span>
-          <span>Carrito</span>
+          <span class="truncate max-w-full px-0.5">Carrito</span>
         </NuxtLink>
         <NuxtLink
           v-if="isUser || isAdmin"
           to="/user"
-          class="flex flex-col items-center justify-center flex-1 py-1.5 min-w-0 text-[10px] font-medium transition-colors theme-nav-item"
+          class="flex flex-col items-center justify-center flex-1 py-1 min-w-0 text-[9px] sm:text-[10px] leading-tight font-medium transition-colors theme-nav-item"
           :class="{ 'theme-nav-active text-accent': $route.path.startsWith('/user') }"
         >
-          <Icon name="heroicons:user-circle" class="w-6 h-6 mb-0.5 shrink-0" />
-          <span>Cuenta</span>
+          <Icon name="heroicons:user-circle" class="w-5 h-5 sm:w-6 sm:h-6 mb-0.5 shrink-0" />
+          <span class="truncate max-w-full px-0.5">Cuenta</span>
         </NuxtLink>
         <NuxtLink
           v-else
           to="/login"
-          class="flex flex-col items-center justify-center flex-1 py-1.5 min-w-0 text-[10px] font-medium transition-colors theme-nav-item"
+          class="flex flex-col items-center justify-center flex-1 py-1 min-w-0 text-[9px] sm:text-[10px] leading-tight font-medium transition-colors theme-nav-item"
           :class="{ 'theme-nav-active text-accent': $route.path === '/login' }"
         >
-          <Icon name="heroicons:user" class="w-6 h-6 mb-0.5 shrink-0" />
-          <span>Cuenta</span>
+          <Icon name="heroicons:user" class="w-5 h-5 sm:w-6 sm:h-6 mb-0.5 shrink-0" />
+          <span class="truncate max-w-full px-0.5">Cuenta</span>
         </NuxtLink>
         <button
           v-if="authUser"
           type="button"
           @click="handleLogout"
-          class="flex flex-col items-center justify-center flex-1 py-1.5 min-w-0 text-[10px] font-medium transition-colors theme-nav-item text-red-600 dark:text-red-400"
+          class="flex flex-col items-center justify-center flex-1 py-1 min-w-0 text-[9px] sm:text-[10px] leading-tight font-medium transition-colors theme-nav-item text-red-600 dark:text-red-400"
         >
-          <Icon name="heroicons:arrow-right-on-rectangle" class="w-6 h-6 mb-0.5 shrink-0" />
-          <span>Salir</span>
+          <Icon name="heroicons:arrow-right-on-rectangle" class="w-5 h-5 sm:w-6 sm:h-6 mb-0.5 shrink-0" />
+          <span class="truncate max-w-full px-0.5">Salir</span>
         </button>
       </div>
     </nav>
 
     <!-- Main Content -->
-    <main :key="`${$route.fullPath}-${refreshKey}`">
+    <main class="min-w-0 w-full max-w-full overflow-x-hidden" :key="`${$route.fullPath}-${refreshKey}`">
       <slot />
     </main>
 
@@ -379,7 +379,7 @@
 
         <div class="border-t border-gray-300 dark:border-gray-700 mt-8 sm:mt-12 pt-6 sm:pt-8 text-center">
           <p class="text-gray-600 dark:text-gray-300 text-sm sm:text-base">
-            &copy; 2024 BylotoStore. Todos los derechos reservados.
+            &copy; 2026 BylotoStore. Todos los derechos reservados.
           </p>
         </div>
       </div>

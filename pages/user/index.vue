@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen">
+  <div class="min-h-screen w-full max-w-full min-w-0 overflow-x-hidden">
     <!-- VISTA CUSTOMER (Lookbook / Catálogo Visual) -->
-    <div v-if="isCustomer" class="pb-20 relative theme-container">
+    <div v-if="isCustomer" class="pb-20 relative theme-container w-full max-w-full min-w-0">
       <!-- Animated Background (Blobs) -->
       <div class="absolute inset-0 overflow-hidden pointer-events-none">
         <div
@@ -43,7 +43,7 @@
       </div>
 
       <!-- Gallery Grid -->
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-12 sm:-mt-16 lg:-mt-20 relative z-30">
+      <div class="max-w-7xl mx-auto w-full min-w-0 px-3 sm:px-6 lg:px-8 -mt-12 sm:-mt-16 lg:-mt-20 relative z-30">
         <div v-if="loading" class="flex justify-center py-20">
           <Icon
             name="svg-spinners:180-ring-with-bg"
@@ -145,12 +145,21 @@
     </div>
 
     <!-- VISTA USER (Funcional / Carrito) -->
-    <div v-else class="max-w-6xl mx-auto p-4 sm:p-6 theme-container">
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <h1 class="text-xl sm:text-2xl font-bold theme-text-primary">Mi Perfil</h1>
+    <div v-else class="max-w-6xl mx-auto w-full min-w-0 px-3 py-4 sm:p-6 theme-container pb-24 md:pb-6">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 mb-6">
+        <div class="min-w-0">
+          <h1 class="text-xl sm:text-2xl font-bold theme-text-primary">Mi Perfil</h1>
+          <NuxtLink
+            to="/user/orders"
+            class="inline-flex items-center gap-1 mt-2 text-sm font-medium text-pink-600 hover:text-pink-700 theme-text-secondary hover:underline"
+          >
+            <Icon name="heroicons:clipboard-document-list" class="w-4 h-4 shrink-0" />
+            Ver mis pedidos
+          </NuxtLink>
+        </div>
         <NuxtLink
           to="/shop/cart"
-          class="inline-flex items-center justify-center px-4 py-2.5 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors shadow-md text-sm sm:text-base w-full sm:w-auto"
+          class="inline-flex items-center justify-center px-4 py-2.5 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors shadow-md text-sm sm:text-base w-full sm:w-auto shrink-0"
         >
           <Icon name="heroicons:shopping-cart" class="w-5 h-5 mr-2 shrink-0" />
           Ir al carrito ({{ cart.count }})

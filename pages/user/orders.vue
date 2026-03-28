@@ -1,6 +1,6 @@
 <template>
-  <div class="min-h-screen theme-container">
-    <div class="max-w-6xl mx-auto p-4 sm:p-6">
+  <div class="min-h-screen w-full max-w-full min-w-0 overflow-x-hidden theme-container">
+    <div class="max-w-6xl mx-auto w-full min-w-0 px-3 py-4 sm:p-6 pb-24 md:pb-6">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
           <h1 class="text-2xl sm:text-3xl font-bold theme-text-primary">Mis Pedidos</h1>
@@ -67,8 +67,8 @@
 
       <!-- Lista de pedidos -->
       <div class="theme-card-bg rounded-lg shadow-sm">
-        <div class="p-6 border-b theme-border">
-          <h2 class="text-lg font-semibold theme-text-primary">Historial de Pedidos</h2>
+        <div class="p-4 sm:p-6 border-b theme-border">
+          <h2 class="text-base sm:text-lg font-semibold theme-text-primary">Historial de Pedidos</h2>
         </div>
         
         <div v-if="ordersLoading" class="p-8 text-center">

@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen p-3 sm:p-4 lg:p-6 transition-colors duration-300 theme-container">
+  <div class="min-h-screen w-full max-w-full min-w-0 p-3 sm:p-4 lg:p-6 transition-colors duration-300 theme-container">
     <!-- Header del Dashboard -->
     <div class="mb-6 sm:mb-8">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
@@ -11,7 +11,7 @@
     </div>
 
     <!-- Tarjetas de KPI principales -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
       <!-- Tarjeta de Usuarios -->
       <div class="card card-hover hover:shadow-lg transition-all duration-300">
         <div class="flex items-center justify-between mb-2 sm:mb-4">
@@ -96,39 +96,43 @@
     <!-- Tarjetas de gráficos y estadísticas -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
       <!-- Gráfico de Ventas -->
-      <div class="card">
-        <div class="flex items-center justify-between mb-6">
-          <div>
-            <h3 class="text-xl font-bold theme-text-primary">Ventas</h3>
-            <p class="text-sm theme-text-secondary">Últimos 7 días</p>
+      <div class="card min-w-0">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 sm:mb-6">
+          <div class="min-w-0">
+            <h3 class="text-lg sm:text-xl font-bold theme-text-primary">Ventas</h3>
+            <p class="text-xs sm:text-sm theme-text-secondary">Últimos 7 días</p>
           </div>
-          <div class="text-right">
-            <p class="text-2xl font-bold theme-text-primary">${{ formatCurrency(dashboardStats.weeklySales || 0) }}</p>
-            <p class="text-green-600 dark:text-green-400 text-sm font-medium">+12.5%</p>
+          <div class="text-left sm:text-right shrink-0">
+            <p class="text-xl sm:text-2xl font-bold theme-text-primary tabular-nums">${{ formatCurrency(dashboardStats.weeklySales || 0) }}</p>
+            <p class="text-green-600 dark:text-green-400 text-xs sm:text-sm font-medium">+12.5%</p>
           </div>
         </div>
         
         <!-- Gráfico de barras real -->
-        <div class="space-y-3">
-          <div class="flex items-center space-x-2" v-for="d in weeklySeries" :key="d.date">
-            <span class="text-xs w-16 theme-text-muted">{{ formatDay(d.date) }}</span>
-            <div class="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-3">
-              <div class="bg-blue-600 dark:bg-blue-400 h-3 rounded-full transition-all duration-500" :style="{ width: barWidth(d.sales) }"></div>
+        <div class="space-y-3 min-w-0">
+          <div
+            v-for="d in weeklySeries"
+            :key="d.date"
+            class="flex items-center gap-1.5 sm:gap-2 min-w-0"
+          >
+            <span class="text-[10px] sm:text-xs w-12 sm:w-16 shrink-0 theme-text-muted truncate">{{ formatDay(d.date) }}</span>
+            <div class="flex-1 min-w-0 bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 sm:h-3">
+              <div class="bg-blue-600 dark:bg-blue-400 h-2.5 sm:h-3 rounded-full transition-all duration-500" :style="{ width: barWidth(d.sales) }"></div>
             </div>
-            <span class="text-xs w-16 theme-text-muted">${{ formatCurrency(d.sales) }}</span>
+            <span class="text-[10px] sm:text-xs w-12 sm:w-16 shrink-0 text-right theme-text-muted tabular-nums">${{ formatCurrency(d.sales) }}</span>
           </div>
         </div>
       </div>
 
       <!-- Gráfico de Productos (real) -->
-      <div class="card">
-        <div class="flex items-center justify-between mb-6">
-          <div>
-            <h3 class="text-xl font-bold theme-text-primary">Productos</h3>
-            <p class="text-sm theme-text-secondary">Nuevos últimos 7 días</p>
+      <div class="card min-w-0">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 sm:mb-6">
+          <div class="min-w-0">
+            <h3 class="text-lg sm:text-xl font-bold theme-text-primary">Productos</h3>
+            <p class="text-xs sm:text-sm theme-text-secondary">Nuevos últimos 7 días</p>
           </div>
-          <div class="text-right">
-            <p class="text-2xl font-bold theme-text-primary">{{ productsStats.newProducts }}</p>
+          <div class="text-left sm:text-right shrink-0">
+            <p class="text-xl sm:text-2xl font-bold theme-text-primary tabular-nums">{{ productsStats.newProducts }}</p>
           </div>
         </div>
         
@@ -146,10 +150,10 @@
     <!-- Tarjetas de estadísticas adicionales -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
       <!-- Total de Órdenes -->
-      <div class="card">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-bold theme-text-primary">Total Órdenes</h3>
-          <select class="text-sm rounded-lg px-3 py-1 theme-select">
+      <div class="card min-w-0">
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-4">
+          <h3 class="text-base sm:text-lg font-bold theme-text-primary">Total Órdenes</h3>
+          <select class="text-sm rounded-lg px-3 py-1.5 theme-select w-full sm:w-auto min-w-0">
             <option>Esta Semana</option>
             <option>Este Mes</option>
             <option>Este Año</option>
@@ -157,15 +161,15 @@
         </div>
         
         <!-- Gráfico de líneas simulado -->
-        <div class="space-y-2">
-          <div class="flex items-center space-x-2">
-            <div class="w-16 h-8 bg-blue-600 dark:bg-blue-400 rounded-tl-lg rounded-tr-lg"></div>
-            <div class="w-16 h-12 bg-blue-400 dark:bg-blue-300 rounded-tl-lg rounded-tr-lg"></div>
-            <div class="w-16 h-6 bg-blue-500 dark:bg-blue-500 rounded-tl-lg rounded-tr-lg"></div>
-            <div class="w-16 h-10 bg-blue-300 dark:bg-blue-600 rounded-tl-lg rounded-tr-lg"></div>
-            <div class="w-16 h-8 bg-blue-600 dark:bg-blue-400 rounded-tl-lg rounded-tr-lg"></div>
-            <div class="w-16 h-14 bg-blue-400 dark:bg-blue-300 rounded-tl-lg rounded-tr-lg"></div>
-            <div class="w-16 h-9 bg-blue-500 dark:bg-blue-500 rounded-tl-lg rounded-tr-lg"></div>
+        <div class="overflow-x-auto -mx-1 px-1 sm:mx-0 sm:px-0">
+          <div class="flex items-end gap-1 sm:gap-2 min-w-max sm:min-w-0 sm:flex-wrap sm:justify-center py-1">
+            <div class="w-8 sm:w-16 h-6 sm:h-8 bg-blue-600 dark:bg-blue-400 rounded-tl-lg rounded-tr-lg shrink-0"></div>
+            <div class="w-8 sm:w-16 h-10 sm:h-12 bg-blue-400 dark:bg-blue-300 rounded-tl-lg rounded-tr-lg shrink-0"></div>
+            <div class="w-8 sm:w-16 h-5 sm:h-6 bg-blue-500 dark:bg-blue-500 rounded-tl-lg rounded-tr-lg shrink-0"></div>
+            <div class="w-8 sm:w-16 h-8 sm:h-10 bg-blue-300 dark:bg-blue-600 rounded-tl-lg rounded-tr-lg shrink-0"></div>
+            <div class="w-8 sm:w-16 h-6 sm:h-8 bg-blue-600 dark:bg-blue-400 rounded-tl-lg rounded-tr-lg shrink-0"></div>
+            <div class="w-8 sm:w-16 h-11 sm:h-14 bg-blue-400 dark:bg-blue-300 rounded-tl-lg rounded-tr-lg shrink-0"></div>
+            <div class="w-8 sm:w-16 h-7 sm:h-9 bg-blue-500 dark:bg-blue-500 rounded-tl-lg rounded-tr-lg shrink-0"></div>
           </div>
         </div>
         
@@ -178,9 +182,9 @@
       <!-- Eliminado: Última Oferta -->
 
       <!-- Clientes -->
-      <div class="card">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-bold theme-text-primary">Clientes</h3>
+      <div class="card min-w-0">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <h3 class="text-base sm:text-lg font-bold theme-text-primary">Clientes</h3>
           <span class="text-green-600 dark:text-green-400 text-sm font-medium">+26.5%</span>
         </div>
         
@@ -190,15 +194,15 @@
         </div>
         
         <!-- Gráfico de líneas simulado -->
-        <div class="space-y-2">
-          <div class="flex items-center space-x-2">
-            <div class="w-8 h-4 bg-blue-600 dark:bg-blue-400 rounded-tl-lg rounded-tr-lg"></div>
-            <div class="w-8 h-6 bg-blue-400 dark:bg-blue-300 rounded-tl-lg rounded-tr-lg"></div>
-            <div class="w-8 h-3 bg-blue-500 dark:bg-blue-500 rounded-tl-lg rounded-tr-lg"></div>
-            <div class="w-8 h-7 bg-blue-300 dark:bg-blue-600 rounded-tl-lg rounded-tr-lg"></div>
-            <div class="w-8 h-5 bg-blue-600 dark:bg-blue-400 rounded-tl-lg rounded-tr-lg"></div>
-            <div class="w-8 h-8 bg-blue-400 dark:bg-blue-300 rounded-tl-lg rounded-tr-lg"></div>
-            <div class="w-8 h-6 bg-blue-500 dark:bg-blue-500 rounded-tl-lg rounded-tr-lg"></div>
+        <div class="overflow-x-auto -mx-1 px-1 sm:mx-0 sm:px-0">
+          <div class="flex items-end gap-1 min-w-max sm:min-w-0 sm:flex-wrap sm:justify-center py-1">
+            <div class="w-6 h-3 sm:w-8 sm:h-4 bg-blue-600 dark:bg-blue-400 rounded-tl-lg rounded-tr-lg shrink-0"></div>
+            <div class="w-6 h-5 sm:w-8 sm:h-6 bg-blue-400 dark:bg-blue-300 rounded-tl-lg rounded-tr-lg shrink-0"></div>
+            <div class="w-6 h-2.5 sm:w-8 sm:h-3 bg-blue-500 dark:bg-blue-500 rounded-tl-lg rounded-tr-lg shrink-0"></div>
+            <div class="w-6 h-5 sm:w-8 sm:h-7 bg-blue-300 dark:bg-blue-600 rounded-tl-lg rounded-tr-lg shrink-0"></div>
+            <div class="w-6 h-4 sm:w-8 sm:h-5 bg-blue-600 dark:bg-blue-400 rounded-tl-lg rounded-tr-lg shrink-0"></div>
+            <div class="w-6 h-6 sm:w-8 sm:h-8 bg-blue-400 dark:bg-blue-300 rounded-tl-lg rounded-tr-lg shrink-0"></div>
+            <div class="w-6 h-5 sm:w-8 sm:h-6 bg-blue-500 dark:bg-blue-500 rounded-tl-lg rounded-tr-lg shrink-0"></div>
           </div>
         </div>
         
@@ -209,7 +213,7 @@
     <!-- (Se eliminó la sección de Actividad Reciente) -->
 
     <!-- Botón flotante de configuración -->
-    <div class="fixed bottom-6 right-6">
+    <div class="fixed bottom-24 right-4 sm:right-6 lg:bottom-6 z-40">
       <button class="w-14 h-14 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center theme-accent-button">
         <Icon name="heroicons:cog-6-tooth" class="w-6 h-6" />
       </button>

@@ -13,13 +13,13 @@
         <!-- Badge -->
         <div class="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-accent-soft dark:bg-gradient-to-r dark:from-accent/30 dark:to-accent-secondary/30 rounded-full mb-4 sm:mb-8 animate-fade-in-up">
           <Icon name="heroicons:sparkles" class="w-4 h-4 sm:w-5 sm:h-5 text-accent" />
-          <span class="text-xs sm:text-sm font-semibold text-accent">Nueva Colección 2024</span>
+          <span class="text-xs sm:text-sm font-semibold text-accent">Nueva Colección 2026</span>
         </div>
 
-        <!-- Main Heading -->
-        <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold mb-4 sm:mb-6 leading-tight animate-fade-in-up animation-delay-200">
-          <span class="block text-gray-900 dark:text-gray-100 mb-1 sm:mb-2">Bienvenida a</span>
-          <span class="hero-byloto-text block bg-gradient-to-r from-accent via-accent-secondary to-accent bg-clip-text text-transparent bg-300% animate-gradient dark:bg-none dark:bg-transparent dark:bg-clip-border dark:text-[#F4E1E0]">
+        <!-- Main Heading (colores sólidos: el gradiente + text-transparent podía dejar el texto invisible) -->
+        <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold mb-4 sm:mb-6 leading-tight animate-fade-in-up animation-delay-200 text-[#0E1627] dark:text-gray-100">
+          <span class="block mb-1 sm:mb-2">Bienvenida a</span>
+          <span class="hero-byloto-text block text-[#6b3d38] dark:text-[#F4E1E0]">
             BylotoStore
           </span>
         </h1>
@@ -346,8 +346,8 @@ onMounted(() => {
 }
 
 .animate-fade-in-up {
-  animation: fadeInUp 0.8s ease-out forwards;
-  opacity: 0;
+  /* both = primer fotograma antes de empezar (opacity 0) + último al terminar; evita quedar invisible si falla forwards */
+  animation: fadeInUp 0.8s ease-out both;
 }
 
 .animation-delay-200 {
@@ -376,8 +376,9 @@ onMounted(() => {
 
 .line-clamp-2 {
   display: -webkit-box;
-  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
   overflow: hidden;
 }
 
@@ -404,14 +405,22 @@ onMounted(() => {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+  .animate-fade-in-up {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
 }
 
-/* GPU acceleration para elementos animados */
+/* GPU: no aplicar transform fijo a .animate-fade-in-up (choca con la animación fadeInUp y puede dejar opacity/transform mal aplicados) */
 .animate-blob,
-.animate-fade-in-up,
 .animate-gradient {
   will-change: transform, opacity;
   transform: translateZ(0);
+  backface-visibility: hidden;
+}
+.animate-fade-in-up {
+  will-change: transform, opacity;
   backface-visibility: hidden;
 }
 
