@@ -12,53 +12,95 @@
       </div>
 
       <div v-else>
-        <!-- Header -->
-        <div class="text-center mb-8">
-          <h1 class="text-4xl md:text-5xl font-bold mb-4">
-            <span
-              class="bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent"
+        <!-- Header con imagen de categoría -->
+        <div class="text-center mb-10">
+
+          <!-- Imagen de categoría -->
+          <div class="flex justify-center mb-6">
+            <div
+              :class="[
+                'w-28 h-28 rounded-full overflow-hidden shadow-2xl border-4 border-white ring-4',
+                category?.image_url ? 'ring-pink-200' : 'ring-pink-100',
+              ]"
             >
+              <img
+                v-if="category?.image_url"
+                :src="category.image_url"
+                :alt="category?.name"
+                class="w-full h-full object-cover"
+              />
+              <div
+                v-else
+                class="w-full h-full flex items-center justify-center bg-gradient-to-br from-pink-100 to-purple-100"
+              >
+                <Icon name="heroicons:tag" class="w-12 h-12 text-pink-400" />
+              </div>
+            </div>
+          </div>
+
+          <h1 class="text-4xl md:text-5xl font-bold mb-3">
+            <span class="bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
               {{ category?.name || 'Categoría' }}
             </span>
           </h1>
-          <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+          <p class="text-lg text-gray-500 max-w-2xl mx-auto mb-8">
             {{ category?.description || 'Explora nuestros productos' }}
           </p>
 
-          <!-- Category Navigation Pills -->
-          <div class="flex flex-wrap justify-center gap-2 mb-8">
-            <NuxtLink
-              to="/shop"
-              class="px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border bg-white text-gray-600 border-gray-200 hover:border-pink-300 hover:text-pink-600 hover:bg-pink-50"
-            >
-              Todas
-            </NuxtLink>
-            <NuxtLink
-              v-for="cat in allCategories"
-              :key="cat.id_category"
-              :to="`/shop/category/${cat.id_category}`"
-              :class="[
-                'px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border',
-                cat.id_category === categoryId
-                  ? 'bg-pink-600 text-white border-pink-600 shadow-md transform scale-105'
-                  : 'bg-white text-gray-600 border-gray-200 hover:border-pink-300 hover:text-pink-600 hover:bg-pink-50',
-              ]"
-            >
-              {{ cat.name }}
-            </NuxtLink>
-          </div>
-        </div>
+          <!-- Navegación de categorías con imágenes -->
+          <div class="flex justify-center">
+            <div class="flex gap-4 overflow-x-auto pb-2 scrollbar-hide max-w-full px-2">
 
-        <!-- Category Image -->
-        <div v-if="category?.image_url" class="flex justify-center mb-12">
-          <div
-            class="w-32 h-32 rounded-full overflow-hidden shadow-2xl border-4 border-white"
-          >
-            <img
-              :src="category.image_url"
-              :alt="category.name"
-              class="w-full h-full object-cover"
-            />
+              <!-- Todas -->
+              <NuxtLink
+                to="/shop"
+                class="flex-shrink-0 flex flex-col items-center gap-1.5 p-2 rounded-xl group focus:outline-none"
+              >
+                <div class="w-14 h-14 rounded-full flex items-center justify-center bg-gray-100 border-2 border-gray-200 group-hover:border-pink-300 group-hover:bg-pink-50 transition-all duration-200">
+                  <Icon name="heroicons:squares-2x2" class="w-6 h-6 text-pink-400" />
+                </div>
+                <span class="text-xs font-medium text-gray-500 group-hover:text-pink-600 transition-colors">Todas</span>
+              </NuxtLink>
+
+              <!-- Cada categoría -->
+              <NuxtLink
+                v-for="cat in allCategories"
+                :key="cat.id_category"
+                :to="`/shop/category/${cat.id_category}`"
+                class="flex-shrink-0 flex flex-col items-center gap-1.5 p-2 rounded-xl group focus:outline-none"
+              >
+                <div
+                  :class="[
+                    'w-14 h-14 rounded-full overflow-hidden border-2 transition-all duration-200',
+                    cat.id_category === categoryId
+                      ? 'border-pink-500 ring-2 ring-pink-300'
+                      : 'border-gray-200 group-hover:border-pink-400 group-hover:ring-2 group-hover:ring-pink-200',
+                  ]"
+                >
+                  <img
+                    v-if="cat.image_url"
+                    :src="cat.image_url"
+                    :alt="cat.name"
+                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                  <div
+                    v-else
+                    class="w-full h-full flex items-center justify-center bg-gradient-to-br from-pink-100 to-purple-100"
+                  >
+                    <Icon name="heroicons:tag" class="w-6 h-6 text-pink-400" />
+                  </div>
+                </div>
+                <span
+                  :class="[
+                    'text-xs font-medium text-center max-w-[64px] truncate transition-colors duration-200',
+                    cat.id_category === categoryId ? 'text-pink-600' : 'text-gray-500 group-hover:text-pink-600',
+                  ]"
+                >
+                  {{ cat.name }}
+                </span>
+              </NuxtLink>
+
+            </div>
           </div>
         </div>
 

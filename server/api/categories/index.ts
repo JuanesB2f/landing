@@ -5,7 +5,7 @@
  */
 
 import { serverSupabaseClient } from '#supabase/server'
-import { requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
+import { requireAdmin, respondSuccess, respondError, getServiceClient } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
@@ -73,21 +73,24 @@ export default defineEventHandler(async (event) => {
         const fields: Record<string, string> = {}
         let filePart: any = null
         for (const part of form || []) {
-          if (part.type === 'file') {
-            if (part.name === 'image' && part.data && part.filename) filePart = part
+          if (part.filename) {
+            if (part.name === 'image' && part.data) filePart = part
           } else if (part.name) {
             fields[part.name] = part.data?.toString() || ''
           }
         }
         body = fields
         if (filePart) {
+          const serviceClient = getServiceClient(event)
           const fileExt = (filePart.filename as string).split('.').pop()
           const filePath = `${crypto.randomUUID()}.${fileExt}`
-          const { error: uploadError } = await supabase.storage
-            .from('product-image')
-            .upload(filePath, filePart.data, { contentType: filePart.mimetype, upsert: false })
-          if (!uploadError) {
-            const { data: publicUrl } = supabase.storage.from('product-image').getPublicUrl(filePath)
+            const { error: uploadError } = await serviceClient.storage
+              .from('category-images')
+              .upload(filePath, filePart.data, { contentType: filePart.type || 'image/jpeg', upsert: false })
+          if (uploadError) {
+            console.error('Error subiendo imagen de categoría:', uploadError)
+          } else {
+            const { data: publicUrl } = serviceClient.storage.from('category-images').getPublicUrl(filePath)
             uploadedImageUrl = publicUrl.publicUrl
           }
         }

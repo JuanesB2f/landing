@@ -1,5 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server'
-import { requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
+import { requireAdmin, respondSuccess, respondError, getServiceClient } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const client = await serverSupabaseClient(event)
@@ -52,10 +52,8 @@ export default defineEventHandler(async (event) => {
           const fields: Record<string, string> = {}
           let filePart: any = null
           for (const part of form || []) {
-            if (part.type === 'file') {
-              if (part.name === 'image' && part.data && part.filename) {
-                filePart = part
-              }
+            if (part.filename) {
+              if (part.name === 'image' && part.data) filePart = part
             } else if (part.name) {
               fields[part.name] = part.data?.toString() || ''
             }
@@ -63,15 +61,17 @@ export default defineEventHandler(async (event) => {
           body = fields
 
           if (filePart) {
+            const serviceClient = getServiceClient(event)
             const fileExt = (filePart.filename as string).split('.').pop()
             const filePath = `${crypto.randomUUID()}.${fileExt}`
-            const { error: uploadError } = await client.storage
+            const { error: uploadError } = await serviceClient.storage
               .from('product-image')
-              .upload(filePath, filePart.data, { contentType: filePart.mimetype, upsert: false })
+              .upload(filePath, filePart.data, { contentType: filePart.type || 'image/jpeg', upsert: false })
             if (uploadError) {
-              throw createError({ statusCode: 400, statusMessage: 'Error subiendo imagen' })
+              console.error('Error subiendo imagen:', uploadError)
+              throw createError({ statusCode: 400, statusMessage: 'Error subiendo imagen: ' + uploadError.message })
             }
-            const { data: publicUrl } = client.storage.from('product-image').getPublicUrl(filePath)
+            const { data: publicUrl } = serviceClient.storage.from('product-image').getPublicUrl(filePath)
             uploadedImageUrl = publicUrl.publicUrl
           }
         } else {

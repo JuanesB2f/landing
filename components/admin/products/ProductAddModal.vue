@@ -185,7 +185,11 @@ const handleSubmit = async () => {
     Object.entries(form.value).forEach(([k, v]) => fd.append(k, String(v)))
     fd.set('price', String(parseFloat(String(form.value.price))))
     fd.set('stock_quantity', String(parseInt(String(form.value.stock_quantity))))
-    if (file.value) fd.append('image', file.value)
+    if (file.value) {
+      fd.append('image', file.value)
+    } else if (props.product?.image_url) {
+      fd.append('image_url', props.product.image_url)
+    }
 
     if (props.product?.id_product) fd.append('id_product', props.product.id_product)
     emit('save', fd)

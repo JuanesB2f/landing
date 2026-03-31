@@ -108,7 +108,11 @@ const handleSubmit = async () => {
   try {
     const fd = new FormData()
     Object.entries(form.value).forEach(([k, v]) => fd.append(k, String(v)))
-    if (file.value) fd.append('image', file.value)
+    if (file.value) {
+      fd.append('image', file.value)
+    } else if (props.category?.image_url) {
+      fd.append('image_url', props.category.image_url)
+    }
     if (props.category?.id_category) fd.append('id_category', props.category.id_category)
     emit('save', fd)
   } finally {

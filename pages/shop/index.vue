@@ -1,239 +1,116 @@
 <template>
-  <div class="py-8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- Header -->
-      <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 mb-4">
-          Catálogo de Productos
+  <div class="min-h-screen theme-login-bg">
+
+    <!-- ── Hero ── -->
+    <section class="relative py-14 sm:py-20 overflow-hidden">
+      <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
+        <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div class="absolute top-40 left-40 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
+      </div>
+
+      <div class="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="inline-flex items-center gap-2 px-4 py-2 bg-accent-soft dark:bg-accent/20 rounded-full mb-5 animate-fade-in-up">
+          <Icon name="heroicons:sparkles" class="w-4 h-4 text-accent" />
+          <span class="text-sm font-semibold text-accent">Catálogo 2026</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 leading-tight animate-fade-in-up animation-delay-200 text-[#0E1627] dark:text-gray-100">
+          Nuestra <span class="text-[#6b3d38] dark:text-[#F4E1E0]">Colección</span>
         </h1>
-        <p class="text-gray-600">
-          Descubre nuestra colección completa de productos de belleza y moda
+        <p class="text-lg text-gray-600 dark:text-gray-300 max-w-lg mx-auto mb-8 animate-fade-in-up animation-delay-400">
+          Elige una categoría y descubre los productos hechos para ti
         </p>
-      </div>
 
-      <!-- Filters & Search -->
-      <div
-        class="bg-white p-6 rounded-xl shadow-sm mb-8 border border-gray-100"
-      >
-        <div
-          class="flex flex-col md:flex-row gap-6 justify-between items-start md:items-center mb-6"
-        >
-          <!-- Search -->
-          <div class="relative w-full md:w-96 shop-search-wrap">
-            <Icon
-              name="heroicons:magnifying-glass"
-              class="shop-search-icon absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 pointer-events-none"
-              aria-hidden
-            />
-            <input
-              v-model="searchQuery"
-              @input="debouncedSearch"
-              type="text"
-              placeholder="Buscar productos..."
-              class="shop-search-input w-full pl-12 pr-10 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all bg-gray-50 focus:bg-white text-gray-900 placeholder-gray-500"
-              aria-label="Buscar productos"
-            />
-            <button
-              v-if="searchQuery"
-              type="button"
-              @click="clearSearch"
-              class="shop-search-clear absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-1 transition-colors"
-              aria-label="Limpiar búsqueda"
-            >
-              <Icon name="heroicons:x-mark" class="w-5 h-5" />
-            </button>
-          </div>
-
-          <!-- Sort -->
-          <div class="flex items-center space-x-3 w-full md:w-auto">
-            <span class="text-sm text-gray-500 whitespace-nowrap"
-              >Ordenar por:</span
-            >
-            <USelectMenu
-              v-model="sortBy"
-              :options="[
-                { label: 'Más Recientes', value: 'newest' },
-                { label: 'Precio: Menor a Mayor', value: 'price_asc' },
-                { label: 'Precio: Mayor a Menor', value: 'price_desc' },
-                { label: 'Nombre A-Z', value: 'name_asc' },
-              ]"
-              option-attribute="label"
-              value-attribute="value"
-              class="w-full md:w-48"
-            />
-          </div>
-        </div>
-
-        <!-- Category Pills -->
-        <div class="space-y-3 shop-category-filters">
-          <h3
-            class="text-sm font-medium text-gray-500 uppercase tracking-wider"
+        <!-- Buscador de categorías -->
+        <div class="max-w-md mx-auto relative animate-fade-in-up animation-delay-600">
+          <Icon
+            name="heroicons:magnifying-glass"
+            class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
+          />
+          <input
+            v-model="search"
+            type="text"
+            placeholder="Buscar categoría..."
+            class="w-full pl-12 pr-11 py-3.5 rounded-2xl bg-white dark:bg-bg-card border border-gray-200 dark:border-border-color shadow-lg focus:ring-2 focus:ring-accent/30 focus:border-accent focus:outline-none text-gray-800 dark:text-gray-100 placeholder-gray-400 text-sm transition-all"
+          />
+          <button
+            v-if="search"
+            @click="search = ''"
+            class="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 rounded-lg text-gray-400 hover:text-accent hover:bg-accent-soft dark:hover:bg-accent/10 transition-colors"
+            aria-label="Limpiar búsqueda"
           >
-            Categorías
-          </h3>
-          <div class="flex flex-wrap gap-2 shop-category-pills">
-            <button
-              @click="selectedCategory = ''"
-              :class="[
-                'shop-category-pill px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border',
-                selectedCategory === ''
-                  ? 'bg-pink-600 text-white border-pink-600 shadow-md transform scale-105'
-                  : 'bg-white text-gray-600 border-gray-200 hover:border-pink-300 hover:text-pink-600 hover:bg-pink-50',
-              ]"
-            >
-              Todas
-            </button>
-            <button
-              v-for="cat in categories"
-              :key="cat.id_category"
-              @click="selectedCategory = cat.id_category"
-              :class="[
-                'shop-category-pill px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border',
-                selectedCategory === cat.id_category
-                  ? 'bg-pink-600 text-white border-pink-600 shadow-md transform scale-105'
-                  : 'bg-white text-gray-600 border-gray-200 hover:border-pink-300 hover:text-pink-600 hover:bg-pink-50',
-              ]"
-            >
-              {{ cat.name }}
-            </button>
-          </div>
+            <Icon name="heroicons:x-mark" class="w-4 h-4" />
+          </button>
         </div>
       </div>
+    </section>
 
-      <!-- Loading State -->
-      <div v-if="loading" class="flex justify-center py-12">
-        <Icon
-          name="svg-spinners:180-ring-with-bg"
-          class="w-12 h-12 text-pink-600"
-        />
+    <!-- ── Categorías ── -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+
+      <!-- Loading -->
+      <div v-if="loading" class="flex flex-col items-center justify-center py-24 gap-4">
+        <Icon name="svg-spinners:180-ring-with-bg" class="w-12 h-12 text-accent" />
+        <p class="text-gray-400 text-sm">Cargando categorías...</p>
       </div>
 
-      <!-- Empty State -->
-      <div
-        v-else-if="products.length === 0"
-        class="text-center py-12 bg-white rounded-lg shadow-sm"
-      >
-        <Icon
-          name="heroicons:shopping-bag"
-          class="w-16 h-16 mx-auto text-gray-300 mb-4"
-        />
-        <h3 class="text-lg font-medium text-gray-900">
-          No se encontraron productos
-        </h3>
-        <p class="text-gray-500 mt-2">
-          Intenta ajustar tus filtros de búsqueda
-        </p>
+      <!-- Sin categorías -->
+      <div v-else-if="categories.length === 0" class="text-center py-24">
+        <div class="w-24 h-24 bg-accent-soft dark:bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-5">
+          <Icon name="heroicons:tag" class="w-12 h-12 text-accent opacity-50" />
+        </div>
+        <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-200">Aún no hay categorías</h3>
+        <p class="text-gray-400 mt-2">Vuelve pronto para ver nuestra colección</p>
+      </div>
+
+      <!-- Sin resultados de búsqueda -->
+      <div v-else-if="filteredCategories.length === 0" class="text-center py-24">
+        <div class="w-24 h-24 bg-accent-soft dark:bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-5">
+          <Icon name="heroicons:magnifying-glass" class="w-12 h-12 text-accent opacity-50" />
+        </div>
+        <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-2">Sin resultados</h3>
+        <p class="text-gray-400 mb-5">No hay categorías que coincidan con "<span class="text-accent font-medium">{{ search }}</span>"</p>
         <button
-          @click="resetFilters"
-          class="mt-4 text-pink-600 hover:text-pink-700 font-medium"
+          @click="search = ''"
+          class="px-5 py-2.5 bg-gradient-to-r from-accent to-accent-secondary text-white rounded-full text-sm font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
         >
-          Limpiar filtros
+          Ver todas las categorías
         </button>
       </div>
 
-      <!-- Products Grid -->
-      <div
-        v-else
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-      >
-        <div
-          v-for="product in products"
-          :key="product.id_product"
-          class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 group"
+      <!-- Grid de categorías -->
+      <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 sm:gap-6 animate-fade-in-up animation-delay-600">
+        <NuxtLink
+          v-for="cat in filteredCategories"
+          :key="cat.id_category"
+          :to="`/shop/category/${cat.id_category}`"
+          class="group flex flex-col items-center gap-3 focus:outline-none"
         >
-          <!-- Imagen -->
-          <div class="relative h-64 bg-gray-100 overflow-hidden">
+          <!-- Imagen de la categoría -->
+          <div class="w-full aspect-square rounded-2xl overflow-hidden shadow-md border border-gray-100 dark:border-border-color bg-accent-soft dark:bg-accent/10 transition-all duration-300 group-hover:shadow-xl group-hover:-translate-y-1 group-hover:border-accent/30">
             <img
-              v-if="product.image_url"
-              :src="product.image_url"
-              :alt="product.name"
-              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              v-if="cat.image_url"
+              :src="cat.image_url"
+              :alt="cat.name"
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             />
-            <div
-              v-else
-              class="w-full h-full flex items-center justify-center bg-gradient-to-br from-pink-100 to-purple-100"
-            >
-              <Icon name="heroicons:photo" class="w-16 h-16 text-pink-300" />
-            </div>
-
-            <!-- Badge de Stock -->
-            <div
-              v-if="product.stock_quantity <= 0"
-              class="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded"
-            >
-              AGOTADO
-            </div>
-            <div
-              v-else-if="product.stock_quantity < 5"
-              class="absolute top-2 right-2 bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded"
-            >
-              ¡ÚLTIMAS UNIDADES!
+            <div v-else class="w-full h-full flex flex-col items-center justify-center gap-2 p-4">
+              <Icon name="heroicons:tag" class="w-10 h-10 text-accent opacity-60" />
             </div>
           </div>
 
-          <!-- Contenido -->
-          <div class="p-4">
-            <div class="mb-2">
-              <span
-                class="text-xs text-pink-600 font-medium bg-pink-50 px-2 py-1 rounded-full"
-              >
-                {{ product.category?.name || 'General' }}
-              </span>
-            </div>
-            <h3
-              class="font-semibold text-gray-800 mb-1 truncate"
-              :title="product.name"
-            >
-              {{ product.name }}
-            </h3>
-            <p class="text-gray-600 text-sm mb-3 line-clamp-2 h-10">
-              {{ product.description }}
+          <!-- Nombre + contador -->
+          <div class="text-center w-full">
+            <p class="font-semibold text-sm text-gray-800 dark:text-gray-100 group-hover:text-accent transition-colors duration-200 truncate px-1">
+              {{ cat.name }}
             </p>
-
-            <div class="flex justify-between items-center mt-4">
-              <div class="flex flex-col">
-                <span class="text-xl font-bold text-pink-600">{{
-                  formatCOP(product.price)
-                }}</span>
-                <span class="text-xs text-gray-400"
-                  >SKU: {{ product.sku }}</span
-                >
-              </div>
-
-              <button
-                @click="addToCart(product)"
-                :disabled="product.stock_quantity <= 0"
-                class="bg-pink-600 text-white p-2 rounded-lg hover:bg-pink-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg active:scale-95 transition-all duration-200"
-                title="Agregar al carrito"
-              >
-                <Icon name="heroicons:shopping-cart" class="w-5 h-5" />
-              </button>
-            </div>
+            <p v-if="cat.product_count" class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+              {{ cat.product_count }} producto{{ cat.product_count !== 1 ? 's' : '' }}
+            </p>
           </div>
-        </div>
+        </NuxtLink>
       </div>
 
-      <!-- Pagination -->
-      <div
-        v-if="products.length > 0"
-        class="mt-12 flex justify-center items-center space-x-4"
-      >
-        <button
-          @click="prevPage"
-          :disabled="page <= 1"
-          class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
-        >
-          <Icon name="heroicons:chevron-left" class="w-5 h-5 mr-1" /> Anterior
-        </button>
-        <span class="text-gray-600 font-medium">Página {{ page }}</span>
-        <button
-          @click="nextPage"
-          :disabled="products.length < pageSize"
-          class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
-        >
-          Siguiente <Icon name="heroicons:chevron-right" class="w-5 h-5 ml-1" />
-        </button>
-      </div>
     </div>
   </div>
 </template>
@@ -243,26 +120,21 @@ definePageMeta({
   layout: 'default',
 })
 
-import { useCartStore } from '~/stores/cart'
-
-// Estado
-const products = ref([])
 const categories = ref([])
 const loading = ref(true)
-const searchQuery = ref('')
-const selectedCategory = ref('')
-const sortBy = ref('newest')
-const page = ref(1)
-const pageSize = 12
+const search = ref('')
 
-// Composables
-const { formatCOP } = useCurrency()
-const cart = useCartStore()
-const { $toast } = useNuxtApp()
-const { user } = useAuth()
+const filteredCategories = computed(() => {
+  if (!search.value.trim()) return categories.value
+  const q = search.value.trim().toLowerCase()
+  return categories.value.filter(cat =>
+    cat.name.toLowerCase().includes(q) ||
+    (cat.description && cat.description.toLowerCase().includes(q))
+  )
+})
 
-// Cargar categorías
 const fetchCategories = async () => {
+  loading.value = true
   try {
     const { data } = await $fetch('/api/categories')
     if (data?.success) {
@@ -270,128 +142,46 @@ const fetchCategories = async () => {
     }
   } catch (e) {
     console.error('Error cargando categorías:', e)
-  }
-}
-
-// Cargar productos
-const fetchProducts = async () => {
-  loading.value = true
-  try {
-    const params = {
-      page: page.value,
-      page_size: pageSize,
-      search: searchQuery.value || undefined,
-      category_id: selectedCategory.value || undefined,
-      sort: sortBy.value,
-    }
-
-    const { data } = await $fetch('/api/products', { params })
-    if (data?.success) {
-      products.value = data.data
-    }
-  } catch (e) {
-    console.error('Error cargando productos:', e)
-    $toast?.error('Error', 'No se pudieron cargar los productos')
   } finally {
     loading.value = false
   }
 }
 
-// Debounce para búsqueda
-let searchTimeout
-const debouncedSearch = () => {
-  clearTimeout(searchTimeout)
-  searchTimeout = setTimeout(() => {
-    page.value = 1
-    fetchProducts()
-  }, 500)
-}
-
-const clearSearch = () => {
-  searchQuery.value = ''
-  page.value = 1
-  fetchProducts()
-}
-
-// Watchers
-watch([selectedCategory, sortBy], () => {
-  page.value = 1
-  fetchProducts()
-})
-
-// Paginación
-const prevPage = () => {
-  if (page.value > 1) {
-    page.value--
-    fetchProducts()
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
-}
-
-const nextPage = () => {
-  page.value++
-  fetchProducts()
-  window.scrollTo({ top: 0, behavior: 'smooth' })
-}
-
-const resetFilters = () => {
-  searchQuery.value = ''
-  selectedCategory.value = ''
-  sortBy.value = 'newest'
-  page.value = 1
-  fetchProducts()
-}
-
-// Carrito
-const addToCart = async product => {
-  // Verificar si es customer (solo visualización)
-  if (user.value?.role === 'customer') {
-    $toast?.info(
-      'Acceso Restringido',
-      'Inicia sesión como Usuario para agregar productos al carrito'
-    )
-    return
-  }
-
-  // Verificar autenticación
-  if (!user.value) {
-    const { setAddIntent } = useAddIntent()
-    setAddIntent({
-      productId: product.id_product,
-      quantity: 1,
-      product: {
-        id_product: product.id_product,
-        name: product.name,
-        price: product.price,
-        image_url: product.image_url,
-        sku: product.sku,
-      },
-    })
-    return navigateTo('/login')
-  }
-
-  cart.addItem({
-    product_id: product.id_product,
-    name: product.name,
-    sku: product.sku,
-    price: product.price,
-    image_url: product.image_url,
-  })
-  $toast?.success(
-    'Agregado al carrito',
-    `${product.name} agregado correctamente`
-  )
-}
-
-// Inicialización
 onMounted(() => {
   fetchCategories()
-  fetchProducts()
-
-  // Verificar si hay una categoría preseleccionada en la URL
-  const route = useRoute()
-  if (route.query.category) {
-    selectedCategory.value = route.query.category
-  }
 })
 </script>
+
+<style scoped>
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translate3d(0, 30px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+.animate-fade-in-up {
+  animation: fadeInUp 0.7s ease-out both;
+  will-change: transform, opacity;
+}
+.animation-delay-200 { animation-delay: 0.2s; }
+.animation-delay-400 { animation-delay: 0.4s; }
+.animation-delay-600 { animation-delay: 0.6s; }
+.animation-delay-2000 { animation-delay: 2s; }
+.animation-delay-4000 { animation-delay: 4s; }
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in-up, .animate-blob {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+</style>

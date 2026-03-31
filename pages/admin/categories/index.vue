@@ -73,7 +73,13 @@
               <td class="whitespace-nowrap">
                 <div class="flex items-center">
                   <div class="flex-shrink-0 h-10 w-10">
-                    <div class="h-10 w-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                    <img
+                      v-if="category.image_url"
+                      :src="category.image_url"
+                      :alt="category.name"
+                      class="h-10 w-10 rounded-lg object-cover"
+                    />
+                    <div v-else class="h-10 w-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                       <Icon name="heroicons:tag" class="w-5 h-5 text-blue-600 dark:text-blue-300" />
                     </div>
                   </div>
@@ -283,10 +289,12 @@ const visiblePages = computed(() => {
 })
 
 // Métodos
-const fetchCategories = async () => {
-  loading.value = true
+const fetchCategories = async (showLoader = true) => {
+  if (showLoader) loading.value = true
   try {
-    const { data } = await $fetch('/api/categories')
+    const { data } = await $fetch('/api/categories', {
+      params: { _t: Date.now() }
+    })
     if (data.success) {
       categories.value = data.data
     } else {
@@ -463,9 +471,31 @@ const checkAuthentication = async () => {
   }
 }
 
+// Realtime — actualización automática cuando cambia la tabla categories
+let realtimeChannel = null
+
+const setupRealtime = () => {
+  const supabase = useSupabaseClient()
+  realtimeChannel = supabase
+    .channel('admin-categories')
+    .on(
+      'postgres_changes',
+      { event: '*', schema: 'public', table: 'categories' },
+      () => { fetchCategories(false) }
+    )
+    .subscribe()
+}
+
 // Lifecycle
 onMounted(async () => {
-  // auth via middleware
   await fetchCategories()
+  setupRealtime()
+})
+
+onUnmounted(() => {
+  if (realtimeChannel) {
+    const supabase = useSupabaseClient()
+    supabase.removeChannel(realtimeChannel)
+  }
 })
 </script>

@@ -324,7 +324,9 @@ const { formatCOP } = useCurrency()
 const fetchProducts = async () => {
   loading.value = true
   try {
-    const { data } = await $fetch('/api/products')
+    const { data } = await $fetch('/api/products', {
+      params: { _t: Date.now() }
+    })
     if (data.success) {
       products.value = data.data
     } else {
