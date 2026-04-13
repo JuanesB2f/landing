@@ -639,7 +639,8 @@ body {
   max-width: 100vw;
   min-height: 100vh;
   min-height: 100dvh;
-  position: relative;
+  /* static: evita que `position:fixed` del dock (Teleport a body) se comporte mal en algunos WebKit al scroll */
+  position: static;
   /* Explícito: permite arrastre vertical con el dedo (por si algún estilo heredado lo limita) */
   touch-action: pan-y pinch-zoom;
   -webkit-overflow-scrolling: touch;

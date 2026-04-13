@@ -123,13 +123,14 @@
       </div>
     </header>
 
-    <!-- Barra inferior: Teleport a body para que fixed sea respecto al viewport (no se mueve al scroll) -->
-    <Teleport to="body">
-      <nav
-        class="ios-tab-bar ios-mobile-tab-dock md:hidden fixed bottom-0 left-0 right-0 theme-header border-t theme-border w-full max-w-[100vw] rounded-t-3xl"
-        style="padding-bottom: env(safe-area-inset-bottom, 0);"
-        aria-label="Navegación principal"
-      >
+    <!-- Barra inferior: Teleport + contenedor fijo (viewport real al hacer scroll) -->
+    <Teleport to="body" defer>
+      <div class="ios-mobile-tab-dock md:hidden">
+        <nav
+          class="ios-tab-bar theme-header border-t theme-border w-full max-w-[100vw] rounded-t-3xl"
+          style="padding-bottom: env(safe-area-inset-bottom, 0);"
+          aria-label="Navegación principal"
+        >
       <div class="flex items-stretch justify-around h-12 sm:h-14 gap-0.5 px-0.5 sm:px-0">
         <NuxtLink
           to="/"
@@ -192,7 +193,8 @@
           <span class="truncate max-w-full px-0.5">Salir</span>
         </button>
       </div>
-      </nav>
+        </nav>
+      </div>
     </Teleport>
 
     <!-- Main Content -->

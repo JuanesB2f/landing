@@ -94,21 +94,27 @@ html.dark .ios-tab-bar {
 }
 
 /*
- * Dock móvil: anclar siempre al viewport. Sin esto, un ancestro con transform/filter
- * puede hacer que `position: fixed` se comporte como `absolute` y la barra se desplace al scroll.
- * Se usa junto a <Teleport to="body"> en los layouts.
+ * Dock móvil: anclar al viewport (fuera de #__nuxt vía Teleport).
+ * Sin transform en el propio dock: en WebKit a veces compone mal capas con scroll.
  */
 .ios-mobile-tab-dock {
   position: fixed !important;
   left: 0 !important;
   right: 0 !important;
   bottom: 0 !important;
+  top: auto !important;
   width: 100% !important;
   max-width: 100vw !important;
   margin: 0 !important;
-  z-index: 9990 !important;
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
+  padding: 0 !important;
+  z-index: 99999 !important;
+  box-sizing: border-box !important;
+  pointer-events: none;
+  isolation: isolate;
+}
+
+.ios-mobile-tab-dock > * {
+  pointer-events: auto;
 }
 
 /* Sidebar admin (desktop): panel flotante */
