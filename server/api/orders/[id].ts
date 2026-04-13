@@ -316,7 +316,7 @@ export default defineEventHandler(async (event) => {
       // Verificar que el pedido existe
       const { data: existingOrder, error: orderError } = await supabase
         .from('orders')
-        .select('id_order, status')
+        .select('id_order, status, payment_status')
         .eq('id_order', id)
         .single()
 
@@ -324,9 +324,19 @@ export default defineEventHandler(async (event) => {
         return respondError('Pedido no encontrado')
       }
 
-      // Permitir eliminación de pedidos pendientes o confirmados
-      if (!['pending', 'confirmed'].includes((existingOrder as any).status)) {
-        return respondError('Solo se pueden eliminar pedidos en estado pending o confirmed')
+      const orderStatus = (existingOrder as any).status as string
+      const paymentStatus = (existingOrder as any).payment_status as string | null
+
+      // Pedidos editables como antes; además, permitir borrar cancelados aún sin pago (limpieza admin)
+      const allowedByStatus = ['pending', 'confirmed'].includes(orderStatus)
+      const unpaidCancelled =
+        orderStatus === 'cancelled' &&
+        (paymentStatus === 'pending' || paymentStatus === 'failed' || paymentStatus == null)
+
+      if (!allowedByStatus && !unpaidCancelled) {
+        return respondError(
+          'Solo se pueden eliminar pedidos pendientes o confirmados, o cancelados con pago pendiente o fallido'
+        )
       }
 
       // Obtener items del pedido para restaurar stock
@@ -339,8 +349,8 @@ export default defineEventHandler(async (event) => {
         console.error('Error obteniendo items del pedido:', itemsError)
       }
 
-      // Restaurar stock de productos (RPC)
-      if (orderItems) {
+      // Restaurar stock solo si el pedido no está cancelado (la cancelación ya pudo devolver inventario)
+      if (orderItems && orderStatus !== 'cancelled') {
         for (const item of orderItems as any[]) {
           const rpcRes = await (supabase as any).rpc('adjust_product_stock', { p_id_product: item.product_id, p_delta: Number(item.quantity) })
           const stockError = (rpcRes as any).error

@@ -5,33 +5,10 @@
 
 export default defineNuxtPlugin(() => {
   const supabase = useSupabaseClient()
-  const { checkAuth } = useAuth()
-  const { user } = useAuth()
+  const { checkAuth, user } = useAuth()
   const router = useRouter()
   
   if (import.meta.env.DEV) console.log('🔐 Plugin de autenticación iniciado')
-  
-  // Helper: esperar hasta que el perfil exista y tenga rol (optimizado)
-  const waitForProfileRole = async (userId: string, maxMs = 2000) => {
-    const start = Date.now()
-    let lastRole: string | null = null
-    while (Date.now() - start < maxMs) {
-      try {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', userId)
-          .maybeSingle()
-        const roleVal = (data as { role?: string } | null)?.role
-        if (!error && roleVal) {
-          lastRole = String(roleVal)
-          break
-        }
-      } catch {}
-      await new Promise(r => setTimeout(r, 200)) // Reducir frecuencia de polling
-    }
-    return lastRole
-  }
   
   // Verificar sesión de Supabase al cargar la aplicación (optimizado)
   const initAuth = async () => {
@@ -55,7 +32,7 @@ export default defineNuxtPlugin(() => {
             if (router.currentRoute.value.path === '/') {
               // Verificar si estamos haciendo logout antes de redirigir
               if (isLoggingOut) {
-                console.log('🚫 Ignorando redirección inicial por logout en progreso')
+                if (import.meta.env.DEV) console.log('🚫 Ignorando redirección inicial por logout en progreso')
                 return
               }
               
@@ -80,18 +57,18 @@ export default defineNuxtPlugin(() => {
 
   // Escuchar cambios en la autenticación (optimizado)
   supabase.auth.onAuthStateChange(async (event, session) => {
-    console.log('🔄 Cambio de estado de autenticación:', event)
+    if (import.meta.env.DEV) console.log('🔄 Cambio de estado de autenticación:', event)
     
     if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session) {
       // No redirigir si estamos en proceso de logout
       if (isLoggingOut) {
-        console.log('🚫 Ignorando redirección por logout en progreso')
+        if (import.meta.env.DEV) console.log('🚫 Ignorando redirección por logout en progreso')
         return
       }
       
       // No redirigir si estamos en la página de login
       if (typeof window !== 'undefined' && window.location.pathname === '/login') {
-        console.log('🚫 Ignorando redirección porque estamos en /login')
+        if (import.meta.env.DEV) console.log('🚫 Ignorando redirección porque estamos en /login')
         return
       }
       
@@ -117,7 +94,7 @@ export default defineNuxtPlugin(() => {
         
         // Verificar nuevamente si estamos haciendo logout antes de redirigir
         if (isLoggingOut) {
-          console.log('🚫 Ignorando redirección por logout en progreso (después de checkAuth)')
+          if (import.meta.env.DEV) console.log('🚫 Ignorando redirección por logout en progreso (después de checkAuth)')
           return
         }
         

@@ -273,10 +273,11 @@
 
                   <!-- Eliminar -->
                   <button
+                    :disabled="!canDelete(row)"
                     @click="onDelete(row)"
                     title="Eliminar"
                     aria-label="Eliminar"
-                    class="inline-flex items-center justify-center w-9 h-9 rounded border hover:bg-gray-50"
+                    class="inline-flex items-center justify-center w-9 h-9 rounded border hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     <Icon name="heroicons:trash" class="w-5 h-5" />
                   </button>
@@ -874,6 +875,15 @@ const canApprove = (row) => {
 const canCancel = (row) => {
   if (row._isReservation) return row.status === 'pending'
   return row.status === 'pending'
+}
+
+/** Alineado con DELETE /api/orders/[id]: pending/confirmado, o cancelado sin pago completado */
+const canDelete = (row) => {
+  if (row._isReservation) return row.status === 'pending'
+  const st = row.status
+  const pay = row.payment_status
+  if (['pending', 'confirmed'].includes(st)) return true
+  return st === 'cancelled' && (pay === 'pending' || pay === 'failed' || pay == null)
 }
 
 const onApprove = async (row) => {

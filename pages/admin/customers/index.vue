@@ -151,7 +151,10 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="customer in filteredCustomers.slice(startIndex, endIndex)" :key="customer.id_customer">
+            <tr
+              v-for="(customer, idx) in paginatedCustomers"
+              :key="`cust-${String(customer.id_customer ?? customer.id ?? idx)}-${startIndex + idx}`"
+            >
               <td class="whitespace-nowrap">
                 <div class="flex items-center">
                   <div class="flex-shrink-0 h-10 w-10">
@@ -187,13 +190,15 @@
                 {{ customer.order_count || 0 }} pedidos
               </td>
               <td class="whitespace-nowrap text-sm font-medium">
-                <div class="flex space-x-2">
+                <div class="flex flex-wrap items-center gap-2">
                   <button
-                    @click="viewCustomer(customer)"
-                    class="text-blue-600 hover:text-blue-900"
-                    title="Ver cliente"
+                    type="button"
+                    class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200"
+                    title="Detalles e historial de compras"
+                    @click="openDetails(customer)"
                   >
-                    <Icon name="heroicons:eye" class="w-5 h-5" />
+                    <Icon name="heroicons:document-text" class="w-4 h-4" />
+                    Detalles
                   </button>
                   <button
                     @click="openModal(customer)"
@@ -306,6 +311,12 @@
       @confirm="deleteCustomer"
       @cancel="showConfirmModal = false"
     />
+
+    <CustomerDetailsModal
+      v-if="showDetailsModal && detailsCustomer"
+      :customer="detailsCustomer"
+      @close="closeDetails"
+    />
   </div>
 </template>
 
@@ -326,6 +337,8 @@ const showModal = ref(false)
 const showConfirmModal = ref(false)
 const selectedCustomer = ref(null)
 const customerToDelete = ref(null)
+const showDetailsModal = ref(false)
+const detailsCustomer = ref(null)
 
 // Computed properties
 const filteredCustomers = computed(() => {
@@ -353,6 +366,11 @@ const filteredCustomers = computed(() => {
   }
 
   return filtered
+})
+
+const paginatedCustomers = computed(() => {
+  const f = filteredCustomers.value
+  return f.slice(startIndex.value, endIndex.value)
 })
 
 const totalCustomers = computed(() => filteredCustomers.value.length)
@@ -400,11 +418,20 @@ const customersSummary = computed(() => {
 const fetchCustomers = async () => {
   loading.value = true
   try {
-    const { data } = await $fetch('/api/customers')
-    if (data.success) {
-      customers.value = data.data
+    const res = await $fetch('/api/customers')
+    const payload = res?.data ?? res
+    if (payload?.success && Array.isArray(payload.data)) {
+      const seen = new Map()
+      customers.value = payload.data.filter((c) => {
+        const id = c?.id_customer ?? c?.id
+        if (id == null) return false
+        const k = String(id)
+        if (seen.has(k)) return false
+        seen.set(k, true)
+        return true
+      })
     } else {
-      console.error('Error en la respuesta de la API:', data.error)
+      console.error('Error en la respuesta de la API:', payload?.error)
     }
   } catch (error) {
     console.error('Error fetching customers:', error)
@@ -423,9 +450,14 @@ const closeModal = () => {
   selectedCustomer.value = null
 }
 
-const viewCustomer = (customer) => {
-  // Implementar vista detallada del cliente
-  console.log('Ver cliente:', customer)
+const openDetails = (customer) => {
+  detailsCustomer.value = customer
+  showDetailsModal.value = true
+}
+
+const closeDetails = () => {
+  showDetailsModal.value = false
+  detailsCustomer.value = null
 }
 
 const saveCustomer = async (customerData) => {

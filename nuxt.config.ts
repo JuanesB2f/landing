@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
   ssr: true,
   compatibilityDate: "2024-11-01",
-  devtools: { enabled: true },
+  devtools: { enabled: process.env.NODE_ENV === "development" },
 
   modules: [
     "@nuxtjs/supabase",
@@ -68,8 +68,17 @@ export default defineNuxtConfig({
         }
       ]
     },
-    pageTransition: { name: 'page', mode: 'out-in' },
+    // Sin transición global: menos trabajo en cada navegación y sensación más rápida
+    pageTransition: false,
+    layoutTransition: false,
     keepalive: false
+  },
+
+  /** Caché ISR en edge (Vercel): segundos hasta revalidar HTML de rutas mayormente públicas */
+  routeRules: {
+    "/about": { isr: 86400 },
+    "/shop": { isr: 120 },
+    "/shop/**": { isr: 120 }
   },
 
   colorMode: { preference: "light" },
@@ -99,11 +108,19 @@ export default defineNuxtConfig({
   // Nitro: mismo patrón que el proyecto de referencia (solo preset vercel)
   nitro: {
     preset: 'vercel',
+    compressPublicAssets: true,
+    future: {
+      nativeSWR: true
+    }
   },
   
   vite: {
     optimizeDeps: {
       include: ['vue-chartjs', 'chart.js', 'vue', '@vue/runtime-core', '@vue/runtime-dom']
+    },
+    build: {
+      chunkSizeWarningLimit: 900,
+      cssCodeSplit: true
     },
     define: {
       __VUE_PROD_DEVTOOLS__: false,

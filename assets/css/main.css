@@ -615,31 +615,43 @@ select:focus {
   font-variant-numeric: normal !important;
 }
 
-/* Viewport: sin desplazamiento horizontal; scroll vertical normal (rueda del ratón) */
+/*
+ * Viewport: recorte horizontal sin bloquear scroll vertical en móvil.
+ * En Chrome Android, overflow-x:hidden en html Y body a la vez suele impedir el desplazamiento táctil.
+ * El recorte horizontal se aplica en #__nuxt.
+ */
 html {
   scroll-behavior: smooth;
-  overflow-x: hidden;
   width: 100%;
   max-width: 100vw;
   transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
               color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  /* No usar transform: rompe position:fixed y el menú inferior se mueve al hacer scroll */
 }
 
 body {
-  overflow-x: hidden;
   width: 100%;
   max-width: 100vw;
   min-height: 100vh;
-  overscroll-behavior: none;
+  min-height: 100dvh;
   position: relative;
+  /* Explícito: permite arrastre vertical con el dedo (por si algún estilo heredado lo limita) */
+  touch-action: pan-y pinch-zoom;
+  -webkit-overflow-scrolling: touch;
+  /* No bloquear el “rebote” vertical del scroll en móvil */
+  overscroll-behavior-x: none;
+  overscroll-behavior-y: auto;
   transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
               color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Contenedor raíz Nuxt: no tocar overflow para que el scroll sea del documento */
+/* Recorte horizontal aquí para no combinar overflow-x oculto en html+body */
+html,
 #__nuxt {
+  overflow-x: hidden;
   max-width: 100vw;
+}
+
+#__nuxt {
   width: 100%;
 }
 

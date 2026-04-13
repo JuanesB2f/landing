@@ -52,6 +52,20 @@ export default defineNuxtPlugin((nuxtApp) => {
         }
       }
 
+      const parseCart = (raw: string | null) => {
+        if (!raw) return { items: [] as any[], taxAmount: 0, shippingAmount: 0 }
+        try {
+          const p = JSON.parse(raw)
+          return {
+            items: Array.isArray(p.items) ? p.items : [],
+            taxAmount: typeof p.taxAmount === 'number' ? p.taxAmount : 0,
+            shippingAmount: typeof p.shippingAmount === 'number' ? p.shippingAmount : 0
+          }
+        } catch {
+          return { items: [], taxAmount: 0, shippingAmount: 0 }
+        }
+      }
+
       try {
         loadForUser()
       } catch (e) {
@@ -158,6 +172,45 @@ export default defineNuxtPlugin((nuxtApp) => {
       // When auth state changes, reload the proper cart for that user and clear the old state
       const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event: string, session: any) => {
         if (isDestroyed) return
+
+        // SIGNED_OUT primero: si no, el `finally` de abajo llama a loadForUser() y vacía el store antes de fusionar
+        if (event === 'SIGNED_OUT') {
+          try {
+            // Marketplace (Temu): al cerrar sesión el carrito pasa a invitado y no se pierde
+            if (saveTimeout) {
+              clearTimeout(saveTimeout)
+              saveTimeout = null
+            }
+            const guestKey = getKey(null)
+            const guestCart = parseCart(localStorage.getItem(guestKey))
+            const sessionCart = {
+              items: Array.isArray(store.items) ? store.items.map((it: any) => ({ ...it })) : [],
+              taxAmount: Number(store.taxAmount || 0),
+              shippingAmount: Number(store.shippingAmount || 0)
+            }
+            const merged = mergeCarts(guestCart, sessionCart)
+            if (currentUid) {
+              localStorage.setItem(getKey(currentUid), JSON.stringify(sessionCart))
+            }
+            const forGuest = {
+              items: merged.items,
+              taxAmount: sessionCart.taxAmount,
+              shippingAmount: sessionCart.shippingAmount
+            }
+            localStorage.setItem(guestKey, JSON.stringify(forGuest))
+            store.$patch(forGuest)
+          } catch (e) {
+            console.error('Error merging cart on sign-out', e)
+          }
+          try { if (ordersChannel) supabase.removeChannel(ordersChannel) } catch {}
+          try { if (itemsChannel) supabase.removeChannel(itemsChannel) } catch {}
+          ordersChannel = null
+          itemsChannel = null
+          currentUid = null
+          await loadForUser()
+          return
+        }
+
         try {
           if (event === 'SIGNED_IN' && session?.user?.id) {
             const uid = session.user.id
@@ -181,14 +234,6 @@ export default defineNuxtPlugin((nuxtApp) => {
             await loadForUser()
             await subscribeOrdersDeletes()
           }
-        }
-        if (event === 'SIGNED_OUT' && !isDestroyed) {
-          try { if (ordersChannel) supabase.removeChannel(ordersChannel) } catch {}
-          try { if (itemsChannel) supabase.removeChannel(itemsChannel) } catch {}
-          ordersChannel = null
-          itemsChannel = null
-          currentUid = null
-          await loadForUser()
         }
       })
       

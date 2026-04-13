@@ -24,20 +24,52 @@
         </div>
         <!-- Login Card -->
         <div class="theme-login-card backdrop-blur-xl rounded-2xl shadow-2xl theme-login-border p-8">
+          <!-- Elección: misma página; solo cambia el formulario de abajo -->
+          <p class="text-xs text-center theme-login-text-secondary mb-3 leading-relaxed">
+            Sigues en esta pantalla. Elige si entras con una cuenta que ya tienes o si te registras por primera vez:
+          </p>
+          <div class="relative z-20 grid grid-cols-2 gap-2 rounded-xl p-1.5 mb-2 bg-black/10 dark:bg-white/10 border border-white/10">
+            <button
+              type="button"
+              class="flex flex-col items-stretch text-left py-3 px-3 rounded-lg text-sm transition-all focus:outline-none focus:ring-2 focus:ring-pink-400/50 cursor-pointer"
+              :class="authTab === 'login' ? 'bg-white dark:bg-slate-700 text-gray-900 dark:text-white shadow-md ring-1 ring-pink-200/50 dark:ring-pink-500/30' : 'theme-login-text-secondary hover:bg-white/10'"
+              :aria-pressed="authTab === 'login'"
+              aria-label="Entrar: correo o Google"
+              @click="setAuthTab('login')"
+            >
+              <span class="font-semibold leading-tight">Iniciar sesión</span>
+              <span class="text-[11px] mt-1 opacity-85 leading-snug">Para quien ya tiene usuario y contraseña (o Google)</span>
+            </button>
+            <button
+              type="button"
+              class="flex flex-col items-stretch text-left py-3 px-3 rounded-lg text-sm transition-all focus:outline-none focus:ring-2 focus:ring-pink-400/50 cursor-pointer"
+              :class="authTab === 'register' ? 'bg-white dark:bg-slate-700 text-gray-900 dark:text-white shadow-md ring-1 ring-pink-200/50 dark:ring-pink-500/30' : 'theme-login-text-secondary hover:bg-white/10'"
+              :aria-pressed="authTab === 'register'"
+              aria-label="Registrarse: nuevo usuario con correo"
+              @click="setAuthTab('register')"
+            >
+              <span class="font-semibold leading-tight">Crear cuenta</span>
+              <span class="text-[11px] mt-1 opacity-85 leading-snug">Nuevo registro con correo (luego datos de perfil)</span>
+            </button>
+          </div>
+
           <!-- Header -->
-          <div class="text-center mb-8">
-            <div class="login-card-icon inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-accent to-accent-secondary rounded-full mb-6 shadow-lg">
+          <div class="text-center mb-6">
+            <div class="login-card-icon inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-accent to-accent-secondary rounded-full mb-4 shadow-lg">
               <svg class="w-8 h-8 text-white login-card-icon-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
               </svg>
             </div>
-            
-            <h1 class="text-3xl font-bold theme-login-text mb-2">Iniciar Sesión</h1>
-            <p class="theme-login-text-secondary">Accede a tu cuenta de administrador</p>
+            <h1 class="text-2xl sm:text-3xl font-bold theme-login-text mb-2">
+              {{ authTab === 'login' ? 'Iniciar sesión' : 'Crear cuenta' }}
+            </h1>
+            <p class="theme-login-text-secondary text-sm">
+              {{ authTab === 'login' ? 'Accede con correo o Google' : 'Regístrate con correo; luego completarás tu perfil.' }}
+            </p>
           </div>
 
-          <!-- Form -->
-          <form @submit.prevent="handleLogin" class="space-y-6">
+          <!-- Formulario login -->
+          <form v-if="authTab === 'login'" class="space-y-6" @submit.prevent="handleLogin">
             <!-- Email Field -->
             <div class="space-y-2">
               <label for="email" class="block text-sm font-medium theme-login-label">
@@ -129,13 +161,129 @@
             </button>
           </form>
 
+          <!-- Formulario registro (correo + contraseña) -->
+          <form v-else class="space-y-4" @submit.prevent="handleRegister">
+            <div class="grid grid-cols-2 gap-3">
+              <div class="space-y-1">
+                <label class="block text-sm font-medium theme-login-label">Nombre</label>
+                <input
+                  v-model="regFirstName"
+                  type="text"
+                  required
+                  autocomplete="given-name"
+                  class="w-full px-3 py-3 theme-login-input border theme-login-border rounded-xl theme-login-text"
+                  placeholder="Nombre"
+                  :disabled="loading"
+                />
+              </div>
+              <div class="space-y-1">
+                <label class="block text-sm font-medium theme-login-label">Apellido</label>
+                <input
+                  v-model="regLastName"
+                  type="text"
+                  required
+                  autocomplete="family-name"
+                  class="w-full px-3 py-3 theme-login-input border theme-login-border rounded-xl theme-login-text"
+                  placeholder="Apellido"
+                  :disabled="loading"
+                />
+              </div>
+            </div>
+            <div class="space-y-2">
+              <label for="reg-email" class="block text-sm font-medium theme-login-label">Correo electrónico</label>
+              <input
+                id="reg-email"
+                v-model="regEmail"
+                type="email"
+                required
+                autocomplete="email"
+                class="w-full px-3 py-3 theme-login-input border theme-login-border rounded-xl theme-login-text"
+                placeholder="tu@correo.com"
+                :disabled="loading"
+              />
+            </div>
+            <div class="space-y-2">
+              <label for="reg-pass" class="block text-sm font-medium theme-login-label">Contraseña</label>
+              <input
+                id="reg-pass"
+                v-model="regPassword"
+                type="password"
+                required
+                minlength="6"
+                autocomplete="new-password"
+                class="w-full px-3 py-3 theme-login-input border theme-login-border rounded-xl theme-login-text"
+                placeholder="Mínimo 6 caracteres"
+                :disabled="loading"
+              />
+            </div>
+            <div class="space-y-2">
+              <label for="reg-pass2" class="block text-sm font-medium theme-login-label">Confirmar contraseña</label>
+              <input
+                id="reg-pass2"
+                v-model="regPassword2"
+                type="password"
+                required
+                minlength="6"
+                autocomplete="new-password"
+                class="w-full px-3 py-3 theme-login-input border theme-login-border rounded-xl theme-login-text"
+                placeholder="Repite la contraseña"
+                :disabled="loading"
+              />
+            </div>
+
+            <div v-if="error" class="bg-red-500/20 border border-red-500/30 rounded-xl p-4 backdrop-blur-sm">
+              <p class="text-red-300 text-sm">{{ error }}</p>
+            </div>
+            <div v-if="registerInfo" class="bg-emerald-500/15 border border-emerald-500/30 rounded-xl p-4 text-sm text-emerald-100">
+              {{ registerInfo }}
+            </div>
+
+            <button
+              type="submit"
+              :disabled="loading"
+              class="login-submit-btn group relative w-full bg-gradient-to-r from-accent to-accent-secondary text-white py-3 px-4 rounded-xl font-semibold shadow-lg hover:shadow-xl disabled:opacity-50"
+            >
+              <span v-if="loading" class="flex items-center justify-center gap-2">
+                <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                </svg>
+                Creando cuenta…
+              </span>
+              <span v-else>Crear mi cuenta</span>
+            </button>
+
+            <div class="flex items-center gap-4 my-2">
+              <div class="h-px flex-1 bg-white/20"></div>
+              <span class="text-xs text-white/60">o</span>
+              <div class="h-px flex-1 bg-white/20"></div>
+            </div>
+
+            <button type="button" @click="loginWithGoogle" :disabled="loading" class="w-full bg-white text-gray-900 py-3 px-4 rounded-xl font-semibold hover:bg-gray-100 transition-all flex items-center justify-center gap-3 border border-gray-200 shadow-sm">
+              <img alt="Google" src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5" />
+              <span class="text-gray-900 font-medium">Registrarse con Google</span>
+            </button>
+          </form>
+
           <!-- Footer -->
-          <div class="mt-8 text-center">
+          <div class="mt-8 text-center space-y-4">
+            <p v-if="authTab === 'login'" class="text-sm theme-login-text-secondary">
+              ¿Primera vez aquí?
+              <button type="button" class="font-semibold text-pink-600 hover:text-pink-700 underline-offset-2 hover:underline" @click="setAuthTab('register')">
+                Toca «Crear cuenta» arriba
+              </button>
+            </p>
+            <p v-else class="text-sm theme-login-text-secondary">
+              ¿Ya te registraste?
+              <button type="button" class="font-semibold text-pink-600 hover:text-pink-700 underline-offset-2 hover:underline" @click="setAuthTab('login')">
+                Toca «Iniciar sesión» arriba
+              </button>
+            </p>
             <div class="flex items-center justify-center space-x-2 text-gray-400">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
               </svg>
-              <p class="text-sm">Acceso exclusivo para administradores</p>
+              <p class="text-sm">Conexión segura</p>
             </div>
           </div>
         </div>
@@ -165,28 +313,106 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { needsProfileCompletion } from '~/utils/profileCompletion'
+
 definePageMeta({
   layout: false
 })
 
+type AuthTab = 'login' | 'register'
+
 const loading = ref(false)
 const error = ref('')
+const registerInfo = ref('')
+
+const authTab = ref<AuthTab>('login')
 
 const email = ref('')
 const password = ref('')
 
-const { login } = useAuth()
+const regFirstName = ref('')
+const regLastName = ref('')
+const regEmail = ref('')
+const regPassword = ref('')
+const regPassword2 = ref('')
+
+const { login, checkAuth } = useAuth()
 const supabase = useSupabaseClient()
 const router = useRouter()
+const route = useRoute()
+
+function setAuthTab(next: AuthTab) {
+  authTab.value = next
+  error.value = ''
+  registerInfo.value = ''
+  const q = { ...route.query }
+  if (next === 'register') {
+    q.tab = 'register'
+  } else {
+    delete q.tab
+    delete q.registro
+    delete q.register
+  }
+  void router.replace({ path: '/login', query: q })
+}
 
 // Tema
 const { theme, isDark, toggleTheme, initTheme } = useTheme()
 
-// Inicializar tema al montar
 onMounted(() => {
   initTheme()
+  const q = route.query
+  if (q.tab === 'register' || q.registro === '1' || q.register === '1') {
+    authTab.value = 'register'
+  }
 })
+
+const handleRegister = async () => {
+  error.value = ''
+  registerInfo.value = ''
+  if (regPassword.value !== regPassword2.value) {
+    error.value = 'Las contraseñas no coinciden'
+    return
+  }
+  loading.value = true
+  try {
+    const email = regEmail.value.trim().toLowerCase()
+    const res = await $fetch<{ data?: { success?: boolean; error?: string } }>('/api/auth/register-public', {
+      method: 'POST',
+      body: {
+        email,
+        password: regPassword.value,
+        first_name: regFirstName.value.trim(),
+        last_name: regLastName.value.trim()
+      }
+    })
+    const payload = res?.data ?? (res as unknown as { success?: boolean; error?: string })
+    if (!payload?.success) {
+      error.value = payload?.error || 'No se pudo crear la cuenta'
+      return
+    }
+
+    const { error: signErr } = await supabase.auth.signInWithPassword({
+      email,
+      password: regPassword.value
+    })
+    if (signErr) {
+      error.value =
+        signErr.message ||
+        'Cuenta creada. Inicia sesión manualmente con tu correo y contraseña.'
+      return
+    }
+
+    await checkAuth()
+    await router.replace('/completar-perfil')
+  } catch (e) {
+    console.error(e)
+    error.value = 'Error al registrar. Intenta de nuevo.'
+  } finally {
+    loading.value = false
+  }
+}
 
 const handleLogin = async () => {
   if (!email.value || !password.value) {
@@ -211,8 +437,20 @@ const handleLogin = async () => {
       setTimeout(async () => {
         try {
           if (router.currentRoute.value.path === '/login') {
-            if (user.role === 'admin') await router.replace('/dashboard')
-            else if (user.role === 'user') await router.replace('/user')
+            if (user.role === 'admin') {
+              await router.replace('/dashboard')
+              return
+            }
+            const { data: prof } = await supabase
+              .from('profiles')
+              .select('first_name, last_name, birth_date, role')
+              .eq('id', user.id)
+              .maybeSingle()
+            if (needsProfileCompletion(prof)) {
+              await router.replace('/completar-perfil')
+              return
+            }
+            if (user.role === 'user' || user.role === 'customer') await router.replace('/user')
             else await router.replace('/')
           }
         } catch (_e) {}

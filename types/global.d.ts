@@ -1,17 +1,19 @@
 /// <reference types="@nuxt/types" />
 /// <reference types="@nuxt/typescript-build" />
 
+import type { RouteLocationRaw } from 'vue-router'
+
 // Declaraciones globales para Nuxt 3
 declare global {
   // Funciones de Nuxt
   function defineNuxtConfig(config: any): any
   function defineNuxtRouteMiddleware(middleware: any): any
-  function navigateTo(route: string): any
+  function navigateTo(route: string | RouteLocationRaw): any
   function useNuxtApp(): any
   function useState<T>(key: string, init?: () => T): Ref<T>
   function computed<T>(fn: () => T): ComputedRef<T>
   
-  // Variables globales
+  // Variables globales (Nuxt/Vite sustituye process.client / process.server en build)
   var process: {
     env: {
       NUXT_SUPABASE_URL?: string
@@ -19,6 +21,8 @@ declare global {
       NUXT_SUPABASE_SERVICE_KEY?: string
       [key: string]: string | undefined
     }
+    client: boolean
+    server: boolean
   }
   
   // Tipos de Vue
@@ -46,6 +50,12 @@ declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
     $supabase: any
   }
+}
+
+/** Nuxt / Vite: import.meta.client, import.meta.server */
+interface ImportMeta {
+  readonly client: boolean
+  readonly server: boolean
 }
 
 export {}

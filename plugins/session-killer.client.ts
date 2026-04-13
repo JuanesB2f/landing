@@ -5,6 +5,34 @@
 export default defineNuxtPlugin(() => {
   if (!process.client) return
 
+  const CART_KEY_PREFIX = 'cart:'
+
+  const snapshotCartKeys = (): Record<string, string> => {
+    const out: Record<string, string> = {}
+    try {
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i)
+        if (k?.startsWith(CART_KEY_PREFIX)) {
+          const v = localStorage.getItem(k)
+          if (v != null) out[k] = v
+        }
+      }
+    } catch (e) {
+      console.warn('No se pudo respaldar carrito', e)
+    }
+    return out
+  }
+
+  const restoreCartKeys = (snap: Record<string, string>) => {
+    for (const [k, v] of Object.entries(snap)) {
+      try {
+        localStorage.setItem(k, v)
+      } catch (e) {
+        console.warn('No se pudo restaurar clave de carrito', k, e)
+      }
+    }
+  }
+
   // Función para matar la sesión completamente
   const killSession = () => {
     console.log('💀 Matando sesión completamente...')
@@ -20,10 +48,12 @@ export default defineNuxtPlugin(() => {
         console.warn('⚠️ Error en Supabase signOut:', error)
       })
       
-      // 3. Limpiar todo el almacenamiento
+      // 3. Limpiar almacenamiento pero conservar carritos (comportamiento tipo marketplace)
+      const cartBackup = snapshotCartKeys()
       localStorage.clear()
       sessionStorage.clear()
-      console.log('🧹 Almacenamiento limpiado')
+      restoreCartKeys(cartBackup)
+      console.log('🧹 Almacenamiento limpiado (carrito preservado)')
       
       // 4. Limpiar cookies
       document.cookie.split(";").forEach(function(c) { 

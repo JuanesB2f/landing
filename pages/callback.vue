@@ -9,6 +9,8 @@
 </template>
 
 <script setup>
+import { needsProfileCompletion } from '~/utils/profileCompletion'
+
 definePageMeta({
   layout: false,
   auth: false
@@ -35,12 +37,16 @@ const resolveRedirect = () => {
       try {
         const { data: profile } = await supabase
           .from('profiles')
-          .select('role')
+          .select('role, first_name, last_name, birth_date')
           .eq('id', session.user.id)
           .maybeSingle()
         const role = profile ? profile.role : null
         if (role === 'admin') {
           await router.replace('/dashboard')
+          return true
+        }
+        if (needsProfileCompletion(profile)) {
+          await router.replace('/completar-perfil')
           return true
         }
         if (role === 'user' || role === 'customer') {

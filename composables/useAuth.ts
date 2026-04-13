@@ -26,39 +26,61 @@ export const useAuth = () => {
         throw new Error('Credenciales incorrectas')
       }
 
-      // Asegurar que exista perfil y rol 'user' (mantener admin si ya lo es)
-      try {
-        await $fetch('/api/auth/upsert-profile', { method: 'POST' })
-      } catch (_e) {
-        // no bloquear el login por fallo en upsert
-        console.warn('upsert-profile falló tras login')
+      const delay = (ms: number) => new Promise<void>((r) => setTimeout(r, ms))
+
+      let profile: Record<string, unknown> | null = null
+      for (let attempt = 0; attempt < 4; attempt++) {
+        try {
+          await $fetch('/api/auth/upsert-profile', { method: 'POST' })
+        } catch {
+          console.warn('upsert-profile falló tras login, reintento', attempt + 1)
+        }
+
+        const { data: row, error: profileError } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', data.user.id)
+          .maybeSingle()
+
+        if (!profileError && row) {
+          profile = row as Record<string, unknown>
+          break
+        }
+        await delay(180 * (attempt + 1))
       }
 
-      // Obtener perfil del usuario desde la tabla profiles
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', data.user.id)
-        .single()
+      if (!profile) {
+        throw new Error(
+          'Perfil de usuario no encontrado. En Supabase (SQL Editor) ejecuta el script server/sql/003_auth_user_profile_trigger.sql para crear la fila en profiles al registrarse.'
+        )
+      }
 
-      if (profileError || !profile) {
-        throw new Error('Perfil de usuario no encontrado')
+      const p = profile as {
+        id: string
+        email: string
+        role: string
+        first_name?: string | null
+        last_name?: string | null
+        name?: string | null
+        avatar_url?: string | null
+        created_at: string
+        updated_at: string
       }
 
       // Aceptar los tres roles: admin, user, customer
-      if (!['admin', 'user', 'customer'].includes(profile.role)) {
+      if (!['admin', 'user', 'customer'].includes(p.role)) {
         throw new Error('Rol no permitido')
       }
 
       // Crear objeto de usuario
       const userData: User = {
-        id: profile.id,
-        email: profile.email,
-        role: profile.role,
-        name: profile.first_name ? `${profile.first_name} ${profile.last_name || ''}`.trim() : (profile.name || null),
-        avatar: profile.avatar_url,
-        created_at: profile.created_at,
-        updated_at: profile.updated_at
+        id: p.id,
+        email: p.email,
+        role: p.role as User['role'],
+        name: p.first_name ? `${p.first_name} ${p.last_name || ''}`.trim() : (p.name ?? undefined),
+        avatar: p.avatar_url ?? undefined,
+        created_at: p.created_at,
+        updated_at: p.updated_at
       }
 
       // Guardar en estado
@@ -95,13 +117,10 @@ export const useAuth = () => {
       // 2. Limpiar estado inmediatamente
       user.value = null
       
-      // 3. Limpiar localStorage inmediatamente
+      // 3. Limpiar localStorage inmediatamente (el carrito se conserva en localStorage; ver cart-persist)
       if (typeof window !== 'undefined') {
         localStorage.removeItem('user')
         localStorage.removeItem('isAuthenticated')
-        // Limpiar también datos del carrito para evitar problemas
-        const cartKeys = Object.keys(localStorage).filter(key => key.startsWith('cart:'))
-        cartKeys.forEach(key => localStorage.removeItem(key))
       }
 
       return { success: true }

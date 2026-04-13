@@ -1,10 +1,7 @@
 <template>
   <div class="min-h-screen w-full max-w-[100vw] min-w-0 overflow-x-hidden transition-colors duration-300 theme-container pb-20 md:pb-0">
     <!-- Header: sin color + animación de puntos/blobs rosados detrás -->
-    <header
-      v-if="!isCustomer"
-      class="header-diffused sticky top-0 z-50"
-    >
+    <header class="header-diffused sticky top-0 z-50">
       <!-- Animación de blobs en rosa (detrás del contenido) -->
       <div class="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
         <div class="absolute -top-20 right-0 w-64 h-64 sm:w-80 sm:h-80 bg-gradient-to-br from-accent/25 via-accent-secondary/20 to-accent/25 rounded-full blur-3xl animate-blob"></div>
@@ -32,7 +29,7 @@
           <!-- Navigation (solo desktop; en móvil va la barra inferior) -->
           <nav class="hidden md:flex space-x-6 lg:space-x-8">
             <button
-              v-if="isUser"
+              v-if="isShopUser"
               @click="navigateToOffers"
               class="relative theme-nav-item hover:text-accent transition-colors font-medium group"
             >
@@ -43,7 +40,7 @@
             </button>
 
             <NuxtLink
-              v-if="isUser || isAdmin"
+              v-if="isShopUser || isAdmin"
               to="/shop"
               class="relative theme-nav-item hover:text-accent transition-colors font-medium group"
             >
@@ -54,7 +51,7 @@
             </NuxtLink>
 
             <NuxtLink
-              v-if="isUser || isAdmin"
+              v-if="isShopUser || isAdmin"
               to="/about"
               class="relative theme-nav-item hover:text-accent transition-colors font-medium group"
             >
@@ -83,7 +80,7 @@
 
             <!-- Cart (solo usuarios) -->
             <button
-              v-if="isUser"
+              v-if="isShopUser"
               @click="navigateToCart"
               class="relative theme-text-primary hover:text-accent transition-colors group"
             >
@@ -149,7 +146,7 @@
           <span class="truncate max-w-full px-0.5">Tienda</span>
         </NuxtLink>
         <NuxtLink
-          v-if="isUser"
+          v-if="isShopUser"
           to="/shop/cart"
           class="flex flex-col items-center justify-center flex-1 py-1 min-w-0 text-[9px] sm:text-[10px] leading-tight font-medium transition-colors theme-nav-item relative"
           :class="{ 'theme-nav-active text-accent': $route.path === '/shop/cart' }"
@@ -166,7 +163,7 @@
           <span class="truncate max-w-full px-0.5">Carrito</span>
         </NuxtLink>
         <NuxtLink
-          v-if="isUser || isAdmin"
+          v-if="isShopUser || isAdmin"
           to="/user"
           class="flex flex-col items-center justify-center flex-1 py-1 min-w-0 text-[9px] sm:text-[10px] leading-tight font-medium transition-colors theme-nav-item"
           :class="{ 'theme-nav-active text-accent': $route.path.startsWith('/user') }"
@@ -393,11 +390,10 @@ const cartItemsCount = computed(() => cartStore?.count ?? 0)
 
 // Ocultar botón de login cuando hay sesión
 const authUser = useSupabaseUser()
-const { logout } = useAuth()
-const { user } = useAuth()
-const isUser = computed(() => user.value?.role === 'user')
+const { logout, user } = useAuth()
+/** Rol legacy "user" o compradores "customer": misma UX de tienda (carrito, ofertas, /user). */
+const isShopUser = computed(() => ['user', 'customer'].includes(user.value?.role))
 const isAdmin = computed(() => user.value?.role === 'admin')
-const isCustomer = computed(() => user.value?.role === 'customer')
 
 // Tema
 const { theme, isDark, toggleTheme, initTheme } = useTheme()
@@ -491,12 +487,7 @@ const handleLogout = async () => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('user')
       localStorage.removeItem('isAuthenticated')
-      // Limpiar datos del carrito
-      const cartKeys = Object.keys(localStorage).filter(key =>
-        key.startsWith('cart:')
-      )
-      cartKeys.forEach(key => localStorage.removeItem(key))
-      console.log('🧹 localStorage limpiado')
+      console.log('🧹 localStorage limpiado (carrito preservado)')
     }
 
     // 4. Cerrar sesión de Supabase

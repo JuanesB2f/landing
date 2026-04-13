@@ -1,4 +1,4 @@
-import { serverSupabaseUser } from '#supabase/server'
+import { serverSupabaseClient } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
   // Solo aplicar a navegación de páginas (no APIs ni assets)
@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
 
   // Allowlist explícita para páginas públicas
   const isPublic = (): boolean => {
-    if (path === '/' || path === '/about' || path === '/login' || path === '/unauthorized' || path === '/callback') return true
+    if (path === '/' || path === '/about' || path === '/login' || path === '/registro' || path === '/unauthorized' || path === '/callback' || path === '/completar-perfil') return true
     // Páginas de tienda públicas (excepto carrito)
     if (path === '/shop') return true
     if (path.startsWith('/shop/category/')) return true
@@ -22,8 +22,14 @@ export default defineEventHandler(async (event) => {
   if (path.startsWith('/api') || path.startsWith('/_nuxt') || path.startsWith('/public') || path.startsWith('/favicon') || path.startsWith('/__nuxt')) return
 
   try {
-    const user = await serverSupabaseUser(event as any)
-    if (!user) {
+    // serverSupabaseUser lanza "Auth session missing!" sin sesión; getSession devuelve null sin excepción
+    const supabase = await serverSupabaseClient(event)
+    const { data: { session }, error } = await supabase.auth.getSession()
+    if (error) {
+      console.error('[require-auth] getSession:', error)
+      return sendRedirect(event, '/login')
+    }
+    if (!session) {
       return sendRedirect(event, '/login')
     }
   } catch (e) {

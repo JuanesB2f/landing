@@ -387,9 +387,6 @@ const handleLogout = async () => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('user')
       localStorage.removeItem('isAuthenticated')
-      // Limpiar datos del carrito
-      const cartKeys = Object.keys(localStorage).filter(key => key.startsWith('cart:'))
-      cartKeys.forEach(key => localStorage.removeItem(key))
     }
     
     // Redireccionar a login usando window.location para asegurar que funcione

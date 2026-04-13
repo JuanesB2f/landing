@@ -1,4 +1,5 @@
 import { isNavigationFailure, NavigationFailureType } from 'vue-router'
+import { needsProfileCompletion } from '~/utils/profileCompletion'
 
 export default defineNuxtPlugin(() => {
   const router = useRouter()
@@ -21,14 +22,26 @@ export default defineNuxtPlugin(() => {
 
   // Evitar quedarse en /login si ya hay sesión (después de OAuth) y prevenir estados intermedios
   router.beforeEach(async (to, _from) => {
-    if (to.path === '/login') {
+    if (to.path === '/login' || to.path === '/registro') {
       let role = user.value?.role as any
       if (!role) {
         const ok = await checkAuth()
         role = ok ? (user.value?.role as any) : null
       }
+      if (!role) return
       if (role === 'admin') return '/dashboard'
-      if (role === 'user' || role === 'customer') return '/user'
+      if (role === 'user' || role === 'customer') {
+        const supabase = useSupabaseClient()
+        const uid = user.value?.id
+        if (!uid) return
+        const { data: prof } = await supabase
+          .from('profiles')
+          .select('first_name, last_name, birth_date, role')
+          .eq('id', uid)
+          .maybeSingle()
+        if (needsProfileCompletion(prof)) return '/completar-perfil'
+        return '/user'
+      }
     }
   })
 })

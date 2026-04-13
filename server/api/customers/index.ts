@@ -1,5 +1,6 @@
 import { serverSupabaseClient, serverSupabaseServiceRole } from '#supabase/server'
 import { requireAdmin } from '~/server/utils/auth'
+import { mergeCustomerRows } from '~/server/utils/customer-groups'
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
@@ -30,21 +31,19 @@ export default defineEventHandler(async (event) => {
 
       // Obtener conteo de pedidos por cliente
       const ids = (customers || []).map((c: any) => c.id_customer)
-      let counts: Record<string, number> = {}
+      const counts: Record<string, number> = {}
       if (ids.length > 0) {
         const { data: orders } = await adminClient
           .from('orders')
           .select('customer_id')
           .in('customer_id', ids)
         for (const o of ((orders as Array<{ customer_id: string }>) || [])) {
-          counts[o.customer_id] = (counts[o.customer_id] || 0) + 1
+          const cid = String(o.customer_id)
+          counts[cid] = (counts[cid] || 0) + 1
         }
       }
 
-      const processedCustomers = (customers || []).map((customer: any) => ({
-        ...customer,
-        order_count: counts[customer.id_customer] || 0
-      }))
+      const processedCustomers = mergeCustomerRows(customers || [], counts)
 
       return {
         data: {

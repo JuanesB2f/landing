@@ -10,6 +10,11 @@ const SCROLL_SPEED = 5
 export default defineNuxtPlugin(() => {
   if (import.meta.server) return
 
+  /* Solo ratón/trackpad: en Android/iOS el scroll es táctil; este listener no aplica y evitamos efectos raros */
+  if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) {
+    return
+  }
+
   const getScrollableParent = (el: Element | null): Element | null => {
     while (el && el !== document.body) {
       const style = getComputedStyle(el)
