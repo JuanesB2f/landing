@@ -1,8 +1,8 @@
 <template>
-  <div class="min-h-screen w-full max-w-[100vw] min-w-0 overflow-x-hidden transition-colors duration-300 theme-container pb-20 lg:pb-0">
+  <div class="ios-root min-h-screen w-full max-w-[100vw] min-w-0 overflow-x-hidden transition-colors duration-300 theme-container pb-20 lg:pb-0">
     <!-- Sidebar (solo desktop; en móvil se usa la barra inferior) -->
     <aside
-      class="hidden lg:flex fixed inset-y-0 left-0 z-40 w-64 shadow-lg transition-all duration-300 theme-sidebar flex-col translate-x-0"
+      class="ios-glass-sidebar hidden lg:flex fixed inset-y-0 left-0 z-40 w-64 shadow-lg transition-all duration-300 theme-sidebar flex-col translate-x-0"
     >
       <div class="flex items-center justify-center h-14 sm:h-16 theme-header px-3">
         <h1 class="text-lg sm:text-xl font-bold transition-colors theme-text-primary truncate">Admin Panel</h1>
@@ -35,15 +35,6 @@
           >
             <Icon name="heroicons:tag" class="w-5 h-5 mr-2 sm:mr-3 shrink-0" />
             Categorías
-          </NuxtLink>
-          
-          <NuxtLink 
-            to="/admin/inventory" 
-            class="flex items-center px-3 py-2.5 sm:px-4 sm:py-2 rounded-lg transition-colors theme-nav-item text-sm sm:text-base"
-            :class="{ 'theme-nav-active': $route.path.startsWith('/admin/inventory') }"
-          >
-            <Icon name="heroicons:archive-box" class="w-5 h-5 mr-2 sm:mr-3 shrink-0" />
-            Inventario
           </NuxtLink>
           
           <NuxtLink 
@@ -93,32 +84,64 @@
         </div>
       </nav>
 
-      <!-- Footer fijo en la parte inferior con acciones de usuario -->
+      <!-- Footer fijo: tarjeta vidrio iOS + chips de acción -->
       <div class="p-3 sm:p-4 border-t transition-colors duration-300 theme-header-bar mt-auto">
-        <div class="bg-gray-50 dark:bg-white/5 rounded-lg p-2.5 sm:p-3">
-          <div class="flex items-center gap-2 sm:gap-3">
-            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 text-white flex items-center justify-center text-xs sm:text-sm font-semibold shadow-sm shrink-0">
+        <div class="ios-admin-user-glass">
+          <div class="flex items-center gap-2.5">
+            <div class="ios-admin-user-avatar" aria-hidden="true">
               {{ userInitials }}
             </div>
             <div class="min-w-0 flex-1">
-              <p class="text-xs sm:text-sm font-semibold transition-colors theme-text-primary truncate">{{ userName }}</p>
-              <p class="text-[10px] sm:text-xs transition-colors theme-text-secondary truncate">{{ userRole }}</p>
+              <p class="text-xs sm:text-sm font-semibold tracking-tight theme-text-primary truncate leading-tight">
+                {{ userName }}
+              </p>
+              <p class="text-[10px] sm:text-[11px] theme-text-secondary truncate leading-tight mt-0.5">
+                {{ userRole }}
+              </p>
             </div>
-            <div class="flex items-center gap-1 sm:gap-2 shrink-0">
-              <button 
-                @click="optimizedToggleTheme" 
-                class="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
-                :title="isDark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'"
+          </div>
+          <div class="mt-2.5 pt-2.5 flex items-center justify-between gap-1 border-t border-[var(--ios-hairline)]">
+            <button
+              type="button"
+              class="ios-admin-user-icon-btn gap-0.5 px-1.5 min-w-[2.65rem]"
+              title="Tamaño de texto"
+              :aria-label="'Tamaño de texto: nivel ' + (adminFontStep + 1) + ' de 3'"
+              @click="cycleAdminFont"
+            >
+              <span class="text-[9px] font-bold leading-none opacity-45 theme-text-primary">A</span>
+              <span
+                class="text-[13px] font-bold leading-none"
+                :class="adminFontStep >= 1 ? 'text-[var(--accent)]' : 'opacity-55 theme-text-primary'"
               >
-                <Icon :name="isDark ? 'heroicons:sun' : 'heroicons:moon'" class="w-5 h-5" />
-              </button>
-              <button class="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-white/10 transition-colors" :title="'Notificaciones'">
-                <Icon name="heroicons:bell" class="w-5 h-5" />
-              </button>
-              <button @click="handleLogout" class="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-white/10 transition-colors" :title="'Cerrar sesión'" :disabled="false">
-                <Icon name="heroicons:arrow-right-on-rectangle" class="w-5 h-5" />
-              </button>
-            </div>
+                A
+              </span>
+            </button>
+            <button
+              type="button"
+              class="ios-admin-user-icon-btn"
+              :title="isDark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'"
+              :aria-label="isDark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'"
+              @click="optimizedToggleTheme"
+            >
+              <Icon :name="isDark ? 'heroicons:sun' : 'heroicons:moon'" class="shrink-0" />
+            </button>
+            <button
+              type="button"
+              class="ios-admin-user-icon-btn"
+              title="Notificaciones"
+              aria-label="Notificaciones"
+            >
+              <Icon name="heroicons:bell" class="shrink-0" />
+            </button>
+            <button
+              type="button"
+              class="ios-admin-user-icon-btn ios-admin-user-icon-btn--danger"
+              title="Cerrar sesión"
+              aria-label="Cerrar sesión"
+              @click="handleLogout"
+            >
+              <Icon name="heroicons:arrow-right-on-rectangle" class="shrink-0" />
+            </button>
           </div>
         </div>
       </div>
@@ -143,7 +166,7 @@
 
     <!-- Barra inferior tipo iPhone: siempre fija al viewport (solo móvil/tablet) -->
     <nav
-      class="lg:hidden fixed bottom-0 left-0 right-0 z-[100] theme-header border-t theme-border w-full max-w-[100vw]"
+      class="ios-tab-bar lg:hidden fixed bottom-0 left-0 right-0 z-[100] theme-header border-t theme-border w-full max-w-[100vw] rounded-t-3xl"
       style="padding-bottom: env(safe-area-inset-bottom, 0);"
     >
       <div class="flex items-stretch justify-around h-12 sm:h-14 gap-0.5 px-0.5 sm:px-0">
@@ -203,7 +226,7 @@
     >
       <div
         v-if="moreOpen"
-        class="lg:hidden fixed inset-0 z-40 bg-black/50"
+        class="lg:hidden ios-admin-overlay fixed inset-0 z-40"
         aria-hidden="true"
         @click="moreOpen = false"
       />
@@ -218,7 +241,7 @@
     >
       <div
         v-if="moreOpen"
-        class="lg:hidden fixed bottom-0 left-0 right-0 z-50 theme-sidebar border-t theme-border rounded-t-2xl shadow-2xl max-h-[70vh] overflow-hidden flex flex-col"
+        class="ios-sheet-panel lg:hidden fixed bottom-0 left-0 right-0 z-50 theme-sidebar border-t theme-border rounded-t-3xl shadow-2xl max-h-[70vh] overflow-hidden flex flex-col"
         style="padding-bottom: env(safe-area-inset-bottom, 0);"
       >
         <div class="flex items-center justify-between p-4 border-b theme-border">
@@ -230,9 +253,6 @@
         <div class="overflow-y-auto p-2">
           <NuxtLink to="/admin/categories" @click="moreOpen = false" class="flex items-center px-4 py-3 rounded-lg theme-nav-item" :class="{ 'theme-nav-active': $route.path.startsWith('/admin/categories') }">
             <Icon name="heroicons:tag" class="w-5 h-5 mr-3 shrink-0" /> Categorías
-          </NuxtLink>
-          <NuxtLink to="/admin/inventory" @click="moreOpen = false" class="flex items-center px-4 py-3 rounded-lg theme-nav-item" :class="{ 'theme-nav-active': $route.path.startsWith('/admin/inventory') }">
-            <Icon name="heroicons:archive-box" class="w-5 h-5 mr-3 shrink-0" /> Inventario
           </NuxtLink>
           <NuxtLink to="/admin/providers" @click="moreOpen = false" class="flex items-center px-4 py-3 rounded-lg theme-nav-item" :class="{ 'theme-nav-active': $route.path.startsWith('/admin/providers') }">
             <Icon name="heroicons:truck" class="w-5 h-5 mr-3 shrink-0" /> Proveedores
@@ -265,6 +285,26 @@
 <script setup>
 const route = useRoute()
 const moreOpen = ref(false)
+
+const ADMIN_FONT_STORAGE_KEY = 'admin-font-step'
+const adminFontStep = ref(0)
+
+const applyAdminFontStep = (step) => {
+  if (typeof document === 'undefined') return
+  const sizes = ['100%', '106.25%', '112.5%']
+  const i = ((Number(step) || 0) % 3 + 3) % 3
+  document.documentElement.style.fontSize = sizes[i]
+  try {
+    localStorage.setItem(ADMIN_FONT_STORAGE_KEY, String(i))
+  } catch {
+    /* ignore */
+  }
+}
+
+const cycleAdminFont = () => {
+  adminFontStep.value = (adminFontStep.value + 1) % 3
+  applyAdminFontStep(adminFontStep.value)
+}
 
 // Composable para manejar el tema (initTheme sincroniza con localStorage para que el primer clic funcione)
 const { isDark, toggleTheme, initTheme } = useTheme()
@@ -301,6 +341,13 @@ const handleUserActivity = () => {
 // Eventos para detectar actividad (reducidos)
 onMounted(() => {
   initTheme()
+  try {
+    const stored = Number(localStorage.getItem(ADMIN_FONT_STORAGE_KEY) || 0)
+    adminFontStep.value = Number.isFinite(stored) ? ((stored % 3) + 3) % 3 : 0
+    applyAdminFontStep(adminFontStep.value)
+  } catch {
+    applyAdminFontStep(0)
+  }
   const events = ['click', 'keydown'] // Solo eventos importantes
   events.forEach(event => {
     document.addEventListener(event, handleUserActivity, { passive: true })
@@ -318,6 +365,9 @@ onMounted(() => {
 
 // Cleanup
 onUnmounted(() => {
+  if (typeof document !== 'undefined') {
+    document.documentElement.style.fontSize = ''
+  }
   if (inactivityTimer) {
     clearTimeout(inactivityTimer)
   }
@@ -333,7 +383,6 @@ const pageTitle = computed(() => {
     '/admin': 'Dashboard',
     '/admin/products': 'Productos',
     '/admin/categories': 'Categorías',
-    '/admin/inventory': 'Inventario',
     '/admin/providers': 'Proveedores',
     '/admin/orders': 'Pedidos',
     '/admin/customers': 'Clientes',

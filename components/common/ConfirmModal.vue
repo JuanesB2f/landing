@@ -2,21 +2,21 @@
   <div class="fixed inset-0 z-50 overflow-y-auto">
     <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
       <!-- Overlay (behind modal) -->
-      <div class="fixed inset-0 z-40 bg-black/50 transition-opacity"></div>
+      <div class="ios-admin-overlay fixed inset-0 z-40 transition-opacity"></div>
 
       <!-- Modal -->
-      <div class="relative z-50 inline-block align-bottom bg-white dark:bg-gray-900 rounded-lg text-left overflow-hidden shadow-2xl ring-1 ring-gray-200 dark:ring-white/10 transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-        <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+      <div class="relative z-50 inline-block align-bottom ios-admin-modal-panel text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+        <div class="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
           <div class="sm:flex sm:items-start">
-            <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-              <Icon name="heroicons:exclamation-triangle" class="h-6 w-6 text-red-600" />
+            <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-[14px] bg-red-500/15 sm:mx-0 sm:h-10 sm:w-10">
+              <Icon name="heroicons:exclamation-triangle" class="h-6 w-6 text-red-500" />
             </div>
             <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-              <h3 class="text-lg leading-6 font-medium text-gray-900">
+              <h3 class="text-lg leading-6 font-medium theme-text-primary">
                 {{ title }}
               </h3>
               <div class="mt-2">
-                <p class="text-sm text-gray-500">
+                <p class="text-sm theme-text-secondary">
                   {{ message }}
                 </p>
               </div>
@@ -25,18 +25,18 @@
         </div>
 
         <!-- Footer del modal -->
-        <div class="bg-gray-50 dark:bg-gray-800 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+        <div class="border-t border-black/5 dark:border-white/10 bg-black/[0.03] dark:bg-white/[0.04] backdrop-blur-sm px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
           <button
             type="button"
             @click="$emit('confirm')"
-            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+            class="w-full inline-flex justify-center rounded-[14px] border border-transparent shadow-sm px-4 py-2.5 bg-red-500 text-base font-semibold text-white hover:bg-red-600 sm:ml-3 sm:w-auto sm:text-sm"
           >
             Confirmar
           </button>
           <button
             type="button"
             @click="$emit('cancel')"
-            class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white dark:bg-gray-900 text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+            class="mt-3 w-full inline-flex justify-center ios-admin-btn-secondary sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
           >
             Cancelar
           </button>

@@ -56,7 +56,7 @@ export default defineNuxtConfig({
         { charset: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
         { name: "description", content: "Tu tienda de belleza y moda femenina con los mejores productos seleccionados especialmente para la mujer moderna y elegante." },
-        { name: "theme-color", content: "#F4E1E0" }
+        { name: "theme-color", content: "#f2f2f7" }
       ],
       link: [
         { rel: "icon", type: "image/png", href: "/flor.png" }
@@ -76,6 +76,8 @@ export default defineNuxtConfig({
 
   /** Caché ISR en edge (Vercel): segundos hasta revalidar HTML de rutas mayormente públicas */
   routeRules: {
+    "/admin/inventory": { redirect: "/admin/products" },
+    "/admin/inventory/**": { redirect: "/admin/products" },
     "/about": { isr: 86400 },
     "/shop": { isr: 120 },
     "/shop/**": { isr: 120 }

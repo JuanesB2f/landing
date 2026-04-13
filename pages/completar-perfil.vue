@@ -1,100 +1,114 @@
 <template>
-  <div class="min-h-screen theme-container py-10 px-4">
-    <div class="max-w-lg mx-auto theme-card-bg rounded-2xl shadow-lg border theme-border p-8">
-      <div class="text-center mb-8">
-        <div class="inline-flex h-14 w-14 items-center justify-center rounded-full bg-pink-100 dark:bg-pink-900/30 mb-4">
-          <Icon name="heroicons:user-circle" class="w-8 h-8 text-pink-600" />
+  <div class="ios-profile-complete-wrap theme-container">
+    <div class="ios-profile-orb ios-profile-orb--a" aria-hidden="true" />
+    <div class="ios-profile-orb ios-profile-orb--b" aria-hidden="true" />
+
+    <div class="ios-profile-glass-card">
+      <div class="px-6 pt-9 pb-6 text-center border-b border-[var(--ios-hairline)]">
+        <div class="ios-profile-hero-icon mb-5">
+          <Icon name="heroicons:user-circle" class="w-8 h-8 text-[var(--accent)]" />
         </div>
-        <h1 class="text-2xl font-bold theme-text-primary">Completa tu perfil</h1>
-        <p class="mt-2 text-sm theme-text-secondary">
-          Necesitamos algunos datos para identificarte además de tu cuenta. Son obligatorios para continuar.
+        <h1 class="text-[1.65rem] sm:text-[1.75rem] font-bold tracking-tight theme-text-primary leading-tight">
+          Completa tu perfil
+        </h1>
+        <p class="mt-2.5 text-[0.9375rem] leading-relaxed theme-text-secondary max-w-[22rem] mx-auto">
+          Unos datos básicos para identificarte además de tu cuenta. Son obligatorios para seguir.
         </p>
       </div>
 
-      <form class="space-y-5" @submit.prevent="submit">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium theme-text-primary mb-1">Nombre</label>
+      <form class="px-5 sm:px-6 pb-8 pt-5" @submit.prevent="submit">
+        <p class="ios-profile-group-title">Datos obligatorios</p>
+        <div class="ios-profile-inset-group">
+          <div class="ios-profile-field">
+            <label class="ios-profile-field-label" for="cp-first">Nombre</label>
             <input
+              id="cp-first"
               v-model="form.first_name"
               type="text"
               required
-              class="w-full rounded-lg border theme-border px-3 py-2 theme-text-primary bg-white dark:bg-gray-900"
-              placeholder="Nombre"
+              autocomplete="given-name"
+              class="ios-profile-field-input"
+              placeholder="Tu nombre"
             />
           </div>
-          <div>
-            <label class="block text-sm font-medium theme-text-primary mb-1">Apellido</label>
+          <div class="ios-profile-field">
+            <label class="ios-profile-field-label" for="cp-last">Apellido</label>
             <input
+              id="cp-last"
               v-model="form.last_name"
               type="text"
               required
-              class="w-full rounded-lg border theme-border px-3 py-2 theme-text-primary bg-white dark:bg-gray-900"
-              placeholder="Apellido"
+              autocomplete="family-name"
+              class="ios-profile-field-input"
+              placeholder="Tu apellido"
             />
+          </div>
+          <div class="ios-profile-field">
+            <label class="ios-profile-field-label" for="cp-birth">Fecha de nacimiento</label>
+            <input
+              id="cp-birth"
+              v-model="form.birth_date"
+              type="date"
+              required
+              :max="maxBirthDate"
+              class="ios-profile-field-input"
+              @change="onBirthChange"
+            />
+            <div v-if="age !== null" class="ios-profile-age-pill">
+              <Icon name="heroicons:calendar-days" class="w-4 h-4 opacity-80" />
+              <span>{{ age }} años</span>
+            </div>
           </div>
         </div>
 
-        <div>
-          <label class="block text-sm font-medium theme-text-primary mb-1">Fecha de nacimiento</label>
-          <input
-            v-model="form.birth_date"
-            type="date"
-            required
-            :max="maxBirthDate"
-            class="w-full rounded-lg border theme-border px-3 py-2 theme-text-primary bg-white dark:bg-gray-900"
-            @change="onBirthChange"
-          />
+        <p class="ios-profile-group-title">Opcional</p>
+        <div class="ios-profile-inset-group">
+          <div class="ios-profile-field">
+            <label class="ios-profile-field-label" for="cp-phone">
+              Teléfono
+              <span class="ios-profile-optional">· recomendado</span>
+            </label>
+            <input
+              id="cp-phone"
+              v-model="form.phone"
+              type="tel"
+              autocomplete="tel"
+              class="ios-profile-field-input"
+              placeholder="+57 …"
+            />
+          </div>
+          <div class="ios-profile-field">
+            <label class="ios-profile-field-label" for="cp-id">Identificación adicional</label>
+            <input
+              id="cp-id"
+              v-model="form.identification"
+              type="text"
+              class="ios-profile-field-input"
+              placeholder="Documento o referencia"
+            />
+            <p class="mt-2 text-[0.75rem] leading-snug theme-text-muted">
+              Opcional. Puede ayudar a validar tu cuenta fuera del correo de Google.
+            </p>
+          </div>
+          <div class="ios-profile-field">
+            <label class="ios-profile-field-label" for="cp-gender">
+              Género
+              <span class="ios-profile-optional">· opcional</span>
+            </label>
+            <select id="cp-gender" v-model="form.gender" class="ios-profile-field-select">
+              <option value="">Prefiero no decir</option>
+              <option value="male">Masculino</option>
+              <option value="female">Femenino</option>
+              <option value="other">Otro</option>
+            </select>
+          </div>
         </div>
 
-        <div v-if="age !== null" class="rounded-lg bg-gray-50 dark:bg-gray-800/50 px-4 py-3 text-sm theme-text-secondary">
-          <span class="font-medium theme-text-primary">Edad:</span>
-          {{ age }} años
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium theme-text-primary mb-1">Teléfono <span class="text-gray-400 font-normal">(recomendado)</span></label>
-          <input
-            v-model="form.phone"
-            type="tel"
-            class="w-full rounded-lg border theme-border px-3 py-2 theme-text-primary bg-white dark:bg-gray-900"
-            placeholder="+52 …"
-          />
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium theme-text-primary mb-1">Identificación adicional</label>
-          <input
-            v-model="form.identification"
-            type="text"
-            class="w-full rounded-lg border theme-border px-3 py-2 theme-text-primary bg-white dark:bg-gray-900"
-            placeholder="Documento o referencia (opcional)"
-          />
-          <p class="mt-1 text-xs theme-text-muted">Opcional. Ayuda a validar tu cuenta fuera del correo de Google.</p>
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium theme-text-primary mb-1">Género <span class="text-gray-400 font-normal">(opcional)</span></label>
-          <select
-            v-model="form.gender"
-            class="w-full rounded-lg border theme-border px-3 py-2 theme-text-primary bg-white dark:bg-gray-900"
-          >
-            <option value="">Prefiero no decir</option>
-            <option value="male">Masculino</option>
-            <option value="female">Femenino</option>
-            <option value="other">Otro</option>
-          </select>
-        </div>
-
-        <div v-if="error" class="text-sm text-red-600 bg-red-50 dark:bg-red-900/20 rounded-lg px-3 py-2">
+        <div v-if="error" class="ios-profile-error">
           {{ error }}
         </div>
 
-        <button
-          type="submit"
-          :disabled="saving"
-          class="w-full py-3 rounded-xl font-semibold text-white bg-pink-600 hover:bg-pink-700 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
+        <button type="submit" class="ios-profile-submit" :disabled="saving">
           {{ saving ? 'Guardando…' : 'Guardar y continuar' }}
         </button>
       </form>

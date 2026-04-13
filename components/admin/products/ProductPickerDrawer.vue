@@ -1,7 +1,7 @@
 <template>
   <div v-if="modelValue" class="fixed inset-0 z-50">
-    <div class="absolute inset-0 bg-black/40" @click="$emit('update:modelValue', false)"></div>
-    <div class="absolute right-0 top-0 h-full w-full max-w-xl bg-white shadow-xl flex flex-col">
+    <div class="ios-admin-overlay absolute inset-0" @click="$emit('update:modelValue', false)"></div>
+    <div class="absolute right-0 top-0 h-full w-full max-w-xl ios-admin-modal-panel border-l shadow-2xl flex flex-col rounded-none rounded-l-[22px]">
       <div class="p-4 border-b flex items-center justify-between">
         <h3 class="text-lg font-semibold">Seleccionar producto</h3>
         <button @click="$emit('update:modelValue', false)" class="p-2 rounded hover:bg-gray-100">

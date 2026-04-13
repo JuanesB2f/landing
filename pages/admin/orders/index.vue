@@ -8,15 +8,17 @@
       </div>
       <div class="flex flex-wrap gap-2 sm:space-x-3">
         <button
+          type="button"
           @click="openOrderModal()"
-          class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 sm:px-4 rounded-lg flex items-center justify-center space-x-2 transition-colors text-sm sm:text-base flex-1 sm:flex-none min-w-0"
+          class="ios-admin-btn-primary text-sm sm:text-base flex-1 sm:flex-none min-w-0"
         >
           <Icon name="heroicons:plus-circle" class="w-5 h-5 shrink-0" />
           <span>Nuevo Pedido</span>
         </button>
         <button
+          type="button"
           @click="exportOrders"
-          class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 sm:px-4 rounded-lg flex items-center justify-center space-x-2 transition-colors text-sm sm:text-base flex-1 sm:flex-none min-w-0"
+          class="ios-admin-btn-secondary text-sm sm:text-base flex-1 sm:flex-none min-w-0"
         >
           <Icon name="heroicons:arrow-down-tray" class="w-5 h-5 shrink-0" />
           <span>Exportar</span>
@@ -26,7 +28,7 @@
 
     <!-- Resumen de pedidos -->
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-6 mb-4 sm:mb-6">
-      <div class="theme-card-bg p-3 sm:p-6 rounded-lg shadow-sm border theme-border">
+      <div class="ios-admin-stat-card">
         <div class="flex items-center gap-2 sm:gap-4">
           <div class="flex-shrink-0">
             <div class="w-7 h-7 sm:w-8 sm:h-8 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -40,7 +42,7 @@
         </div>
       </div>
 
-      <div class="theme-card-bg p-3 sm:p-6 rounded-lg shadow-sm border theme-border">
+      <div class="ios-admin-stat-card">
         <div class="flex items-center gap-2 sm:gap-4">
           <div class="flex-shrink-0">
             <div class="w-7 h-7 sm:w-8 sm:h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
@@ -54,7 +56,7 @@
         </div>
       </div>
 
-      <div class="theme-card-bg p-3 sm:p-6 rounded-lg shadow-sm border theme-border">
+      <div class="ios-admin-stat-card">
         <div class="flex items-center gap-2 sm:gap-4">
           <div class="flex-shrink-0">
             <div class="w-7 h-7 sm:w-8 sm:h-8 bg-green-100 rounded-lg flex items-center justify-center">
@@ -68,7 +70,7 @@
         </div>
       </div>
 
-      <div class="theme-card-bg p-3 sm:p-6 rounded-lg shadow-sm border theme-border">
+      <div class="ios-admin-stat-card">
         <div class="flex items-center gap-2 sm:gap-4">
           <div class="flex-shrink-0">
             <div class="w-7 h-7 sm:w-8 sm:h-8 bg-red-100 rounded-lg flex items-center justify-center">
@@ -81,7 +83,7 @@
           </div>
         </div>
       </div>
-      <div class="theme-card-bg p-3 sm:p-6 rounded-lg shadow-sm border theme-border col-span-2 sm:col-span-1">
+      <div class="ios-admin-stat-card col-span-2 sm:col-span-1">
         <div class="flex items-center gap-2 sm:gap-4">
           <div class="flex-shrink-0">
             <div class="w-7 h-7 sm:w-8 sm:h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
@@ -97,11 +99,11 @@
     </div>
 
     <!-- Filtros y búsqueda -->
-    <div class="theme-card-bg p-3 sm:p-4 rounded-lg shadow-sm mb-4 sm:mb-6 border theme-border">
+    <div class="ios-admin-toolbar mb-4 sm:mb-6">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 sm:gap-4">
         <!-- Búsqueda -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Buscar</label>
+          <label class="block text-sm font-medium theme-text-secondary mb-1">Buscar</label>
           <input
             v-model="searchQuery"
             type="text"
@@ -112,7 +114,7 @@
         
         <!-- Filtro por estado -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+          <label class="block text-sm font-medium theme-text-secondary mb-1">Estado</label>
           <select
             v-model="selectedStatus"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -128,7 +130,7 @@
 
         <!-- Filtro por método de pago -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Pago</label>
+          <label class="block text-sm font-medium theme-text-secondary mb-1">Pago</label>
           <select
             v-model="selectedPaymentStatus"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -143,7 +145,7 @@
 
         <!-- Filtro por fecha -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Fecha</label>
+          <label class="block text-sm font-medium theme-text-secondary mb-1">Fecha</label>
           <input
             v-model="selectedDate"
             type="date"
@@ -153,7 +155,7 @@
 
         <!-- Filtro por origen -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Origen</label>
+          <label class="block text-sm font-medium theme-text-secondary mb-1">Origen</label>
           <select
             v-model="selectedSource"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -168,8 +170,9 @@
         <!-- Botón de limpiar filtros -->
         <div class="flex items-end">
           <button
+            type="button"
             @click="clearFilters"
-            class="w-full px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+            class="w-full ios-admin-btn-secondary"
           >
             Limpiar Filtros
           </button>
@@ -179,7 +182,7 @@
     </div>
 
     <!-- Tabla de pedidos (combinada con reservas) -->
-    <div class="rounded-lg overflow-hidden border border-gray-200 dark:border-[var(--border-color)]">
+    <div class="ios-admin-table-shell">
       <div class="admin-table-scroll">
         <table class="min-w-full admin-table">
           <thead>
@@ -255,7 +258,7 @@
                     @click="onApprove(row)"
                     :title="row._isReservation ? 'Aprobar (desde reserva)' : 'Aprobar pedido'"
                     aria-label="Aprobar"
-                    class="inline-flex items-center justify-center w-9 h-9 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed"
+                    class="inline-flex items-center justify-center w-9 h-9 rounded-[14px] ios-admin-btn-primary !p-0 shrink-0 disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     <Icon name="heroicons:check-circle" class="w-5 h-5" />
                   </button>
@@ -266,7 +269,7 @@
                     @click="onCancel(row)"
                     title="Cancelar"
                     aria-label="Cancelar"
-                    class="inline-flex items-center justify-center w-9 h-9 rounded border hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+                    class="inline-flex items-center justify-center w-9 h-9 rounded-[14px] border border-[var(--ios-hairline)] bg-white/35 backdrop-blur-sm hover:bg-white/55 dark:bg-white/5 dark:hover:bg-white/10 disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     <Icon name="heroicons:x-circle" class="w-5 h-5 text-red-600" />
                   </button>
@@ -277,7 +280,7 @@
                     @click="onDelete(row)"
                     title="Eliminar"
                     aria-label="Eliminar"
-                    class="inline-flex items-center justify-center w-9 h-9 rounded border hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+                    class="inline-flex items-center justify-center w-9 h-9 rounded-[14px] border border-[var(--ios-hairline)] bg-white/35 backdrop-blur-sm hover:bg-white/55 dark:bg-white/5 dark:hover:bg-white/10 disabled:opacity-40 disabled:cursor-not-allowed theme-text-primary"
                   >
                     <Icon name="heroicons:trash" class="w-5 h-5" />
                   </button>
@@ -289,57 +292,62 @@
       </div>
       
       <!-- Paginación -->
-      <div v-if="totalPages > 1" class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+      <div v-if="totalPages > 1" class="px-4 py-3 flex items-center justify-between border-t border-[var(--ios-hairline)] bg-white/25 backdrop-blur-md sm:px-6">
         <div class="flex-1 flex justify-between sm:hidden">
           <button
+            type="button"
             @click="previousPage"
             :disabled="currentPage === 1"
-            class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="ios-admin-btn-secondary text-sm disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Anterior
           </button>
           <button
+            type="button"
             @click="nextPage"
             :disabled="currentPage === totalPages"
-            class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="ml-3 ios-admin-btn-secondary text-sm disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Siguiente
           </button>
         </div>
         <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
           <div>
-            <p class="text-sm text-gray-700">
+            <p class="text-sm theme-text-secondary">
               Mostrando <span class="font-medium">{{ startIndex + 1 }}</span> a 
               <span class="font-medium">{{ endIndex }}</span> de 
               <span class="font-medium">{{ totalOrders }}</span> resultados
             </p>
           </div>
           <div>
-            <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+            <nav class="relative z-0 inline-flex rounded-[14px] overflow-hidden border border-[var(--ios-hairline)] shadow-sm">
               <button
+                type="button"
                 @click="previousPage"
                 :disabled="currentPage === 1"
-                class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                class="relative inline-flex items-center px-2 py-2 bg-white/40 text-sm font-medium theme-text-muted hover:bg-white/60 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Icon name="heroicons:chevron-left" class="w-5 h-5" />
               </button>
               <button
                 v-for="page in visiblePages"
                 :key="page"
+                type="button"
                 @click="goToPage(page)"
                 :class="[
-                  'relative inline-flex items-center px-4 py-2 border text-sm font-medium',
+                  'relative inline-flex items-center px-4 py-2 border-l border-[var(--ios-hairline)] text-sm font-medium',
                   page === currentPage
-                    ? 'z-10 bg-green-50 border-green-500 text-green-600'
-                    : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+                    ? 'z-10 bg-[rgba(189,142,137,0.18)] text-[var(--accent)]'
+                    : 'bg-white/35 theme-text-muted hover:bg-white/55'
                 ]"
               >
                 {{ page }}
               </button>
               <button
+                type="button"
                 @click="nextPage"
                 :disabled="currentPage === totalPages"
-                class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                class="relative inline-flex items-center px-2 py-2 border-l border-[var(--ios-hairline)] bg-white/40 text-sm font-medium theme-text-muted hover:bg-white/60 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Icon name="heroicons:chevron-right" class="w-5 h-5" />
               </button>

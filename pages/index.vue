@@ -34,7 +34,7 @@
         <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-10 sm:mb-16 animate-fade-in-up animation-delay-600 w-full max-w-md sm:max-w-none mx-auto">
           <NuxtLink
             to="/shop"
-            class="hero-cta-primary group relative px-8 py-4 bg-black dark:bg-black text-white rounded-full font-semibold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 overflow-hidden hover:bg-gray-800 dark:hover:bg-gray-800"
+            class="hero-cta-primary group relative px-8 py-4 bg-[#0E1627]/90 dark:bg-white/15 backdrop-blur-xl text-white rounded-[1.75rem] font-semibold text-lg shadow-[0_8px_32px_rgba(0,0,0,0.2)] border border-white/15 dark:border-white/20 hover:bg-[#0E1627] dark:hover:bg-white/25 transform hover:scale-[1.02] transition-all duration-300 overflow-hidden"
           >
             <span class="relative z-10 flex items-center gap-2">
               Explorar Colección
@@ -77,7 +77,7 @@
     </section>
 
     <!-- Features Section -->
-    <section class="features-section py-12 sm:py-16 lg:py-20 bg-gradient-to-b from-white to-gray-50">
+    <section class="features-section py-12 sm:py-16 lg:py-20 bg-transparent">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-10 sm:mb-16">
           <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4 px-2">
@@ -92,7 +92,7 @@
           <div
             v-for="(feature, index) in features"
             :key="index"
-            class="group p-5 sm:p-6 lg:p-8 bg-white dark:bg-bg-card rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 border border-gray-100 dark:border-border-color"
+            class="ios-glass-card group p-5 sm:p-6 lg:p-8 rounded-[1.25rem] transform hover:-translate-y-1 transition-all duration-300"
           >
             <div class="feature-icon-box w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-2xl flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform shadow-md">
               <Icon :name="feature.icon" class="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-white" />

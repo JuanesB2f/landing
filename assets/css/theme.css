@@ -161,20 +161,11 @@
   border-color: var(--theme-border-light);
 }
 
-/* Login: mismo tipo de animación en claro y oscuro (sin morado) */
-.theme-login-bg {
-  /* Por defecto: oscuro suave (slate), misma estructura que el tema claro */
-  background: linear-gradient(to bottom right, #1e293b, #334155, #1e293b);
-}
-
-.theme-dark .theme-login-bg {
-  /* Oscuro: igual que por defecto — muy parecido al tema claro pero en tonos dark */
-  background: linear-gradient(to bottom right, #1e293b, #334155, #1e293b);
-}
-
+/* Login / tienda / inicio: fondo global iOS (ios-shell.css en body); capa transparente */
+.theme-login-bg,
+.theme-dark .theme-login-bg,
 .theme-light .theme-login-bg {
-  /* Claro: suave, blush/pink */
-  background: linear-gradient(to bottom right, #f8fafc, #f1e8e8, #f8fafc);
+  background: transparent;
 }
 
 /* Blobs del login: misma animación en claro y oscuro, solo cambia el color */

@@ -26,7 +26,6 @@ export const useUserRole = () => {
   const canManageUsers = computed(() => isAdmin.value)
   const canViewAnalytics = computed(() => isAdmin.value)
   const canManageCategories = computed(() => isAdmin.value)
-  const canManageInventory = computed(() => isAdmin.value)
   const canProcessRefunds = computed(() => isAdmin.value)
   const canViewReports = computed(() => isAdmin.value)
   
@@ -50,7 +49,6 @@ export const useUserRole = () => {
       'manage:products': canManageProducts.value,
       'manage:orders': canManageOrders.value,
       'manage:categories': canManageCategories.value,
-      'manage:inventory': canManageInventory.value,
       'manage:analytics': canViewAnalytics.value,
       
       // Permisos de edición
@@ -102,7 +100,6 @@ export const useUserRole = () => {
       '/admin/products': ['manage:products'],
       '/admin/orders': ['manage:orders'],
       '/admin/categories': ['manage:categories'],
-      '/admin/inventory': ['manage:inventory'],
       '/dashboard': ['view:analytics'],
       '/profile': ['customer:orders'],
       '/orders': ['customer:orders'],
@@ -125,7 +122,6 @@ export const useUserRole = () => {
         { label: 'Productos', icon: 'i-heroicons-shopping-bag', to: '/admin/products' },
         { label: 'Órdenes', icon: 'i-heroicons-shopping-cart', to: '/admin/orders' },
         { label: 'Categorías', icon: 'i-heroicons-tag', to: '/admin/categories' },
-        { label: 'Inventario', icon: 'i-heroicons-cube', to: '/admin/inventory' },
         { label: 'Usuarios', icon: 'i-heroicons-users', to: '/admin/users' },
         { label: 'Analytics', icon: 'i-heroicons-chart-bar', to: '/admin/analytics' },
         { label: 'Reportes', icon: 'i-heroicons-document-chart-bar', to: '/admin/reports' },
@@ -161,7 +157,6 @@ export const useUserRole = () => {
     canManageUsers,
     canViewAnalytics,
     canManageCategories,
-    canManageInventory,
     canProcessRefunds,
     canViewReports,
     

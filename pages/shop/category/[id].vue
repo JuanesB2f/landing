@@ -1,28 +1,14 @@
 <template>
-  <div
-    class="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 py-12"
-  >
+  <div class="min-h-screen theme-container py-8 sm:py-10 pb-24 md:pb-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- Loading State -->
-      <div v-if="loading" class="flex justify-center py-20">
-        <Icon
-          name="svg-spinners:180-ring-with-bg"
-          class="w-16 h-16 text-pink-600"
-        />
+      <div v-if="loading" class="flex justify-center py-24">
+        <Icon name="svg-spinners:180-ring-with-bg" class="w-14 h-14 text-[var(--accent)]" />
       </div>
 
       <div v-else>
-        <!-- Header con imagen de categoría -->
-        <div class="text-center mb-10">
-
-          <!-- Imagen de categoría -->
-          <div class="flex justify-center mb-6">
-            <div
-              :class="[
-                'w-28 h-28 rounded-full overflow-hidden shadow-2xl border-4 border-white ring-4',
-                category?.image_url ? 'ring-pink-200' : 'ring-pink-100',
-              ]"
-            >
+        <div class="ios-shop-category-header text-center">
+          <div class="flex justify-center mb-5">
+            <div class="ios-shop-cat-avatar">
               <img
                 v-if="category?.image_url"
                 :src="category.image_url"
@@ -31,193 +17,150 @@
               />
               <div
                 v-else
-                class="w-full h-full flex items-center justify-center bg-gradient-to-br from-pink-100 to-purple-100"
+                class="w-full h-full flex items-center justify-center bg-[rgba(189,142,137,0.12)]"
               >
-                <Icon name="heroicons:tag" class="w-12 h-12 text-pink-400" />
+                <Icon name="heroicons:tag" class="w-10 h-10 text-[var(--accent)] opacity-70" />
               </div>
             </div>
           </div>
-
-          <h1 class="text-4xl md:text-5xl font-bold mb-3">
-            <span class="bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
-              {{ category?.name || 'Categoría' }}
-            </span>
+          <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight theme-text-primary mb-2">
+            {{ category?.name || 'Categoría' }}
           </h1>
-          <p class="text-lg text-gray-500 max-w-2xl mx-auto mb-8">
+          <p class="text-sm sm:text-base theme-text-secondary max-w-2xl mx-auto leading-relaxed">
             {{ category?.description || 'Explora nuestros productos' }}
           </p>
 
-          <!-- Navegación de categorías con imágenes -->
-          <div class="flex justify-center">
-            <div class="flex gap-4 overflow-x-auto pb-2 scrollbar-hide max-w-full px-2">
-
-              <!-- Todas -->
-              <NuxtLink
-                to="/shop"
-                class="flex-shrink-0 flex flex-col items-center gap-1.5 p-2 rounded-xl group focus:outline-none"
-              >
-                <div class="w-14 h-14 rounded-full flex items-center justify-center bg-gray-100 border-2 border-gray-200 group-hover:border-pink-300 group-hover:bg-pink-50 transition-all duration-200">
-                  <Icon name="heroicons:squares-2x2" class="w-6 h-6 text-pink-400" />
+          <div class="flex justify-center mt-6 -mx-1">
+            <div class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide max-w-full px-1 py-1">
+              <NuxtLink to="/shop" class="ios-shop-pill group">
+                <div
+                  class="ios-shop-pill-img flex items-center justify-center bg-[rgba(189,142,137,0.1)] group-hover:bg-[rgba(189,142,137,0.18)]"
+                >
+                  <Icon name="heroicons:squares-2x2" class="w-6 h-6 text-[var(--accent)]" />
                 </div>
-                <span class="text-xs font-medium text-gray-500 group-hover:text-pink-600 transition-colors">Todas</span>
+                <span class="text-[10px] font-semibold text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] max-w-[4.5rem] truncate text-center leading-tight">
+                  Todas
+                </span>
               </NuxtLink>
 
-              <!-- Cada categoría -->
               <NuxtLink
                 v-for="cat in allCategories"
                 :key="cat.id_category"
                 :to="`/shop/category/${cat.id_category}`"
-                class="flex-shrink-0 flex flex-col items-center gap-1.5 p-2 rounded-xl group focus:outline-none"
+                class="ios-shop-pill group"
+                :class="{ 'ios-shop-pill--active': cat.id_category === categoryId }"
               >
-                <div
-                  :class="[
-                    'w-14 h-14 rounded-full overflow-hidden border-2 transition-all duration-200',
-                    cat.id_category === categoryId
-                      ? 'border-pink-500 ring-2 ring-pink-300'
-                      : 'border-gray-200 group-hover:border-pink-400 group-hover:ring-2 group-hover:ring-pink-200',
-                  ]"
-                >
+                <div class="ios-shop-pill-img">
                   <img
                     v-if="cat.image_url"
                     :src="cat.image_url"
                     :alt="cat.name"
-                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
-                  <div
-                    v-else
-                    class="w-full h-full flex items-center justify-center bg-gradient-to-br from-pink-100 to-purple-100"
-                  >
-                    <Icon name="heroicons:tag" class="w-6 h-6 text-pink-400" />
+                  <div v-else class="w-full h-full flex items-center justify-center bg-[rgba(189,142,137,0.1)]">
+                    <Icon name="heroicons:tag" class="w-5 h-5 text-[var(--accent)] opacity-70" />
                   </div>
                 </div>
                 <span
-                  :class="[
-                    'text-xs font-medium text-center max-w-[64px] truncate transition-colors duration-200',
-                    cat.id_category === categoryId ? 'text-pink-600' : 'text-gray-500 group-hover:text-pink-600',
-                  ]"
+                  class="text-[10px] font-semibold max-w-[4.5rem] truncate text-center leading-tight transition-colors"
+                  :class="cat.id_category === categoryId ? 'text-[var(--accent)]' : 'theme-text-secondary'"
                 >
                   {{ cat.name }}
                 </span>
               </NuxtLink>
-
             </div>
           </div>
         </div>
 
-        <!-- Empty State -->
         <div
           v-if="products.length === 0"
-          class="text-center py-12 bg-white rounded-xl shadow-sm max-w-2xl mx-auto"
+          class="ios-shop-glass-empty max-w-lg mx-auto mt-8"
         >
-          <Icon
-            name="heroicons:shopping-bag"
-            class="w-16 h-16 mx-auto text-gray-300 mb-4"
-          />
-          <h3 class="text-lg font-medium text-gray-900">
-            No hay productos en esta categoría
-          </h3>
-          <p class="text-gray-500 mt-2">
-            Vuelve pronto para ver nuevas colecciones
-          </p>
-          <NuxtLink
-            to="/shop"
-            class="mt-6 inline-block text-pink-600 hover:text-pink-700 font-medium"
-          >
-            Ver todos los productos
+          <Icon name="heroicons:shopping-bag" class="w-14 h-14 mx-auto theme-text-muted mb-4 opacity-50" />
+          <h3 class="text-lg font-semibold theme-text-primary">No hay productos en esta categoría</h3>
+          <p class="theme-text-secondary text-sm mt-2 mb-6">Vuelve pronto para ver nuevas colecciones.</p>
+          <NuxtLink to="/shop" class="ios-shop-btn-primary inline-flex">
+            Ver catálogo
           </NuxtLink>
         </div>
 
-        <!-- Products Grid -->
-        <div
-          v-else
-          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
-        >
+        <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6">
           <div
             v-for="product in products"
             :key="product.id_product"
-            class="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-pink-100"
+            class="ios-shop-product-card group flex flex-col"
           >
-            <div class="relative h-64 bg-gray-100 overflow-hidden">
+            <div class="relative h-56 sm:h-60 bg-black/5 dark:bg-white/5 overflow-hidden shrink-0">
               <img
                 v-if="product.image_url"
                 :src="product.image_url"
                 :alt="product.name"
-                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
               />
               <div
                 v-else
-                class="w-full h-full flex items-center justify-center bg-gradient-to-br from-pink-100 to-purple-100"
+                class="w-full h-full flex items-center justify-center bg-[rgba(189,142,137,0.08)]"
               >
-                <Icon name="heroicons:photo" class="w-16 h-16 text-pink-300" />
+                <Icon name="heroicons:photo" class="w-14 h-14 text-[var(--accent)] opacity-35" />
               </div>
-
-              <!-- Badge de Stock -->
-              <div
-                v-if="product.stock_quantity <= 0"
-                class="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded"
-              >
-                AGOTADO
-              </div>
+              <div v-if="product.stock_quantity <= 0" class="ios-shop-badge-stock">AGOTADO</div>
             </div>
 
-            <div class="p-6">
+            <div class="p-4 sm:p-5 flex flex-col flex-1">
               <h3
-                class="font-bold text-xl text-gray-800 mb-2 group-hover:text-pink-600 transition-colors truncate"
+                class="font-bold text-lg theme-text-primary mb-1.5 group-hover:text-[var(--accent)] transition-colors line-clamp-2 leading-snug"
                 :title="product.name"
               >
                 {{ product.name }}
               </h3>
-              <p class="text-gray-600 text-sm mb-4 line-clamp-2 h-10">
+              <p class="text-sm theme-text-secondary line-clamp-2 mb-4 flex-1 min-h-[2.5rem]">
                 {{ product.description }}
               </p>
 
-              <div class="flex justify-between items-center">
-                <span
-                  class="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent"
-                >
+              <div class="flex flex-wrap items-center justify-between gap-3 mt-auto pt-2 border-t border-[var(--ios-hairline)]">
+                <span class="text-xl font-bold text-[var(--accent)] tabular-nums">
                   {{ formatCOP(product.price) }}
                 </span>
                 <button
-                  @click="addToCart(product)"
+                  type="button"
+                  class="ios-shop-btn-primary shrink-0"
                   :disabled="product.stock_quantity <= 0"
-                  class="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 py-2 rounded-full hover:from-pink-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                  @click="addToCart(product)"
                 >
-                  <span class="flex items-center gap-2">
-                    <Icon name="heroicons:shopping-cart" class="w-5 h-5" />
-                    Agregar
-                  </span>
+                  <Icon name="heroicons:shopping-cart" class="w-4 h-4" />
+                  Agregar
                 </button>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Pagination (Simple) -->
-        <div v-if="products.length > 0" class="mt-12 flex justify-center gap-4">
+        <div v-if="products.length > 0" class="mt-10 flex flex-wrap justify-center gap-3">
           <button
-            @click="prevPage"
+            type="button"
+            class="ios-shop-btn-secondary disabled:opacity-40 disabled:cursor-not-allowed px-6"
             :disabled="page <= 1"
-            class="px-6 py-2 bg-white border border-pink-200 rounded-full text-pink-600 hover:bg-pink-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            @click="prevPage"
           >
             Anterior
           </button>
           <button
-            @click="nextPage"
+            type="button"
+            class="ios-shop-btn-secondary disabled:opacity-40 disabled:cursor-not-allowed px-6"
             :disabled="products.length < pageSize"
-            class="px-6 py-2 bg-white border border-pink-200 rounded-full text-pink-600 hover:bg-pink-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            @click="nextPage"
           >
             Siguiente
           </button>
         </div>
 
-        <!-- Back Button -->
-        <div class="text-center mt-16">
+        <div class="text-center mt-12">
           <NuxtLink
             to="/shop"
-            class="inline-flex items-center bg-white text-gray-600 px-8 py-3 rounded-full font-semibold hover:bg-gray-50 hover:text-pink-600 transition-all duration-300 shadow-md hover:shadow-lg border border-gray-200"
+            class="ios-shop-btn-secondary inline-flex px-8 py-3 rounded-[16px] font-semibold shadow-sm"
           >
             <Icon name="heroicons:arrow-left" class="w-5 h-5 mr-2" />
-            Volver al Catálogo
+            Volver al catálogo
           </NuxtLink>
         </div>
       </div>
@@ -238,7 +181,6 @@ const { formatCOP } = useCurrency()
 const cart = useCartStore()
 const { $toast } = useNuxtApp()
 
-// Estado
 const category = ref(null)
 const allCategories = ref([])
 const products = ref([])
@@ -246,29 +188,24 @@ const loading = ref(true)
 const page = ref(1)
 const pageSize = 12
 
-// Cargar datos
 const fetchData = async () => {
   loading.value = true
   try {
-    // Cargar todas las categorías para el menú
     const { data: catsData } = await $fetch('/api/categories')
     if (catsData?.success) {
       allCategories.value = catsData.data
     }
 
-    // Cargar categoría actual
     const { data: catData } = await $fetch(`/api/categories/${categoryId}`)
     if (catData?.success) {
       category.value = catData.data
 
-      // SEO
       useHead({
         title: `${catData.data.name} - BylotoStore`,
         meta: [{ name: 'description', content: catData.data.description }],
       })
     }
 
-    // Cargar productos de la categoría
     const { data: prodData } = await $fetch('/api/products', {
       params: {
         category_id: categoryId,
@@ -289,7 +226,6 @@ const fetchData = async () => {
   }
 }
 
-// Paginación
 const prevPage = () => {
   if (page.value > 1) {
     page.value--
@@ -304,9 +240,7 @@ const nextPage = () => {
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
-// Carrito
 const addToCart = async product => {
-  // Verificar autenticación
   const { user } = useAuth()
   if (!user.value) {
     const { setAddIntent } = useAddIntent()
@@ -331,13 +265,20 @@ const addToCart = async product => {
     price: product.price,
     image_url: product.image_url,
   })
-  $toast?.success(
-    'Agregado al carrito',
-    `${product.name} agregado correctamente`
-  )
+  $toast?.success('Agregado al carrito', `${product.name} agregado correctamente`)
 }
 
 onMounted(() => {
   fetchData()
 })
 </script>
+
+<style scoped>
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+</style>

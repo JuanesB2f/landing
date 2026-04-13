@@ -1,14 +1,15 @@
 <template>
   <div>
     <!-- Header con botones de acción -->
-    <div class="flex justify-between items-center mb-6">
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4 sm:mb-6">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900">Gestión de Proveedores</h1>
-        <p class="text-gray-600">Administra los proveedores de tu tienda</p>
+        <h1 class="text-xl sm:text-2xl font-bold theme-text-primary">Gestión de Proveedores</h1>
+        <p class="text-sm sm:text-base theme-text-secondary mt-0.5">Administra los proveedores de tu tienda</p>
       </div>
       <button
+        type="button"
         @click="openModal()"
-        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors"
+        class="ios-admin-btn-primary w-full sm:w-auto shrink-0"
       >
         <Icon name="heroicons:plus-circle" class="w-5 h-5" />
         <span>Nuevo Proveedor</span>
@@ -16,11 +17,11 @@
     </div>
 
     <!-- Filtros y búsqueda -->
-    <div class="bg-white p-4 rounded-lg shadow-sm mb-6">
+    <div class="ios-admin-toolbar mb-4 sm:mb-6">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <!-- Búsqueda -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Buscar</label>
+          <label class="block text-sm font-medium theme-text-secondary mb-1">Buscar</label>
           <input
             v-model="searchQuery"
             type="text"
@@ -31,7 +32,7 @@
         
         <!-- Filtro por estado -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+          <label class="block text-sm font-medium theme-text-secondary mb-1">Estado</label>
           <select
             v-model="selectedStatus"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -45,8 +46,9 @@
         <!-- Botón de limpiar filtros -->
         <div class="flex items-end">
           <button
+            type="button"
             @click="clearFilters"
-            class="w-full px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+            class="w-full ios-admin-btn-secondary"
           >
             Limpiar Filtros
           </button>
@@ -55,7 +57,7 @@
     </div>
 
     <!-- Tabla de proveedores -->
-    <div class="rounded-lg overflow-hidden border border-gray-200 dark:border-[var(--border-color)]">
+    <div class="ios-admin-table-shell">
       <div class="admin-table-scroll">
         <table class="min-w-full admin-table">
           <thead>

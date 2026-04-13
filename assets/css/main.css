@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
 @import "./theme.css";
+@import "./ios-shell.css";
 
 /* Custom CSS Variables */
 :root {
@@ -41,12 +42,10 @@
   --accent-strong: #ec4899;
   --accent-strong-hover: #db2777;
 
-  font-family: Arial, Helvetica, sans-serif !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui, sans-serif;
 }
 
-body, html, * {
-  font-family: Arial, Helvetica, sans-serif !important;
-}
+/* La tipografía fina por capa está en ios-shell.css */
 
 .dark, .theme-dark {
   --ui-bg: #1e293b;
@@ -348,10 +347,10 @@ body, html, * {
 /* Overrides para clases tailwind comunes en admin (modo oscuro) */
 .theme-dark .bg-white { background-color: var(--bg-card) !important; }
 .theme-dark .bg-gray-50 { background-color: var(--bg-secondary) !important; }
-/* Sección "¿Por qué elegir BylotoStore?" en inicio: fondo oscuro en tema oscuro */
+/* Sección "¿Por qué elegir BylotoStore?": fondo transparente (malla iOS en body) */
 .dark .features-section,
 .theme-dark .features-section {
-  background: var(--bg-primary) !important;
+  background: transparent !important;
   background-image: none !important;
 }
 .theme-dark .hover\:bg-gray-50:hover { background-color: var(--bg-hover) !important; }
@@ -602,11 +601,18 @@ select:focus {
   }
 }
 
-/* Glass Morphism Effect */
+/* Compat: usar .ios-glass-card en ios-shell.css */
 .glass {
-  background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: saturate(180%) blur(18px);
+  -webkit-backdrop-filter: saturate(180%) blur(18px);
+  border: 0.5px solid rgba(60, 60, 67, 0.14);
+  border-radius: 18px;
+}
+html.theme-dark .glass,
+html.dark .glass {
+  background: rgba(40, 40, 46, 0.55);
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 /* Toasts: fuerza fuente normal para todo el contenido */

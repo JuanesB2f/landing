@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen w-full max-w-full min-w-0 p-3 sm:p-4 lg:p-6 transition-colors duration-300 theme-container">
+  <div class="admin-dashboard min-h-screen w-full max-w-full min-w-0 p-3 sm:p-4 lg:p-6 transition-colors duration-300 theme-container">
     <!-- Header del Dashboard -->
     <div class="mb-6 sm:mb-8">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
@@ -13,10 +13,10 @@
     <!-- Tarjetas de KPI principales -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
       <!-- Tarjeta de Usuarios -->
-      <div class="card card-hover hover:shadow-lg transition-all duration-300">
+      <div class="ios-glass-card dashboard-card-hover p-4 sm:p-5">
         <div class="flex items-center justify-between mb-2 sm:mb-4">
-          <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 dark:bg-blue-900/20 rounded-xl flex items-center justify-center shrink-0">
-            <Icon name="heroicons:users" class="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400" />
+          <div class="ios-kpi-icon w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center shrink-0">
+            <Icon name="heroicons:users" class="w-5 h-5 sm:w-6 sm:h-6 text-[var(--accent)]" />
           </div>
           <div class="text-right min-w-0">
             <p class="text-xl sm:text-2xl font-bold theme-text-primary truncate">{{ dashboardStats.totalUsers || 0 }}</p>
@@ -25,18 +25,18 @@
         </div>
         <p class="text-xs sm:text-sm font-medium theme-text-secondary">Total Usuarios</p>
         <div class="mt-2 sm:mt-4 flex items-center space-x-2">
-          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 sm:h-2">
-            <div class="bg-blue-600 dark:bg-blue-400 h-1.5 sm:h-2 rounded-full transition-all duration-500" style="width: 75%"></div>
+          <div class="ios-chart-h-track flex-1 h-1.5 sm:h-2">
+            <div class="ios-chart-h-fill h-1.5 sm:h-2" style="width: 75%"></div>
           </div>
           <span class="text-[10px] sm:text-xs theme-text-muted shrink-0">75%</span>
         </div>
       </div>
 
       <!-- Tarjeta de Productos -->
-      <div class="card card-hover hover:shadow-lg transition-all duration-300">
+      <div class="ios-glass-card dashboard-card-hover p-4 sm:p-5">
         <div class="flex items-center justify-between mb-2 sm:mb-4">
-          <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 dark:bg-green-900/20 rounded-xl flex items-center justify-center shrink-0">
-            <Icon name="heroicons:cube" class="w-5 h-5 sm:w-6 sm:h-6 text-green-600 dark:text-green-400" />
+          <div class="ios-kpi-icon w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center shrink-0">
+            <Icon name="heroicons:cube" class="w-5 h-5 sm:w-6 sm:h-6 text-[var(--accent)]" />
           </div>
           <div class="text-right min-w-0">
             <p class="text-xl sm:text-2xl font-bold theme-text-primary truncate">{{ dashboardStats.totalProducts || 0 }}</p>
@@ -45,18 +45,18 @@
         </div>
         <p class="text-xs sm:text-sm font-medium theme-text-secondary">Total Productos</p>
         <div class="mt-2 sm:mt-4 flex items-center space-x-2">
-          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 sm:h-2">
-            <div class="bg-green-600 dark:bg-green-400 h-1.5 sm:h-2 rounded-full transition-all duration-500" style="width: 60%"></div>
+          <div class="ios-chart-h-track flex-1 h-1.5 sm:h-2">
+            <div class="ios-chart-h-fill h-1.5 sm:h-2" style="width: 60%"></div>
           </div>
           <span class="text-[10px] sm:text-xs theme-text-muted shrink-0">60%</span>
         </div>
       </div>
 
       <!-- Tarjeta de Órdenes -->
-      <div class="card card-hover hover:shadow-lg transition-all duration-300">
+      <div class="ios-glass-card dashboard-card-hover p-4 sm:p-5">
         <div class="flex items-center justify-between mb-2 sm:mb-4">
-          <div class="w-10 h-10 sm:w-12 sm:h-12 bg-yellow-100 dark:bg-yellow-900/20 rounded-xl flex items-center justify-center shrink-0">
-            <Icon name="heroicons:shopping-cart" class="w-5 h-5 sm:w-6 sm:h-6 text-yellow-600 dark:text-yellow-400" />
+          <div class="ios-kpi-icon w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center shrink-0">
+            <Icon name="heroicons:shopping-cart" class="w-5 h-5 sm:w-6 sm:h-6 text-[var(--accent)]" />
           </div>
           <div class="text-right min-w-0">
             <p class="text-xl sm:text-2xl font-bold theme-text-primary truncate">{{ dashboardStats.totalOrders || 0 }}</p>
@@ -65,18 +65,18 @@
         </div>
         <p class="text-xs sm:text-sm font-medium theme-text-secondary">Total Órdenes</p>
         <div class="mt-2 sm:mt-4 flex items-center space-x-2">
-          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 sm:h-2">
-            <div class="bg-yellow-600 dark:bg-yellow-400 h-1.5 sm:h-2 rounded-full transition-all duration-500" style="width: 85%"></div>
+          <div class="ios-chart-h-track flex-1 h-1.5 sm:h-2">
+            <div class="ios-chart-h-fill h-1.5 sm:h-2" style="width: 85%"></div>
           </div>
           <span class="text-[10px] sm:text-xs theme-text-muted shrink-0">85%</span>
         </div>
       </div>
 
       <!-- Tarjeta de Ingresos -->
-      <div class="card card-hover hover:shadow-lg transition-all duration-300">
+      <div class="ios-glass-card dashboard-card-hover p-4 sm:p-5">
         <div class="flex items-center justify-between mb-2 sm:mb-4">
-          <div class="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 dark:bg-purple-900/20 rounded-xl flex items-center justify-center shrink-0">
-            <Icon name="heroicons:currency-dollar" class="w-5 h-5 sm:w-6 sm:h-6 text-purple-600 dark:text-purple-400" />
+          <div class="ios-kpi-icon w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center shrink-0">
+            <Icon name="heroicons:currency-dollar" class="w-5 h-5 sm:w-6 sm:h-6 text-[var(--accent)]" />
           </div>
           <div class="text-right min-w-0">
             <p class="text-lg sm:text-2xl font-bold theme-text-primary truncate">${{ formatCurrency(dashboardStats.totalRevenue || 0) }}</p>
@@ -85,8 +85,8 @@
         </div>
         <p class="text-xs sm:text-sm font-medium theme-text-secondary">Ingresos Totales</p>
         <div class="mt-2 sm:mt-4 flex items-center space-x-2">
-          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 sm:h-2">
-            <div class="bg-purple-600 dark:bg-purple-400 h-1.5 sm:h-2 rounded-full transition-all duration-500" style="width: 90%"></div>
+          <div class="ios-chart-h-track flex-1 h-1.5 sm:h-2">
+            <div class="ios-chart-h-fill h-1.5 sm:h-2" style="width: 90%"></div>
           </div>
           <span class="text-[10px] sm:text-xs theme-text-muted shrink-0">90%</span>
         </div>
@@ -96,7 +96,7 @@
     <!-- Tarjetas de gráficos y estadísticas -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
       <!-- Gráfico de Ventas -->
-      <div class="card min-w-0">
+      <div class="ios-glass-card ios-chart-panel p-4 sm:p-5 min-w-0">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 sm:mb-6">
           <div class="min-w-0">
             <h3 class="text-lg sm:text-xl font-bold theme-text-primary">Ventas</h3>
@@ -116,8 +116,8 @@
             class="flex items-center gap-1.5 sm:gap-2 min-w-0"
           >
             <span class="text-[10px] sm:text-xs w-12 sm:w-16 shrink-0 theme-text-muted truncate">{{ formatDay(d.date) }}</span>
-            <div class="flex-1 min-w-0 bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 sm:h-3">
-              <div class="bg-blue-600 dark:bg-blue-400 h-2.5 sm:h-3 rounded-full transition-all duration-500" :style="{ width: barWidth(d.sales) }"></div>
+            <div class="ios-chart-h-track flex-1 min-w-0 h-2.5 sm:h-3">
+              <div class="ios-chart-h-fill h-2.5 sm:h-3" :style="{ width: barWidth(d.sales) }"></div>
             </div>
             <span class="text-[10px] sm:text-xs w-12 sm:w-16 shrink-0 text-right theme-text-muted tabular-nums">${{ formatCurrency(d.sales) }}</span>
           </div>
@@ -125,7 +125,7 @@
       </div>
 
       <!-- Gráfico de Productos (real) -->
-      <div class="card min-w-0">
+      <div class="ios-glass-card ios-chart-panel p-4 sm:p-5 min-w-0">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 sm:mb-6">
           <div class="min-w-0">
             <h3 class="text-lg sm:text-xl font-bold theme-text-primary">Productos</h3>
@@ -138,7 +138,7 @@
         
         <!-- Gráfico circular simple (componente) -->
         <div class="flex items-center justify-center mb-4">
-          <DonutRing :percent="percentNumber()" :size="128" :stroke="16" color="#2563eb" track-color="#374151">
+          <DonutRing :percent="percentNumber()" :size="136" :stroke="14">
             <span class="text-2xl font-bold theme-text-primary">{{ percentNumber() }}%</span>
           </DonutRing>
         </div>
@@ -150,7 +150,7 @@
     <!-- Tarjetas de estadísticas adicionales -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
       <!-- Total de Órdenes -->
-      <div class="card min-w-0">
+      <div class="ios-glass-card ios-chart-panel p-4 sm:p-5 min-w-0">
         <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-4">
           <h3 class="text-base sm:text-lg font-bold theme-text-primary">Total Órdenes</h3>
           <select class="text-sm rounded-lg px-3 py-1.5 theme-select w-full sm:w-auto min-w-0">
@@ -162,14 +162,14 @@
         
         <!-- Gráfico de líneas simulado -->
         <div class="overflow-x-auto -mx-1 px-1 sm:mx-0 sm:px-0">
-          <div class="flex items-end gap-1 sm:gap-2 min-w-max sm:min-w-0 sm:flex-wrap sm:justify-center py-1">
-            <div class="w-8 sm:w-16 h-6 sm:h-8 bg-blue-600 dark:bg-blue-400 rounded-tl-lg rounded-tr-lg shrink-0"></div>
-            <div class="w-8 sm:w-16 h-10 sm:h-12 bg-blue-400 dark:bg-blue-300 rounded-tl-lg rounded-tr-lg shrink-0"></div>
-            <div class="w-8 sm:w-16 h-5 sm:h-6 bg-blue-500 dark:bg-blue-500 rounded-tl-lg rounded-tr-lg shrink-0"></div>
-            <div class="w-8 sm:w-16 h-8 sm:h-10 bg-blue-300 dark:bg-blue-600 rounded-tl-lg rounded-tr-lg shrink-0"></div>
-            <div class="w-8 sm:w-16 h-6 sm:h-8 bg-blue-600 dark:bg-blue-400 rounded-tl-lg rounded-tr-lg shrink-0"></div>
-            <div class="w-8 sm:w-16 h-11 sm:h-14 bg-blue-400 dark:bg-blue-300 rounded-tl-lg rounded-tr-lg shrink-0"></div>
-            <div class="w-8 sm:w-16 h-7 sm:h-9 bg-blue-500 dark:bg-blue-500 rounded-tl-lg rounded-tr-lg shrink-0"></div>
+          <div class="flex items-end gap-1.5 sm:gap-2 min-w-max sm:min-w-0 sm:flex-wrap sm:justify-center py-2">
+            <div class="ios-spark-col w-8 sm:w-14 h-6 sm:h-8"></div>
+            <div class="ios-spark-col w-8 sm:w-14 h-10 sm:h-12"></div>
+            <div class="ios-spark-col w-8 sm:w-14 h-5 sm:h-6"></div>
+            <div class="ios-spark-col w-8 sm:w-14 h-8 sm:h-10"></div>
+            <div class="ios-spark-col w-8 sm:w-14 h-6 sm:h-8"></div>
+            <div class="ios-spark-col w-8 sm:w-14 h-11 sm:h-14"></div>
+            <div class="ios-spark-col w-8 sm:w-14 h-7 sm:h-9"></div>
           </div>
         </div>
         
@@ -182,7 +182,7 @@
       <!-- Eliminado: Última Oferta -->
 
       <!-- Clientes -->
-      <div class="card min-w-0">
+      <div class="ios-glass-card ios-chart-panel p-4 sm:p-5 min-w-0">
         <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
           <h3 class="text-base sm:text-lg font-bold theme-text-primary">Clientes</h3>
           <span class="text-green-600 dark:text-green-400 text-sm font-medium">+26.5%</span>
@@ -195,14 +195,14 @@
         
         <!-- Gráfico de líneas simulado -->
         <div class="overflow-x-auto -mx-1 px-1 sm:mx-0 sm:px-0">
-          <div class="flex items-end gap-1 min-w-max sm:min-w-0 sm:flex-wrap sm:justify-center py-1">
-            <div class="w-6 h-3 sm:w-8 sm:h-4 bg-blue-600 dark:bg-blue-400 rounded-tl-lg rounded-tr-lg shrink-0"></div>
-            <div class="w-6 h-5 sm:w-8 sm:h-6 bg-blue-400 dark:bg-blue-300 rounded-tl-lg rounded-tr-lg shrink-0"></div>
-            <div class="w-6 h-2.5 sm:w-8 sm:h-3 bg-blue-500 dark:bg-blue-500 rounded-tl-lg rounded-tr-lg shrink-0"></div>
-            <div class="w-6 h-5 sm:w-8 sm:h-7 bg-blue-300 dark:bg-blue-600 rounded-tl-lg rounded-tr-lg shrink-0"></div>
-            <div class="w-6 h-4 sm:w-8 sm:h-5 bg-blue-600 dark:bg-blue-400 rounded-tl-lg rounded-tr-lg shrink-0"></div>
-            <div class="w-6 h-6 sm:w-8 sm:h-8 bg-blue-400 dark:bg-blue-300 rounded-tl-lg rounded-tr-lg shrink-0"></div>
-            <div class="w-6 h-5 sm:w-8 sm:h-6 bg-blue-500 dark:bg-blue-500 rounded-tl-lg rounded-tr-lg shrink-0"></div>
+          <div class="flex items-end gap-1 min-w-max sm:min-w-0 sm:flex-wrap sm:justify-center py-2">
+            <div class="ios-spark-col w-6 sm:w-8 h-3 sm:h-4"></div>
+            <div class="ios-spark-col w-6 sm:w-8 h-5 sm:h-6"></div>
+            <div class="ios-spark-col w-6 sm:w-8 h-2.5 sm:h-3"></div>
+            <div class="ios-spark-col w-6 sm:w-8 h-5 sm:h-7"></div>
+            <div class="ios-spark-col w-6 sm:w-8 h-4 sm:h-5"></div>
+            <div class="ios-spark-col w-6 sm:w-8 h-6 sm:h-8"></div>
+            <div class="ios-spark-col w-6 sm:w-8 h-5 sm:h-6"></div>
           </div>
         </div>
         

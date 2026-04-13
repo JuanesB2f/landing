@@ -2,10 +2,10 @@
   <Teleport to="body">
   <div class="fixed inset-0 z-[9998] overflow-y-auto" role="dialog" aria-modal="true">
     <div class="flex items-center justify-center min-h-screen p-4">
-      <div class="fixed inset-0 bg-black/50" @click="$emit('cancel')"></div>
+      <div class="ios-admin-overlay fixed inset-0" @click="$emit('cancel')"></div>
 
-      <div class="relative z-[9999] w-full max-w-lg bg-white rounded-lg text-left overflow-hidden shadow-xl">
-        <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+      <div class="relative z-[9999] w-full max-w-lg ios-admin-modal-panel text-left overflow-hidden shadow-xl">
+        <div class="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
           <div class="sm:flex sm:items-start">
             <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
               <Icon name="heroicons:exclamation-triangle" class="h-6 w-6 text-red-600" />

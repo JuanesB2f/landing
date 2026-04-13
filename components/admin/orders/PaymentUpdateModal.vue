@@ -1,6 +1,7 @@
 <template>
-  <div class="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-lg w-full max-w-md p-6 space-y-4">
+  <div class="fixed inset-0 flex items-center justify-center p-4 z-50">
+    <div class="ios-admin-overlay fixed inset-0 z-40" @click="$emit('close')"></div>
+    <div class="relative z-50 ios-admin-modal-panel w-full max-w-md p-6 space-y-4" @click.stop>
       <div class="flex items-center justify-between">
         <h3 class="text-lg font-semibold">Actualizar pago</h3>
         <button @click="$emit('close')" class="p-2 rounded hover:bg-gray-100">

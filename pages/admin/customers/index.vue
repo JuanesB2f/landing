@@ -1,22 +1,24 @@
 <template>
   <div>
     <!-- Header con botones de acción -->
-    <div class="flex justify-between items-center mb-6">
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4 sm:mb-6">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900">Gestión de Clientes</h1>
-        <p class="text-gray-600">Administra todos los clientes de tu tienda</p>
+        <h1 class="text-xl sm:text-2xl font-bold theme-text-primary">Gestión de Clientes</h1>
+        <p class="text-sm sm:text-base theme-text-secondary mt-0.5">Administra todos los clientes de tu tienda</p>
       </div>
-      <div class="flex space-x-3">
+      <div class="flex flex-wrap gap-2 sm:space-x-3">
         <button
+          type="button"
           @click="openModal()"
-          class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors"
+          class="ios-admin-btn-primary flex-1 sm:flex-none min-w-0 justify-center"
         >
           <Icon name="heroicons:plus-circle" class="w-5 h-5" />
           <span>Nuevo Cliente</span>
         </button>
         <button
+          type="button"
           @click="exportCustomers"
-          class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors"
+          class="ios-admin-btn-secondary flex-1 sm:flex-none min-w-0 justify-center"
         >
           <Icon name="heroicons:arrow-down-tray" class="w-5 h-5" />
           <span>Exportar</span>
@@ -26,7 +28,7 @@
 
     <!-- Resumen de clientes -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-      <div class="bg-white p-6 rounded-lg shadow-sm">
+      <div class="ios-admin-stat-card">
         <div class="flex items-center">
           <div class="flex-shrink-0">
             <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -34,13 +36,13 @@
             </div>
           </div>
           <div class="ml-4">
-            <p class="text-sm font-medium text-gray-500">Total Clientes</p>
-            <p class="text-2xl font-bold text-gray-900">{{ customersSummary.total }}</p>
+            <p class="text-sm font-medium theme-text-muted">Total Clientes</p>
+            <p class="text-2xl font-bold theme-text-primary">{{ customersSummary.total }}</p>
           </div>
         </div>
       </div>
 
-      <div class="bg-white p-6 rounded-lg shadow-sm">
+      <div class="ios-admin-stat-card">
         <div class="flex items-center">
           <div class="flex-shrink-0">
             <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
@@ -48,13 +50,13 @@
             </div>
           </div>
           <div class="ml-4">
-            <p class="text-sm font-medium text-gray-500">Activos</p>
-            <p class="text-2xl font-bold text-gray-900">{{ customersSummary.active }}</p>
+            <p class="text-sm font-medium theme-text-muted">Activos</p>
+            <p class="text-2xl font-bold theme-text-primary">{{ customersSummary.active }}</p>
           </div>
         </div>
       </div>
 
-      <div class="bg-white p-6 rounded-lg shadow-sm">
+      <div class="ios-admin-stat-card">
         <div class="flex items-center">
           <div class="flex-shrink-0">
             <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
@@ -62,13 +64,13 @@
             </div>
           </div>
           <div class="ml-4">
-            <p class="text-sm font-medium text-gray-500">Nuevos (30 días)</p>
-                         <p class="text-2xl font-bold text-gray-900">{{ customersSummary.newCustomers }}</p>
+            <p class="text-sm font-medium theme-text-muted">Nuevos (30 días)</p>
+            <p class="text-2xl font-bold theme-text-primary">{{ customersSummary.newCustomers }}</p>
           </div>
         </div>
       </div>
 
-      <div class="bg-white p-6 rounded-lg shadow-sm">
+      <div class="ios-admin-stat-card">
         <div class="flex items-center">
           <div class="flex-shrink-0">
             <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
@@ -76,19 +78,19 @@
             </div>
           </div>
           <div class="ml-4">
-            <p class="text-sm font-medium text-gray-500">Con Pedidos</p>
-            <p class="text-2xl font-bold text-gray-900">{{ customersSummary.withOrders }}</p>
+            <p class="text-sm font-medium theme-text-muted">Con Pedidos</p>
+            <p class="text-2xl font-bold theme-text-primary">{{ customersSummary.withOrders }}</p>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Filtros y búsqueda -->
-    <div class="bg-white p-4 rounded-lg shadow-sm mb-6">
+    <div class="ios-admin-toolbar mb-4 sm:mb-6">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <!-- Búsqueda -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Buscar</label>
+          <label class="block text-sm font-medium theme-text-secondary mb-1">Buscar</label>
           <input
             v-model="searchQuery"
             type="text"
@@ -99,7 +101,7 @@
         
         <!-- Filtro por estado -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+          <label class="block text-sm font-medium theme-text-secondary mb-1">Estado</label>
           <select
             v-model="selectedStatus"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -112,7 +114,7 @@
 
         <!-- Filtro por ciudad -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Ciudad</label>
+          <label class="block text-sm font-medium theme-text-secondary mb-1">Ciudad</label>
           <select
             v-model="selectedCity"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -127,8 +129,9 @@
         <!-- Botón de limpiar filtros -->
         <div class="flex items-end">
           <button
+            type="button"
             @click="clearFilters"
-            class="w-full px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+            class="w-full ios-admin-btn-secondary"
           >
             Limpiar Filtros
           </button>
@@ -137,7 +140,7 @@
     </div>
 
     <!-- Tabla de clientes -->
-    <div class="rounded-lg overflow-hidden border border-gray-200 dark:border-[var(--border-color)]">
+    <div class="ios-admin-table-shell">
       <div class="admin-table-scroll">
         <table class="min-w-full admin-table">
           <thead>

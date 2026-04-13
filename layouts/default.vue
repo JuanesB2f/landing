@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen w-full max-w-[100vw] min-w-0 overflow-x-hidden transition-colors duration-300 theme-container pb-20 md:pb-0">
+  <div class="ios-root min-h-screen w-full max-w-[100vw] min-w-0 overflow-x-hidden transition-colors duration-300 theme-container pb-20 md:pb-0">
     <!-- Header: sin color + animación de puntos/blobs rosados detrás -->
     <header class="header-diffused sticky top-0 z-50">
       <!-- Animación de blobs en rosa (detrás del contenido) -->
@@ -125,7 +125,7 @@
 
     <!-- Barra inferior tipo iPhone: siempre fija al viewport (solo móvil) -->
     <nav
-      class="md:hidden fixed bottom-0 left-0 right-0 z-[100] theme-header border-t theme-border w-full max-w-[100vw]"
+      class="ios-tab-bar md:hidden fixed bottom-0 left-0 right-0 z-[100] theme-header border-t theme-border w-full max-w-[100vw] rounded-t-3xl"
       style="padding-bottom: env(safe-area-inset-bottom, 0);"
     >
       <div class="flex items-stretch justify-around h-12 sm:h-14 gap-0.5 px-0.5 sm:px-0">
@@ -199,7 +199,7 @@
 
     <!-- Footer -->
     <footer
-      class="footer-theme bg-gradient-to-r from-accent-soft to-accent-secondary dark:from-bg-primary dark:to-bg-secondary text-[#0E1627] dark:text-white relative overflow-hidden"
+      class="ios-footer-glass footer-theme text-[#0E1627] dark:text-white relative overflow-hidden"
     >
       <!-- Background decoration -->
       <div

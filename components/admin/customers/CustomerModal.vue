@@ -1,10 +1,11 @@
 <template>
-  <div class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-    <div class="relative top-10 mx-auto p-5 border w-11/12 max-w-2xl shadow-lg rounded-md bg-white">
+  <div class="fixed inset-0 z-50 overflow-y-auto h-full w-full">
+    <div class="ios-admin-overlay fixed inset-0 min-h-full" @click="$emit('close')"></div>
+    <div class="relative top-8 sm:top-12 mx-auto w-11/12 max-w-2xl ios-admin-modal-panel p-5 sm:p-6 shadow-2xl" @click.stop>
       <div class="mt-3">
         <!-- Header -->
         <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-medium text-gray-900">
+          <h3 class="text-lg font-medium theme-text-primary">
             {{ customer ? 'Editar Cliente' : 'Nuevo Cliente' }}
           </h3>
           <button

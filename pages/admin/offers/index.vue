@@ -1,23 +1,38 @@
 <!-- @ts-nocheck -->
 <template>
   <div>
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4 sm:mb-6">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900">Gestión de Ofertas</h1>
-        <p class="text-gray-600">Descuentos visibles para todos los usuarios</p>
+        <h1 class="text-xl sm:text-2xl font-bold theme-text-primary">Gestión de Ofertas</h1>
+        <p class="text-sm sm:text-base theme-text-secondary mt-0.5">Descuentos visibles para todos los usuarios</p>
       </div>
-      <button @click="openCreate" class="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2">
+      <button type="button" class="ios-admin-btn-primary w-full sm:w-auto shrink-0" @click="openCreate">
         <Icon name="heroicons:plus" class="w-5 h-5" />
         <span>Nueva Oferta</span>
       </button>
     </div>
 
-    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
-      <div class="p-4 border-b flex gap-4">
-        <input v-model="filters.sku" type="text" placeholder="Filtrar por SKU" class="px-3 py-2 border rounded w-64" />
-        <button @click="fetchOffers" class="px-4 py-2 border rounded">Aplicar</button>
-        <button @click="clearFilters" class="px-4 py-2 border rounded">Limpiar</button>
+    <div class="ios-admin-toolbar mb-4 sm:mb-6">
+      <div class="flex flex-col sm:flex-row flex-wrap gap-3 sm:items-end">
+        <div class="flex-1 min-w-[12rem]">
+          <label class="block text-sm font-medium theme-text-secondary mb-1">Filtrar por SKU</label>
+          <input
+            v-model="filters.sku"
+            type="text"
+            placeholder="Ej. ABC-123"
+            class="w-full"
+          />
+        </div>
+        <button type="button" class="ios-admin-btn-primary w-full sm:w-auto" @click="fetchOffers">
+          Aplicar
+        </button>
+        <button type="button" class="ios-admin-btn-secondary w-full sm:w-auto" @click="clearFilters">
+          Limpiar
+        </button>
       </div>
+    </div>
+
+    <div class="ios-admin-table-shell">
       <div class="admin-table-scroll">
         <table class="min-w-full admin-table">
           <thead>
@@ -42,16 +57,27 @@
                 <div>{{ o.valid_from ? formatDate(o.valid_from) : '—' }} → {{ o.valid_to ? formatDate(o.valid_to) : '—' }}</div>
               </td>
               <td>
-                <span :class="o.is_active ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200'" class="px-2 py-1 rounded text-xs">
+                <span
+                  :class="o.is_active ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200'"
+                  class="px-2 py-1 rounded-full text-xs font-medium"
+                >
                   {{ o.is_active ? 'Activa' : 'Inactiva' }}
                 </span>
               </td>
               <td class="text-sm">
                 <div class="flex gap-2">
-                  <button @click="edit(o)" class="text-indigo-600 hover:text-indigo-900">
+                  <button
+                    type="button"
+                    class="inline-flex items-center justify-center w-9 h-9 rounded-[14px] border border-[var(--ios-hairline)] bg-white/35 backdrop-blur-sm hover:bg-white/55 theme-text-primary"
+                    @click="edit(o)"
+                  >
                     <Icon name="heroicons:pencil-square" class="w-5 h-5" />
                   </button>
-                  <button @click="remove(o)" class="text-red-600 hover:text-red-900">
+                  <button
+                    type="button"
+                    class="inline-flex items-center justify-center w-9 h-9 rounded-[14px] border border-[var(--ios-hairline)] bg-white/35 backdrop-blur-sm hover:bg-red-50 dark:hover:bg-red-950/30 text-red-600"
+                    @click="remove(o)"
+                  >
                     <Icon name="heroicons:trash" class="w-5 h-5" />
                   </button>
                 </div>
@@ -63,49 +89,72 @@
     </div>
 
     <!-- Modal con selector de producto y vista de precios -->
-    <div v-if="showModal" class="fixed inset-0 bg-black/40 flex items-center justify-center p-4">
-      <div class="bg-white rounded-lg w-full max-w-lg p-6 space-y-4">
+    <div
+      v-if="showModal"
+      class="fixed inset-0 ios-admin-overlay z-[100] flex items-center justify-center p-4"
+      @click.self="close"
+    >
+      <div class="ios-admin-modal-panel w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 space-y-4" @click.stop>
         <h3 class="text-lg font-semibold">{{ editing ? 'Editar' : 'Nueva' }} oferta</h3>
         <div class="grid grid-cols-1 gap-3">
           <div>
-            <div class="flex items-center gap-2">
-              <input v-model="form.product_id" type="text" placeholder="Product ID" class="px-3 py-2 border rounded flex-1" />
-              <button @click="openPicker = true" type="button" class="px-3 py-2 border rounded">Buscar producto</button>
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+              <input v-model="form.product_id" type="text" placeholder="Product ID" class="flex-1 min-w-0" />
+              <button type="button" class="ios-admin-btn-secondary shrink-0" @click="openPicker = true">
+                Buscar producto
+              </button>
             </div>
-            <div v-if="selectedProduct" class="mt-2 p-3 border rounded bg-gray-50 flex items-center gap-3">
-              <img v-if="selectedProduct.image_url" :src="selectedProduct.image_url" class="w-12 h-12 object-cover rounded" />
-              <div class="text-sm">
-                <div class="font-medium">{{ selectedProduct.name }}</div>
-                <div class="text-gray-500">SKU: {{ selectedProduct.sku }}</div>
+            <div
+              v-if="selectedProduct"
+              class="mt-2 p-3 rounded-2xl border border-[var(--ios-hairline)] bg-white/35 dark:bg-white/5 backdrop-blur-sm flex items-center gap-3"
+            >
+              <img v-if="selectedProduct.image_url" :src="selectedProduct.image_url" class="w-12 h-12 object-cover rounded-xl" />
+              <div class="text-sm min-w-0">
+                <div class="font-medium theme-text-primary truncate">{{ selectedProduct.name }}</div>
+                <div class="theme-text-muted">SKU: {{ selectedProduct.sku }}</div>
               </div>
             </div>
           </div>
-          <div class="grid grid-cols-2 gap-3 items-end">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 items-end">
             <div>
-              <label class="block text-xs text-gray-600 mb-1">Descuento %</label>
-              <input v-model.number="form.discount_percent" type="number" min="0" max="100" placeholder="Descuento %" class="px-3 py-2 border rounded w-full" />
+              <label class="block text-xs theme-text-secondary mb-1">Descuento %</label>
+              <input
+                v-model.number="form.discount_percent"
+                type="number"
+                min="0"
+                max="100"
+                placeholder="Descuento %"
+                class="w-full"
+              />
             </div>
             <div v-if="selectedProduct" class="text-sm">
-              <div class="text-gray-500 line-through" v-if="selectedProduct.price">{{ formatCOP(selectedProduct.price) }}</div>
-              <div class="text-pink-600 font-semibold">{{ formatCOP(discountedPrice(selectedProduct?.price, form.discount_percent)) }}</div>
+              <div class="theme-text-muted line-through" v-if="selectedProduct.price">{{ formatCOP(selectedProduct.price) }}</div>
+              <div class="text-accent-strong font-semibold">{{ formatCOP(discountedPrice(selectedProduct?.price, form.discount_percent)) }}</div>
             </div>
           </div>
-          <label class="flex items-center gap-2 text-sm"><input type="checkbox" v-model="form.is_active" /> Activa</label>
-          <div class="grid grid-cols-2 gap-3">
+          <label class="flex items-center gap-2 text-sm theme-text-primary">
+            <input type="checkbox" v-model="form.is_active" class="rounded border-[var(--ios-hairline)]" />
+            Activa
+          </label>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label class="block text-xs text-gray-600 mb-1">Inicio</label>
-              <input v-model="form.valid_from" type="datetime-local" class="px-3 py-2 border rounded w-full" />
+              <label class="block text-xs theme-text-secondary mb-1">Inicio</label>
+              <input v-model="form.valid_from" type="datetime-local" class="w-full" />
             </div>
             <div>
-              <label class="block text-xs text-gray-600 mb-1">Fin</label>
-              <input v-model="form.valid_to" type="datetime-local" class="px-3 py-2 border rounded w-full" />
+              <label class="block text-xs theme-text-secondary mb-1">Fin</label>
+              <input v-model="form.valid_to" type="datetime-local" class="w-full" />
             </div>
           </div>
-          <textarea v-model="form.notes" placeholder="Notas" class="px-3 py-2 border rounded"></textarea>
+          <textarea v-model="form.notes" placeholder="Notas" rows="3" class="w-full" />
         </div>
-        <div class="flex justify-end gap-2 pt-2">
-          <button @click="close" class="px-4 py-2 border rounded">Cancelar</button>
-          <button @click="save" class="px-4 py-2 bg-pink-600 text-white rounded">Guardar</button>
+        <div class="flex flex-col-reverse sm:flex-row justify-end gap-2 pt-2 border-t border-[var(--ios-hairline)]">
+          <button type="button" class="ios-admin-btn-secondary w-full sm:w-auto" @click="close">
+            Cancelar
+          </button>
+          <button type="button" class="ios-admin-btn-primary w-full sm:w-auto" @click="save">
+            Guardar
+          </button>
         </div>
       </div>
     </div>

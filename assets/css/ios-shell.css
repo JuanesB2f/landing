@@ -1,0 +1,1243 @@
+/**
+ * BylotoStore — capa visual estilo iOS / macOS (vidrio translúcido, tipografía sistema).
+ * Se importa después de theme.css para unificar toda la app.
+ */
+
+/* Tipografía: SF en Apple, sistema en el resto (sin Arial global) */
+html.theme-light body,
+html.theme-dark body,
+html.dark body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+    "Segoe UI", Roboto, "Helvetica Neue", system-ui, sans-serif !important;
+}
+
+html.theme-light {
+  color-scheme: light;
+}
+html.theme-dark,
+html.dark {
+  color-scheme: dark;
+}
+
+/* Fondo “Ajustes” / degradado suave (malla rosa–lavanda, marca mauve) */
+html.theme-light body {
+  background-color: #f2f2f7;
+  background-image:
+    radial-gradient(ellipse 110% 85% at 100% -18%, rgba(189, 142, 137, 0.26) 0%, transparent 58%),
+    radial-gradient(ellipse 75% 55% at -8% 55%, rgba(176, 160, 214, 0.16) 0%, transparent 52%),
+    linear-gradient(178deg, #fcfbfd 0%, #ebe4ee 48%, #e2dbe8 100%);
+}
+
+html.theme-dark body,
+html.dark body {
+  background-color: #000000;
+  background-image:
+    radial-gradient(ellipse 95% 75% at 85% -12%, rgba(99, 102, 241, 0.22) 0%, transparent 58%),
+    radial-gradient(ellipse 70% 55% at 0% 85%, rgba(189, 142, 137, 0.1) 0%, transparent 52%),
+    linear-gradient(188deg, #050508 0%, #12101c 42%, #08080c 100%);
+}
+
+/* El layout principal deja ver el fondo; el texto sigue las variables de tema */
+.theme-container {
+  background-color: transparent !important;
+  will-change: auto;
+}
+
+/* Tokens vidrio */
+:root,
+html.theme-light {
+  --ios-hairline: rgba(60, 60, 67, 0.14);
+  --ios-hairline-inverse: rgba(255, 255, 255, 0.14);
+  --ios-glass-light: rgba(255, 255, 255, 0.58);
+  --ios-glass-dark: rgba(24, 24, 28, 0.58);
+  --ios-shadow-float: 0 8px 32px rgba(0, 0, 0, 0.08);
+  --ios-shadow-float-dark: 0 12px 40px rgba(0, 0, 0, 0.45);
+}
+
+html.theme-dark,
+html.dark {
+  --ios-hairline: rgba(255, 255, 255, 0.12);
+}
+
+/* Header flotante tipo barra de navegación iOS */
+.header-diffused {
+  background-color: var(--ios-glass-light) !important;
+  backdrop-filter: saturate(200%) blur(26px) !important;
+  -webkit-backdrop-filter: saturate(200%) blur(26px) !important;
+  border-bottom: 0.5px solid var(--ios-hairline) !important;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.35) inset,
+    0 4px 24px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.theme-dark .header-diffused,
+html.dark .header-diffused {
+  background-color: rgba(22, 22, 28, 0.52) !important;
+  border-bottom-color: var(--ios-hairline-inverse) !important;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset !important;
+}
+
+/* Tab bar inferior (iPhone) */
+.ios-tab-bar {
+  background: var(--ios-glass-light) !important;
+  backdrop-filter: saturate(200%) blur(24px) !important;
+  -webkit-backdrop-filter: saturate(200%) blur(24px) !important;
+  border-top: 0.5px solid var(--ios-hairline) !important;
+  box-shadow: 0 -6px 28px rgba(0, 0, 0, 0.07);
+}
+
+html.theme-dark .ios-tab-bar,
+html.dark .ios-tab-bar {
+  background: rgba(20, 20, 24, 0.68) !important;
+  border-top-color: var(--ios-hairline-inverse) !important;
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.35);
+}
+
+/* Sidebar admin (desktop): panel flotante */
+@media (min-width: 1024px) {
+  .ios-glass-sidebar {
+    background: var(--ios-glass-light) !important;
+    backdrop-filter: saturate(200%) blur(22px) !important;
+    -webkit-backdrop-filter: saturate(200%) blur(22px) !important;
+    border-right: 0.5px solid var(--ios-hairline);
+    box-shadow: 6px 0 40px rgba(0, 0, 0, 0.05);
+  }
+
+  html.theme-dark .ios-glass-sidebar,
+  html.dark .ios-glass-sidebar {
+    background: rgba(18, 18, 22, 0.72) !important;
+    border-right-color: var(--ios-hairline-inverse);
+    box-shadow: 8px 0 48px rgba(0, 0, 0, 0.35);
+  }
+}
+
+/* Cabecera de página admin sticky */
+.admin-page-header {
+  background: var(--ios-glass-light) !important;
+  backdrop-filter: saturate(200%) blur(18px) !important;
+  -webkit-backdrop-filter: saturate(200%) blur(18px) !important;
+  border-bottom: 0.5px solid var(--ios-hairline) !important;
+}
+
+html.theme-dark .admin-page-header,
+html.dark .admin-page-header {
+  background: rgba(22, 22, 28, 0.68) !important;
+  border-bottom-color: var(--ios-hairline-inverse) !important;
+}
+
+/* Sheet “Más” y bloques tipo lista iOS */
+.ios-sheet-panel {
+  background: var(--ios-glass-light) !important;
+  backdrop-filter: saturate(200%) blur(22px) !important;
+  -webkit-backdrop-filter: saturate(200%) blur(22px) !important;
+  border-color: var(--ios-hairline) !important;
+}
+
+html.theme-dark .ios-sheet-panel,
+html.dark .ios-sheet-panel {
+  background: rgba(28, 28, 32, 0.92) !important;
+  border-color: var(--ios-hairline-inverse) !important;
+}
+
+/* Ítem activo en navegación: píldora suave */
+.theme-nav-active {
+  background-color: rgba(189, 142, 137, 0.22) !important;
+  color: var(--accent) !important;
+  border-radius: 14px !important;
+}
+
+html.theme-dark .theme-nav-active,
+html.dark .theme-nav-active {
+  background-color: rgba(189, 142, 137, 0.18) !important;
+}
+
+/* Tarjetas / filas tipo “grupo” iOS */
+.ios-glass-card {
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  border: 0.5px solid var(--ios-hairline);
+  border-radius: 18px;
+  box-shadow: var(--ios-shadow-float);
+}
+
+html.theme-dark .ios-glass-card,
+html.dark .ios-glass-card {
+  background: rgba(40, 40, 46, 0.55);
+  border-color: var(--ios-hairline-inverse);
+  box-shadow: var(--ios-shadow-float-dark);
+}
+
+/* Footer marketing: franja translúcida */
+.ios-footer-glass {
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  background: linear-gradient(
+    135deg,
+    rgba(244, 225, 224, 0.55) 0%,
+    rgba(229, 197, 193, 0.45) 100%
+  ) !important;
+  border-top: 0.5px solid var(--ios-hairline);
+}
+
+html.theme-dark .ios-footer-glass,
+html.dark .ios-footer-glass {
+  background: linear-gradient(
+    135deg,
+    rgba(30, 30, 36, 0.75) 0%,
+    rgba(18, 18, 24, 0.85) 100%
+  ) !important;
+  border-top-color: var(--ios-hairline-inverse);
+}
+
+/* Icono carrito header: cápsula tipo control iOS */
+.theme-light .header-cart-icon-wrap {
+  background: rgba(14, 22, 39, 0.82) !important;
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+}
+
+.theme-light .header-cart-count {
+  background: rgba(14, 22, 39, 0.95) !important;
+  backdrop-filter: blur(8px);
+}
+
+/* Blobs del header: un poco más sutiles (no compiten con el vidrio) */
+.header-diffused .absolute.inset-0.overflow-hidden .animate-blob {
+  opacity: 0.65;
+}
+
+/* ─── Gráficas estilo Charts.app / iOS (barras, tracks, donuts) ─── */
+:root,
+html.theme-light {
+  --ios-chart-track-bg: rgba(60, 60, 67, 0.11);
+  --ios-chart-glow: rgba(189, 142, 137, 0.35);
+  --ios-chart-bar-from: #e8c4c0;
+  --ios-chart-bar-to: #bd8e89;
+  --ios-donut-track: rgba(60, 60, 67, 0.14);
+  --ios-spark-highlight: rgba(255, 255, 255, 0.35);
+}
+
+html.theme-dark,
+html.dark {
+  --ios-chart-track-bg: rgba(255, 255, 255, 0.12);
+  --ios-chart-glow: rgba(189, 142, 137, 0.25);
+  --ios-chart-bar-from: #d4a59f;
+  --ios-chart-bar-to: #9d726e;
+  --ios-donut-track: rgba(255, 255, 255, 0.16);
+  --ios-spark-highlight: rgba(255, 255, 255, 0.12);
+}
+
+/* Barras horizontales tipo “progreso” iOS */
+.ios-chart-h-track {
+  width: 100%;
+  border-radius: 9999px;
+  background: var(--ios-chart-track-bg);
+  overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+html.theme-dark .ios-chart-h-track,
+html.dark .ios-chart-h-track {
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.35);
+}
+
+.ios-chart-h-fill {
+  height: 100%;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, var(--ios-chart-bar-from), var(--ios-chart-bar-to));
+  box-shadow: 0 0 14px var(--ios-chart-glow);
+  transition: width 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Columnas mini (spark) — esquinas redondeadas tipo gráfico de barras iOS */
+.ios-spark-col {
+  border-radius: 10px 10px 5px 5px;
+  background: linear-gradient(180deg, var(--ios-chart-bar-from) 0%, var(--ios-chart-bar-to) 100%);
+  box-shadow:
+    0 1px 0 var(--ios-spark-highlight) inset,
+    0 4px 14px rgba(0, 0, 0, 0.12);
+  flex-shrink: 0;
+}
+
+html.theme-dark .ios-spark-col,
+html.dark .ios-spark-col {
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    0 6px 20px rgba(0, 0, 0, 0.45);
+}
+
+/* Variación sutil entre columnas (tono marca) */
+.ios-spark-col:nth-child(4n + 1) {
+  filter: saturate(1.05) brightness(1.02);
+}
+.ios-spark-col:nth-child(4n + 3) {
+  filter: saturate(0.92) brightness(0.98);
+}
+
+/* Contenedor de gráfico dentro del dashboard */
+.ios-chart-panel {
+  border-radius: 22px;
+}
+
+/* Hover tarjetas KPI */
+.dashboard-card-hover {
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+.dashboard-card-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--ios-shadow-float);
+}
+
+html.theme-dark .dashboard-card-hover:hover,
+html.dark .dashboard-card-hover:hover {
+  box-shadow: var(--ios-shadow-float-dark);
+}
+
+/* Iconos KPI — pastilla suave tipo ítem de Ajustes */
+.ios-kpi-icon {
+  border-radius: 14px;
+  background: rgba(189, 142, 137, 0.16);
+  color: var(--accent);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset;
+}
+
+html.theme-dark .ios-kpi-icon,
+html.dark .ios-kpi-icon {
+  background: rgba(189, 142, 137, 0.22);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08) inset;
+}
+
+/* ═══ Admin: listados, tablas, filtros, modales (misma línea iOS) ═══ */
+
+.ios-admin-overlay {
+  background: rgba(0, 0, 0, 0.4) !important;
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+}
+
+html.theme-dark .ios-admin-overlay,
+html.dark .ios-admin-overlay {
+  background: rgba(0, 0, 0, 0.52) !important;
+}
+
+/* Panel central de modales (vidrio + borde fino) */
+.ios-admin-modal-panel {
+  position: relative;
+  z-index: 1;
+  border-radius: 22px !important;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.82) !important;
+  backdrop-filter: saturate(200%) blur(28px);
+  -webkit-backdrop-filter: saturate(200%) blur(28px);
+  border: 0.5px solid var(--ios-hairline) !important;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.45) inset,
+    0 24px 64px rgba(0, 0, 0, 0.14);
+}
+
+html.theme-dark .ios-admin-modal-panel,
+html.dark .ios-admin-modal-panel {
+  background: rgba(30, 30, 36, 0.88) !important;
+  border-color: var(--ios-hairline-inverse) !important;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 28px 72px rgba(0, 0, 0, 0.55);
+}
+
+/* Campos de formulario dentro de modales admin */
+.ios-admin-modal-panel input[type="text"],
+.ios-admin-modal-panel input[type="number"],
+.ios-admin-modal-panel input[type="email"],
+.ios-admin-modal-panel input[type="tel"],
+.ios-admin-modal-panel input[type="url"],
+.ios-admin-modal-panel input[type="search"],
+.ios-admin-modal-panel input[type="password"],
+.ios-admin-modal-panel input[type="datetime-local"],
+.ios-admin-modal-panel input[type="date"],
+.ios-admin-modal-panel input[type="time"],
+.ios-admin-modal-panel select,
+.ios-admin-modal-panel textarea {
+  border-radius: 12px !important;
+  border: 0.5px solid var(--ios-hairline) !important;
+  background: rgba(255, 255, 255, 0.55) !important;
+  color: var(--text-primary, #0e1627) !important;
+  padding: 0.5rem 0.75rem !important;
+  font-size: 0.9375rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+html.theme-dark .ios-admin-modal-panel input[type="text"],
+html.dark .ios-admin-modal-panel input[type="text"],
+html.theme-dark .ios-admin-modal-panel select,
+html.dark .ios-admin-modal-panel select,
+html.theme-dark .ios-admin-modal-panel textarea,
+html.dark .ios-admin-modal-panel textarea {
+  background: rgba(50, 50, 58, 0.65) !important;
+  border-color: var(--ios-hairline-inverse) !important;
+  color: var(--text-primary, #f8fafc) !important;
+}
+
+.ios-admin-modal-panel input:focus,
+.ios-admin-modal-panel select:focus,
+.ios-admin-modal-panel textarea:focus {
+  outline: none !important;
+  border-color: rgba(189, 142, 137, 0.65) !important;
+  box-shadow: 0 0 0 3px rgba(189, 142, 137, 0.2) !important;
+}
+
+.ios-admin-modal-panel label,
+.ios-admin-toolbar label {
+  color: var(--text-secondary, #4a5568) !important;
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+html.theme-dark .ios-admin-modal-panel label,
+html.dark .ios-admin-modal-panel label {
+  color: var(--text-secondary, #e2e8f0) !important;
+}
+
+.ios-admin-modal-panel h3 {
+  color: var(--text-primary) !important;
+}
+
+/* Toolbar / filtros en páginas listado */
+.ios-admin-toolbar {
+  border-radius: 20px;
+  padding: 1rem 1.25rem;
+  background: rgba(255, 255, 255, 0.42) !important;
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  border: 0.5px solid var(--ios-hairline);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
+}
+
+html.theme-dark .ios-admin-toolbar,
+html.dark .ios-admin-toolbar {
+  background: rgba(36, 36, 42, 0.55) !important;
+  border-color: var(--ios-hairline-inverse);
+}
+
+.ios-admin-toolbar input,
+.ios-admin-toolbar select {
+  border-radius: 12px !important;
+  border: 0.5px solid var(--ios-hairline) !important;
+  background: rgba(255, 255, 255, 0.6) !important;
+}
+
+html.theme-dark .ios-admin-toolbar input,
+html.dark .ios-admin-toolbar select {
+  background: rgba(45, 45, 52, 0.7) !important;
+  border-color: var(--ios-hairline-inverse) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Tarjetas KPI en listados */
+.ios-admin-stat-card {
+  border-radius: 20px;
+  padding: 1.25rem 1.5rem;
+  background: rgba(255, 255, 255, 0.4) !important;
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 0.5px solid var(--ios-hairline);
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.06);
+}
+
+html.theme-dark .ios-admin-stat-card,
+html.dark .ios-admin-stat-card {
+  background: rgba(32, 32, 38, 0.55) !important;
+  border-color: var(--ios-hairline-inverse);
+}
+
+/* Contenedor de tabla tipo “grupo” iOS */
+.ios-admin-table-shell {
+  border-radius: 20px;
+  overflow: hidden;
+  border: 0.5px solid var(--ios-hairline);
+  background: rgba(255, 255, 255, 0.35) !important;
+  backdrop-filter: blur(14px) saturate(150%);
+  -webkit-backdrop-filter: blur(14px) saturate(150%);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+}
+
+html.theme-dark .ios-admin-table-shell,
+html.dark .ios-admin-table-shell {
+  background: rgba(28, 28, 34, 0.5) !important;
+  border-color: var(--ios-hairline-inverse);
+}
+
+.ios-admin-table-shell .admin-table {
+  background: transparent;
+}
+
+.ios-admin-table-shell .admin-table thead th {
+  background: rgba(189, 142, 137, 0.1);
+  border-bottom: 0.5px solid var(--ios-hairline);
+}
+
+html.theme-dark .ios-admin-table-shell .admin-table thead th,
+html.dark .ios-admin-table-shell .admin-table thead th {
+  background: rgba(189, 142, 137, 0.12);
+}
+
+.ios-admin-table-shell .admin-table tbody tr:hover {
+  background: rgba(189, 142, 137, 0.06);
+}
+
+/* Botones */
+.ios-admin-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.5rem 1.1rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #fff !important;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(180deg, #c9a39e 0%, var(--accent, #bd8e89) 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.25) inset,
+    0 4px 16px rgba(189, 142, 137, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.ios-admin-btn-primary:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.03);
+}
+
+.ios-admin-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 14px;
+  border: 0.5px solid var(--ios-hairline);
+  background: rgba(255, 255, 255, 0.55);
+  color: var(--text-primary) !important;
+  backdrop-filter: blur(8px);
+}
+
+html.theme-dark .ios-admin-btn-secondary,
+html.dark .ios-admin-btn-secondary {
+  background: rgba(55, 55, 62, 0.75);
+  border-color: var(--ios-hairline-inverse);
+  color: var(--text-primary) !important;
+}
+
+.ios-admin-icon-badge {
+  border-radius: 14px !important;
+  background: rgba(189, 142, 137, 0.2) !important;
+}
+.ios-admin-icon-badge svg {
+  color: var(--accent) !important;
+}
+
+/* Títulos de página admin */
+.ios-admin-page-title {
+  color: var(--text-primary) !important;
+}
+.ios-admin-page-sub {
+  color: var(--text-secondary) !important;
+}
+
+/* Barra de usuario al pie del sidebar admin (vidrio + chips tipo iOS) */
+.ios-admin-user-glass {
+  border-radius: 22px;
+  padding: 0.75rem 0.85rem;
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 0.5px solid var(--ios-hairline);
+  box-shadow:
+    0 2px 0 rgba(255, 255, 255, 0.45) inset,
+    0 8px 28px rgba(0, 0, 0, 0.06);
+}
+
+html.theme-dark .ios-admin-user-glass,
+html.dark .ios-admin-user-glass {
+  background: rgba(38, 38, 44, 0.72);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 8px 32px rgba(0, 0, 0, 0.35);
+}
+
+.ios-admin-user-avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  color: #fff;
+  flex-shrink: 0;
+  background: linear-gradient(145deg, #34d399 0%, #059669 55%, #047857 100%);
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.28),
+    0 1px 0 rgba(255, 255, 255, 0.35) inset,
+    0 6px 16px rgba(5, 120, 90, 0.38);
+}
+
+@media (min-width: 640px) {
+  .ios-admin-user-avatar {
+    width: 2.75rem;
+    height: 2.75rem;
+    font-size: 0.8125rem;
+  }
+}
+
+.ios-admin-user-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.25rem;
+  height: 2.25rem;
+  padding: 0 0.35rem;
+  border-radius: 12px;
+  border: 0.5px solid var(--ios-hairline);
+  background: rgba(255, 255, 255, 0.55);
+  color: var(--text-primary);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset;
+}
+
+html.theme-dark .ios-admin-user-icon-btn,
+html.dark .ios-admin-user-icon-btn {
+  background: rgba(55, 55, 62, 0.65);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset;
+}
+
+.ios-admin-user-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.85);
+  transform: scale(1.04);
+}
+
+html.theme-dark .ios-admin-user-icon-btn:hover,
+html.dark .ios-admin-user-icon-btn:hover {
+  background: rgba(72, 72, 80, 0.9);
+}
+
+.ios-admin-user-icon-btn:active {
+  transform: scale(0.96);
+}
+
+.ios-admin-user-icon-btn svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  opacity: 0.92;
+}
+
+.ios-admin-user-icon-btn--danger:hover {
+  background: rgba(254, 226, 226, 0.85);
+  color: rgb(185 28 28);
+}
+
+html.theme-dark .ios-admin-user-icon-btn--danger:hover,
+html.dark .ios-admin-user-icon-btn--danger:hover {
+  background: rgba(127, 29, 29, 0.35);
+  color: rgb(252 165 165);
+}
+
+/* —— Completar perfil (cliente): hoja tipo iOS / macOS —— */
+.ios-profile-complete-wrap {
+  position: relative;
+  min-height: min(100vh, 920px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem 5rem;
+}
+
+@media (min-width: 768px) {
+  .ios-profile-complete-wrap {
+    padding: 3rem 1.5rem 6rem;
+  }
+}
+
+.ios-profile-complete-wrap .ios-profile-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(64px);
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+.ios-profile-complete-wrap .ios-profile-orb--a {
+  width: 280px;
+  height: 280px;
+  top: -80px;
+  right: -60px;
+  background: radial-gradient(circle, rgba(189, 142, 137, 0.55) 0%, transparent 70%);
+}
+
+.ios-profile-complete-wrap .ios-profile-orb--b {
+  width: 220px;
+  height: 220px;
+  bottom: 10%;
+  left: -50px;
+  background: radial-gradient(circle, rgba(176, 160, 214, 0.4) 0%, transparent 70%);
+}
+
+.ios-profile-glass-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 28rem;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.52);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  border: 0.5px solid var(--ios-hairline);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.55) inset,
+    0 20px 56px rgba(0, 0, 0, 0.09),
+    0 4px 16px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+}
+
+html.theme-dark .ios-profile-glass-card,
+html.dark .ios-profile-glass-card {
+  background: rgba(32, 32, 38, 0.72);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    0 24px 64px rgba(0, 0, 0, 0.45);
+}
+
+.ios-profile-hero-icon {
+  width: 4.25rem;
+  height: 4.25rem;
+  border-radius: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.95) 0%, rgba(250, 245, 247, 0.85) 100%);
+  border: 0.5px solid var(--ios-hairline);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 10px 28px rgba(189, 142, 137, 0.22);
+}
+
+html.theme-dark .ios-profile-hero-icon,
+html.dark .ios-profile-hero-icon {
+  background: linear-gradient(165deg, rgba(55, 55, 62, 0.95) 0%, rgba(38, 38, 44, 0.88) 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.1) inset,
+    0 10px 28px rgba(0, 0, 0, 0.35);
+}
+
+.ios-profile-group-title {
+  font-size: 0.6875rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  padding: 0 0.35rem 0.4rem;
+  margin-top: 1.25rem;
+}
+
+.ios-profile-group-title:first-child {
+  margin-top: 0;
+}
+
+.ios-profile-inset-group {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 0.5px solid var(--ios-hairline);
+  background: rgba(255, 255, 255, 0.42);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35) inset;
+}
+
+html.theme-dark .ios-profile-inset-group,
+html.dark .ios-profile-inset-group {
+  background: rgba(48, 48, 54, 0.55);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset;
+}
+
+.ios-profile-field {
+  padding: 0.8rem 1rem;
+  border-bottom: 0.5px solid var(--ios-hairline);
+}
+
+.ios-profile-field:last-child {
+  border-bottom: none;
+}
+
+.ios-profile-field-label {
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 0.35rem;
+}
+
+.ios-profile-field-label .ios-profile-optional {
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  font-size: 0.75rem;
+  opacity: 0.75;
+}
+
+.ios-profile-field-input,
+.ios-profile-field-select {
+  display: block;
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.45rem 0.65rem;
+  font-size: 1.0625rem;
+  line-height: 1.35;
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.65);
+  border: 0.5px solid var(--ios-hairline);
+  border-radius: 12px;
+  transition:
+    box-shadow 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+html.theme-dark .ios-profile-field-input,
+html.dark .ios-profile-field-input,
+html.theme-dark .ios-profile-field-select,
+html.dark .ios-profile-field-select {
+  background: rgba(28, 28, 32, 0.75);
+}
+
+.ios-profile-field-input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.85;
+}
+
+.ios-profile-field-input:focus,
+.ios-profile-field-select:focus {
+  outline: none;
+  border-color: rgba(189, 142, 137, 0.65);
+  box-shadow: 0 0 0 3px rgba(189, 142, 137, 0.2);
+  background: rgba(255, 255, 255, 0.85);
+}
+
+html.theme-dark .ios-profile-field-input:focus,
+html.dark .ios-profile-field-input:focus,
+html.theme-dark .ios-profile-field-select:focus,
+html.dark .ios-profile-field-select:focus {
+  background: rgba(40, 40, 46, 0.95);
+}
+
+.ios-profile-age-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.5rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: rgba(189, 142, 137, 0.14);
+  border: 0.5px solid rgba(189, 142, 137, 0.28);
+}
+
+.ios-profile-error {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 14px;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: rgb(185 28 28);
+  background: rgba(254, 226, 226, 0.65);
+  border: 0.5px solid rgba(248, 113, 113, 0.35);
+  backdrop-filter: blur(8px);
+}
+
+html.theme-dark .ios-profile-error,
+html.dark .ios-profile-error {
+  color: rgb(252 165 165);
+  background: rgba(127, 29, 29, 0.35);
+  border-color: rgba(248, 113, 113, 0.25);
+}
+
+.ios-profile-submit {
+  margin-top: 1.35rem;
+  width: 100%;
+  padding: 0.9rem 1.25rem;
+  font-size: 1.0625rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: #fff !important;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  background: linear-gradient(180deg, #d4b4af 0%, var(--accent, #bd8e89) 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.28) inset,
+    0 6px 22px rgba(189, 142, 137, 0.42);
+  transition:
+    transform 0.18s ease,
+    filter 0.18s ease,
+    opacity 0.18s ease;
+}
+
+.ios-profile-submit:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.04);
+}
+
+.ios-profile-submit:active:not(:disabled) {
+  transform: scale(0.985);
+}
+
+.ios-profile-submit:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* —— Tienda pública (/shop, categoría, ofertas en /user) —— */
+.ios-shop-hero-panel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.8125rem;
+  font-weight: 650;
+  color: var(--accent);
+  background: rgba(255, 255, 255, 0.55);
+  border: 0.5px solid var(--ios-hairline);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.04);
+}
+
+html.theme-dark .ios-shop-hero-panel,
+html.dark .ios-shop-hero-panel {
+  background: rgba(40, 40, 46, 0.65);
+}
+
+.ios-shop-search {
+  position: relative;
+  max-width: 28rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ios-shop-search-input {
+  width: 100%;
+  padding: 0.85rem 2.75rem 0.85rem 2.75rem;
+  font-size: 0.9375rem;
+  border-radius: 18px;
+  border: 0.5px solid var(--ios-hairline);
+  background: rgba(255, 255, 255, 0.55);
+  color: var(--text-primary);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.45) inset,
+    0 8px 28px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+html.theme-dark .ios-shop-search-input,
+html.dark .ios-shop-search-input {
+  background: rgba(36, 36, 42, 0.72);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset;
+}
+
+.ios-shop-search-input::placeholder {
+  color: var(--text-muted);
+}
+
+.ios-shop-search-input:focus {
+  outline: none;
+  border-color: rgba(189, 142, 137, 0.55);
+  box-shadow:
+    0 0 0 3px rgba(189, 142, 137, 0.18),
+    0 8px 28px rgba(0, 0, 0, 0.06);
+}
+
+.ios-shop-cat-card {
+  border-radius: 22px;
+  overflow: hidden;
+  border: 0.5px solid var(--ios-hairline);
+  background: rgba(255, 255, 255, 0.42);
+  backdrop-filter: blur(14px) saturate(150%);
+  -webkit-backdrop-filter: blur(14px) saturate(150%);
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.06);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+html.theme-dark .ios-shop-cat-card,
+html.dark .ios-shop-cat-card {
+  background: rgba(34, 34, 40, 0.55);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+}
+
+.ios-shop-cat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.1);
+  border-color: rgba(189, 142, 137, 0.35);
+}
+
+.ios-shop-cat-thumb {
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: rgba(189, 142, 137, 0.08);
+}
+
+.ios-shop-glass-empty {
+  border-radius: 24px;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  border: 0.5px solid var(--ios-hairline);
+  background: rgba(255, 255, 255, 0.48);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+}
+
+html.theme-dark .ios-shop-glass-empty,
+html.dark .ios-shop-glass-empty {
+  background: rgba(32, 32, 38, 0.65);
+}
+
+.ios-shop-product-card {
+  border-radius: 22px;
+  overflow: hidden;
+  border: 0.5px solid var(--ios-hairline);
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.07);
+  transition:
+    transform 0.28s ease,
+    box-shadow 0.28s ease;
+}
+
+html.theme-dark .ios-shop-product-card,
+html.dark .ios-shop-product-card {
+  background: rgba(30, 30, 36, 0.62);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+.ios-shop-product-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
+}
+
+.ios-shop-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.5rem 1.1rem;
+  font-size: 0.875rem;
+  font-weight: 650;
+  color: #fff !important;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  background: linear-gradient(180deg, #d4b4af 0%, var(--accent, #bd8e89) 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.25) inset,
+    0 4px 16px rgba(189, 142, 137, 0.38);
+  transition: transform 0.18s ease, filter 0.18s ease;
+}
+
+.ios-shop-btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.03);
+}
+
+.ios-shop-btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.ios-shop-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1.15rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 14px;
+  border: 0.5px solid var(--ios-hairline);
+  background: rgba(255, 255, 255, 0.55);
+  color: var(--text-primary) !important;
+  backdrop-filter: blur(10px);
+  transition: background 0.18s ease, transform 0.18s ease;
+}
+
+html.theme-dark .ios-shop-btn-secondary,
+html.dark .ios-shop-btn-secondary {
+  background: rgba(50, 50, 56, 0.75);
+}
+
+.ios-shop-btn-secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.85);
+  transform: translateY(-1px);
+}
+
+.ios-shop-category-header {
+  border-radius: 28px;
+  padding: 1.75rem 1.25rem 1.5rem;
+  margin-bottom: 1.75rem;
+  border: 0.5px solid var(--ios-hairline);
+  background: rgba(255, 255, 255, 0.48);
+  backdrop-filter: blur(22px) saturate(180%);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.45) inset,
+    0 12px 40px rgba(0, 0, 0, 0.07);
+}
+
+html.theme-dark .ios-shop-category-header,
+html.dark .ios-shop-category-header {
+  background: rgba(28, 28, 34, 0.68);
+}
+
+.ios-shop-cat-avatar {
+  width: 6.5rem;
+  height: 6.5rem;
+  border-radius: 1.75rem;
+  overflow: hidden;
+  margin-left: auto;
+  margin-right: auto;
+  border: 0.5px solid var(--ios-hairline);
+  box-shadow:
+    0 0 0 3px rgba(255, 255, 255, 0.35),
+    0 12px 32px rgba(0, 0, 0, 0.12);
+}
+
+html.theme-dark .ios-shop-cat-avatar,
+html.dark .ios-shop-cat-avatar {
+  box-shadow:
+    0 0 0 3px rgba(255, 255, 255, 0.08),
+    0 12px 32px rgba(0, 0, 0, 0.4);
+}
+
+.ios-shop-pill {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 16px;
+  border: 0.5px solid transparent;
+  background: transparent;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.ios-shop-pill:hover {
+  background: rgba(255, 255, 255, 0.45);
+}
+
+html.theme-dark .ios-shop-pill:hover,
+html.dark .ios-shop-pill:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.ios-shop-pill--active {
+  background: rgba(189, 142, 137, 0.16) !important;
+  border-color: rgba(189, 142, 137, 0.45) !important;
+}
+
+.ios-shop-pill-img {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 9999px;
+  overflow: hidden;
+  border: 0.5px solid var(--ios-hairline);
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.ios-shop-pill--active .ios-shop-pill-img {
+  border-color: rgba(189, 142, 137, 0.55);
+  box-shadow: 0 0 0 2px rgba(189, 142, 137, 0.25);
+}
+
+.ios-shop-badge-stock {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 8px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #fff;
+  background: rgba(220, 38, 38, 0.92);
+  backdrop-filter: blur(6px);
+}
+
+.ios-shop-offer-hero-card {
+  border-radius: 24px;
+  overflow: hidden;
+  border: 0.5px solid var(--ios-hairline);
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(20px) saturate(170%);
+  -webkit-backdrop-filter: blur(20px) saturate(170%);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+html.theme-dark .ios-shop-offer-hero-card,
+html.dark .ios-shop-offer-hero-card {
+  background: rgba(26, 26, 32, 0.72);
+  box-shadow: 0 16px 56px rgba(0, 0, 0, 0.45);
+}
+
+.ios-shop-offer-hero-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 56px rgba(0, 0, 0, 0.14);
+}
+
+.ios-shop-user-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem 1.15rem;
+  border-radius: 20px;
+  border: 0.5px solid var(--ios-hairline);
+  background: rgba(255, 255, 255, 0.48);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.06);
+}
+
+@media (min-width: 640px) {
+  .ios-shop-user-toolbar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+html.theme-dark .ios-shop-user-toolbar,
+html.dark .ios-shop-user-toolbar {
+  background: rgba(32, 32, 38, 0.68);
+}

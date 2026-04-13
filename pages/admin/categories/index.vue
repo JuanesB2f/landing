@@ -7,8 +7,9 @@
         <p class="text-sm sm:text-base theme-text-secondary mt-0.5">Administra las categorías de productos de tu tienda</p>
       </div>
       <button
+        type="button"
         @click="openCreateModal"
-        class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 sm:px-4 rounded-lg flex items-center justify-center space-x-2 transition-colors text-sm sm:text-base w-full sm:w-auto"
+        class="ios-admin-btn-primary text-sm sm:text-base w-full sm:w-auto shrink-0"
       >
         <Icon name="heroicons:plus" class="w-5 h-5 shrink-0" />
         <span>Agregar Categoría</span>
@@ -16,11 +17,11 @@
     </div>
 
     <!-- Filtros y búsqueda -->
-    <div class="theme-card-bg p-3 sm:p-4 rounded-lg shadow-sm mb-4 sm:mb-6 border theme-border">
+    <div class="ios-admin-toolbar mb-4 sm:mb-6">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
         <!-- Búsqueda -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Buscar</label>
+          <label class="block text-sm font-medium theme-text-secondary mb-1">Buscar</label>
           <input
             v-model="searchQuery"
             type="text"
@@ -31,7 +32,7 @@
         
         <!-- Filtro por estado -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+          <label class="block text-sm font-medium theme-text-secondary mb-1">Estado</label>
           <select
             v-model="selectedStatus"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -45,8 +46,9 @@
         <!-- Botón de limpiar filtros -->
         <div class="flex items-end">
           <button
+            type="button"
             @click="clearFilters"
-            class="w-full px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+            class="w-full ios-admin-btn-secondary"
           >
             Limpiar Filtros
           </button>
@@ -55,7 +57,7 @@
     </div>
 
     <!-- Tabla de categorías -->
-    <div class="rounded-lg overflow-hidden border border-gray-200 dark:border-[var(--border-color)]">
+    <div class="ios-admin-table-shell">
       <div class="admin-table-scroll">
         <table class="min-w-full admin-table">
           <thead>

@@ -1,9 +1,11 @@
 <template>
-  <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" @click.self="$emit('close')">
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4" @click.self="$emit('close')">
+    <div class="ios-admin-overlay fixed inset-0 z-40" aria-hidden="true"></div>
     <div
-      class="bg-white dark:bg-gray-900 rounded-xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col border border-gray-200 dark:border-gray-700"
+      class="relative z-50 ios-admin-modal-panel max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl"
       role="dialog"
       aria-modal="true"
+      @click.stop
     >
       <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
         <div>
