@@ -164,11 +164,13 @@
       </main>
     </div>
 
-    <!-- Barra inferior tipo iPhone: siempre fija al viewport (solo móvil/tablet) -->
-    <nav
-      class="ios-tab-bar lg:hidden fixed bottom-0 left-0 right-0 z-[100] theme-header border-t theme-border w-full max-w-[100vw] rounded-t-3xl"
-      style="padding-bottom: env(safe-area-inset-bottom, 0);"
-    >
+    <!-- Barra inferior: Teleport a body para anclar al viewport en móvil -->
+    <Teleport to="body">
+      <nav
+        class="ios-tab-bar ios-mobile-tab-dock lg:hidden fixed bottom-0 left-0 right-0 theme-header border-t theme-border w-full max-w-[100vw] rounded-t-3xl"
+        style="padding-bottom: env(safe-area-inset-bottom, 0);"
+        aria-label="Navegación admin"
+      >
       <div class="flex items-stretch justify-around h-12 sm:h-14 gap-0.5 px-0.5 sm:px-0">
         <NuxtLink
           to="/dashboard"
@@ -213,7 +215,8 @@
           <span class="truncate max-w-full px-0.5">Salir</span>
         </button>
       </div>
-    </nav>
+      </nav>
+    </Teleport>
 
     <!-- Sheet "Más" para el resto de secciones (móvil) -->
     <Transition
@@ -226,7 +229,7 @@
     >
       <div
         v-if="moreOpen"
-        class="lg:hidden ios-admin-overlay fixed inset-0 z-40"
+        class="lg:hidden ios-admin-overlay fixed inset-0 z-[10000]"
         aria-hidden="true"
         @click="moreOpen = false"
       />
@@ -241,7 +244,7 @@
     >
       <div
         v-if="moreOpen"
-        class="ios-sheet-panel lg:hidden fixed bottom-0 left-0 right-0 z-50 theme-sidebar border-t theme-border rounded-t-3xl shadow-2xl max-h-[70vh] overflow-hidden flex flex-col"
+        class="ios-sheet-panel lg:hidden fixed bottom-0 left-0 right-0 z-[10001] theme-sidebar border-t theme-border rounded-t-3xl shadow-2xl max-h-[70vh] overflow-hidden flex flex-col"
         style="padding-bottom: env(safe-area-inset-bottom, 0);"
       >
         <div class="flex items-center justify-between p-4 border-b theme-border">
