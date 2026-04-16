@@ -16,7 +16,8 @@ try {
     }
 
     const raw = readFileSync(tsconfigPath, 'utf-8')
-    const json = JSON.parse(raw)
+    const withoutLeadingComments = raw.replace(/^\s*\/\/.*$/gm, '')
+    const json = JSON.parse(withoutLeadingComments)
     json.compilerOptions = json.compilerOptions || {}
 
     // Forzar explícitamente a ES2022 para evitar incompatibilidades del TS Server
