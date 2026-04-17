@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen theme-login-bg">
     <!-- Hero Section (mismo fondo que login: gradiente + blobs) -->
-    <section class="relative min-h-[70vh] sm:min-h-[80vh] lg:min-h-[90vh] flex items-center justify-center overflow-hidden px-4">
+    <section class="relative min-h-[70vh] sm:min-h-[80vh] lg:min-h-[90vh] flex items-center justify-center overflow-hidden px-4 ios-hero-surface">
       <!-- Animated Background (igual que en login) -->
       <div class="absolute inset-0 overflow-hidden">
         <div class="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
@@ -11,7 +11,7 @@
 
       <div class="relative z-10 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20 text-center">
         <!-- Badge -->
-        <div class="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-accent-soft dark:bg-gradient-to-r dark:from-accent/30 dark:to-accent-secondary/30 rounded-full mb-4 sm:mb-8 animate-fade-in-up">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-accent-soft dark:bg-gradient-to-r dark:from-accent/30 dark:to-accent-secondary/30 rounded-full mb-4 sm:mb-8 animate-fade-in-up ios-floating-badge">
           <Icon name="heroicons:sparkles" class="w-4 h-4 sm:w-5 sm:h-5 text-accent" />
           <span class="text-xs sm:text-sm font-semibold text-accent">Nueva Colección 2026</span>
         </div>
@@ -34,7 +34,7 @@
         <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-10 sm:mb-16 animate-fade-in-up animation-delay-600 w-full max-w-md sm:max-w-none mx-auto">
           <NuxtLink
             to="/shop"
-            class="hero-cta-primary group relative px-8 py-4 bg-[#0E1627]/90 dark:bg-white/15 backdrop-blur-xl text-white rounded-[1.75rem] font-semibold text-lg shadow-[0_8px_32px_rgba(0,0,0,0.2)] border border-white/15 dark:border-white/20 hover:bg-[#0E1627] dark:hover:bg-white/25 transform hover:scale-[1.02] transition-all duration-300 overflow-hidden"
+            class="hero-cta-primary ios-magnetic-btn group relative px-8 py-4 bg-[#0E1627]/90 dark:bg-white/15 backdrop-blur-xl text-white rounded-[1.75rem] font-semibold text-lg shadow-[0_8px_32px_rgba(0,0,0,0.2)] border border-white/15 dark:border-white/20 hover:bg-[#0E1627] dark:hover:bg-white/25 transform hover:scale-[1.02] transition-all duration-300 overflow-hidden"
           >
             <span class="relative z-10 flex items-center gap-2">
               Explorar Colección
@@ -43,7 +43,7 @@
           </NuxtLink>
           <NuxtLink
             to="/shop?sort=price_asc"
-            class="btn-accent-strong-outline transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl text-sm sm:text-base md:text-lg"
+            class="btn-accent-strong-outline ios-magnetic-btn transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl text-sm sm:text-base md:text-lg"
           >
             Ver Ofertas
           </NuxtLink>
@@ -92,9 +92,9 @@
           <div
             v-for="(feature, index) in features"
             :key="index"
-            class="ios-glass-card group p-5 sm:p-6 lg:p-8 rounded-[1.25rem] transform hover:-translate-y-1 transition-all duration-300"
+            class="ios-glass-card ios-feature-card group p-5 sm:p-6 lg:p-8 rounded-[1.25rem] transform hover:-translate-y-1 transition-all duration-300"
           >
-            <div class="feature-icon-box w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-2xl flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform shadow-md">
+            <div class="feature-icon-box ios-icon-pop w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-2xl flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform shadow-md">
               <Icon :name="feature.icon" class="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-white" />
             </div>
             <h3 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 mb-2 sm:mb-3">{{ feature.title }}</h3>
@@ -422,6 +422,71 @@ onMounted(() => {
 .animate-fade-in-up {
   will-change: transform, opacity;
   backface-visibility: hidden;
+}
+
+/* iOS/macOS-like polish for home */
+.ios-hero-surface::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(65rem 28rem at 50% -10%, rgba(255, 255, 255, 0.32), transparent 65%),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.1), transparent 42%);
+}
+
+.ios-floating-badge {
+  backdrop-filter: blur(10px) saturate(160%);
+  -webkit-backdrop-filter: blur(10px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+}
+
+.ios-magnetic-btn {
+  position: relative;
+}
+
+.ios-magnetic-btn::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 220ms ease;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.02) 55%);
+}
+
+.ios-magnetic-btn:hover::after {
+  opacity: 1;
+}
+
+.ios-feature-card {
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+}
+
+.ios-feature-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 220ms ease;
+  background: radial-gradient(circle at top right, rgba(189, 142, 137, 0.18), transparent 52%);
+}
+
+.ios-feature-card:hover::before {
+  opacity: 1;
+}
+
+.ios-icon-pop {
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.18);
+}
+
+.ios-feature-card:hover .ios-icon-pop {
+  transform: translateY(-2px) scale(1.08);
 }
 
 /* Tema oscuro: fondo de la sección "¿Por qué elegir BylotoStore?" */

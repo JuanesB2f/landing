@@ -1,5 +1,6 @@
 import { serverSupabaseClient } from '#supabase/server'
 import { requireAdmin, respondSuccess, respondError, getServiceClient } from '~/server/utils/auth'
+import { isUuid } from '~/utils/isUuid'
 
 export default defineEventHandler(async (event) => {
   const client = await serverSupabaseClient(event)
@@ -11,6 +12,9 @@ export default defineEventHandler(async (event) => {
         // Obtener productos con filtros opcionales y paginación
         const query = getQuery(event) as Record<string, string>
         const categoryId = query.category_id ? String(query.category_id) : undefined
+        if (categoryId && !isUuid(categoryId)) {
+          return respondError('El filtro category_id debe ser un UUID válido')
+        }
         const search = query.search ? String(query.search) : undefined
         const page = query.page ? Math.max(1, parseInt(String(query.page))) : undefined
         const pageSize = query.page_size ? Math.max(1, parseInt(String(query.page_size))) : undefined

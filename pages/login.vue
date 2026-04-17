@@ -360,6 +360,21 @@ function setAuthTab(next: AuthTab) {
 // Tema
 const { theme, isDark, toggleTheme, initTheme } = useTheme()
 
+function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error(`${label} tardó demasiado`)), ms)
+    promise
+      .then((value) => {
+        clearTimeout(timer)
+        resolve(value)
+      })
+      .catch((err) => {
+        clearTimeout(timer)
+        reject(err)
+      })
+  })
+}
+
 onMounted(() => {
   initTheme()
   const q = route.query
@@ -378,25 +393,33 @@ const handleRegister = async () => {
   loading.value = true
   try {
     const email = regEmail.value.trim().toLowerCase()
-    const res = await $fetch<{ data?: { success?: boolean; error?: string } }>('/api/auth/register-public', {
-      method: 'POST',
-      body: {
-        email,
-        password: regPassword.value,
-        first_name: regFirstName.value.trim(),
-        last_name: regLastName.value.trim()
-      }
-    })
+    const res = await withTimeout(
+      $fetch<{ data?: { success?: boolean; error?: string } }>('/api/auth/register-public', {
+        method: 'POST',
+        body: {
+          email,
+          password: regPassword.value,
+          first_name: regFirstName.value.trim(),
+          last_name: regLastName.value.trim()
+        }
+      }),
+      15000,
+      'Crear cuenta'
+    )
     const payload = res?.data ?? (res as unknown as { success?: boolean; error?: string })
     if (!payload?.success) {
       error.value = payload?.error || 'No se pudo crear la cuenta'
       return
     }
 
-    const { error: signErr } = await supabase.auth.signInWithPassword({
-      email,
-      password: regPassword.value
-    })
+    const { error: signErr } = await withTimeout(
+      supabase.auth.signInWithPassword({
+        email,
+        password: regPassword.value
+      }),
+      15000,
+      'Iniciar sesión'
+    )
     if (signErr) {
       error.value =
         signErr.message ||
@@ -404,11 +427,11 @@ const handleRegister = async () => {
       return
     }
 
-    await checkAuth()
-    await router.replace('/completar-perfil')
+    await withTimeout(checkAuth(), 10000, 'Verificar sesión')
+    await withTimeout(router.replace('/completar-perfil'), 10000, 'Redirigir')
   } catch (e) {
-    console.error(e)
-    error.value = 'Error al registrar. Intenta de nuevo.'
+    console.error('[login] handleRegister', e)
+    error.value = e instanceof Error ? e.message : 'Error al registrar. Intenta de nuevo.'
   } finally {
     loading.value = false
   }

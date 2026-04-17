@@ -174,9 +174,10 @@ definePageMeta({
 })
 
 import { useCartStore } from '~/stores/cart'
+import { isUuid } from '~/utils/isUuid'
 
 const route = useRoute()
-const categoryId = route.params.id
+const categoryId = computed(() => String(route.params.id ?? ''))
 const { formatCOP } = useCurrency()
 const cart = useCartStore()
 const { $toast } = useNuxtApp()
@@ -189,6 +190,13 @@ const page = ref(1)
 const pageSize = 12
 
 const fetchData = async () => {
+  const id = categoryId.value
+  if (!isUuid(id)) {
+    loading.value = false
+    await navigateTo('/shop')
+    return
+  }
+
   loading.value = true
   try {
     const { data: catsData } = await $fetch('/api/categories')
@@ -196,7 +204,7 @@ const fetchData = async () => {
       allCategories.value = catsData.data
     }
 
-    const { data: catData } = await $fetch(`/api/categories/${categoryId}`)
+    const { data: catData } = await $fetch(`/api/categories/${id}`)
     if (catData?.success) {
       category.value = catData.data
 
@@ -208,7 +216,7 @@ const fetchData = async () => {
 
     const { data: prodData } = await $fetch('/api/products', {
       params: {
-        category_id: categoryId,
+        category_id: id,
         page: page.value,
         page_size: pageSize,
         sort: 'newest',
@@ -267,6 +275,14 @@ const addToCart = async product => {
   })
   $toast?.success('Agregado al carrito', `${product.name} agregado correctamente`)
 }
+
+watch(
+  () => route.params.id,
+  () => {
+    page.value = 1
+    fetchData()
+  }
+)
 
 onMounted(() => {
   fetchData()

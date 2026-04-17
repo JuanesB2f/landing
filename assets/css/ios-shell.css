@@ -336,6 +336,8 @@ html.dark .ios-kpi-icon {
 /* ═══ Admin: listados, tablas, filtros, modales (misma línea iOS) ═══ */
 
 .ios-admin-overlay {
+  /* Capa base del backdrop; el panel del modal debe usar un z-index mayor (p. ej. z-50 en el componente). */
+  z-index: 0;
   background: rgba(0, 0, 0, 0.4) !important;
   backdrop-filter: blur(14px) saturate(160%);
   -webkit-backdrop-filter: blur(14px) saturate(160%);
@@ -349,7 +351,6 @@ html.dark .ios-admin-overlay {
 /* Panel central de modales (vidrio + borde fino) */
 .ios-admin-modal-panel {
   position: relative;
-  z-index: 1;
   border-radius: 22px !important;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.82) !important;

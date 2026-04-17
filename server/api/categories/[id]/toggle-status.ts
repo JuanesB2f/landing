@@ -5,6 +5,7 @@
 
 import { serverSupabaseClient } from '#supabase/server'
 import { requireAdmin, respondSuccess, respondError } from '~/server/utils/auth'
+import { isUuid } from '~/utils/isUuid'
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
@@ -27,6 +28,10 @@ export default defineEventHandler(async (event) => {
         error: 'ID de categoría requerido'
       }
     }
+  }
+
+  if (!isUuid(id)) {
+    return respondError('Identificador de categoría no válido')
   }
 
   try {

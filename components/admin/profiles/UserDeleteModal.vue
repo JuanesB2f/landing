@@ -35,7 +35,11 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-const props = defineProps<{ user: any }>()
+const props = defineProps<{
+  user: any
+  /** Debe resolver cuando termine el borrado en el servidor (permite await y deshabilitar doble clic). */
+  onConfirm?: () => Promise<void>
+}>()
 const emit = defineEmits<{ (e: 'close'): void; (e: 'confirm'): void }>()
 const loading = ref(false)
 const confirmText = ref('')
@@ -43,7 +47,11 @@ const confirmText = ref('')
 const confirm = async () => {
   loading.value = true
   try {
-    emit('confirm')
+    if (props.onConfirm) {
+      await props.onConfirm()
+    } else {
+      emit('confirm')
+    }
   } finally {
     loading.value = false
   }

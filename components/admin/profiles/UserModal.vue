@@ -1,7 +1,7 @@
 <template>
-  <div class="fixed inset-0 z-50 overflow-y-auto h-full w-full">
+  <div class="fixed inset-0 z-50 overflow-y-auto h-full w-full isolate">
     <div class="ios-admin-overlay fixed inset-0 min-h-full" @click="$emit('close')"></div>
-    <div class="relative top-8 sm:top-12 mx-auto w-11/12 max-w-2xl ios-admin-modal-panel p-5 sm:p-6 shadow-2xl" @click.stop>
+    <div class="relative z-50 top-8 sm:top-12 mx-auto w-11/12 max-w-2xl ios-admin-modal-panel p-5 sm:p-6 shadow-2xl" @click.stop>
       <div class="mt-3">
         <!-- Header -->
         <div class="flex items-center justify-between mb-4">

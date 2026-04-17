@@ -127,9 +127,25 @@ const route = useRoute()
 const router = useRouter()
 const supabase = useSupabaseClient()
 const { $toast } = useNuxtApp()
+const { checkAuth } = useAuth()
 
 const saving = ref(false)
 const error = ref('')
+
+function withTimeout(promise, ms, label) {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error(`${label} tardó demasiado`)), ms)
+    promise
+      .then((value) => {
+        clearTimeout(timer)
+        resolve(value)
+      })
+      .catch((err) => {
+        clearTimeout(timer)
+        reject(err)
+      })
+  })
+}
 
 const maxBirthDate = computed(() => {
   const d = new Date()
@@ -179,7 +195,8 @@ async function submit() {
   saving.value = true
   error.value = ''
   try {
-    const res = await $fetch('/api/auth/complete-profile', {
+    const res = await withTimeout(
+      $fetch('/api/auth/complete-profile', {
       method: 'POST',
       body: {
         first_name: form.first_name,
@@ -189,25 +206,32 @@ async function submit() {
         identification: form.identification || null,
         gender: form.gender || null
       }
-    })
+      }),
+      15000,
+      'Guardar perfil'
+    )
     const payload = res?.data ?? res
     if (!payload?.success) {
       error.value = payload?.error || 'No se pudo guardar'
       return
     }
-    $toast?.success('Perfil guardado')
-    await supabase.auth.refreshSession()
-    const { checkAuth } = useAuth()
-    await checkAuth()
-    const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : ''
-    if (redirect && redirect.startsWith('/')) {
-      await router.replace(redirect)
-    } else {
-      await router.replace('/user')
+
+    // El perfil ya está en BD (API con service role). Sincronizar estado local y navegar sin recargar todo el documento (mucho más rápido).
+    try {
+      await withTimeout(checkAuth(), 6000, 'Actualizar cuenta')
+    } catch (e) {
+      console.warn('[completar-perfil] checkAuth', e)
     }
+
+    $toast?.success('Perfil guardado')
+
+    const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : ''
+    const targetPath = redirect && redirect.startsWith('/') ? redirect : '/user'
+
+    await navigateTo(targetPath, { replace: true })
   } catch (e) {
-    console.error(e)
-    error.value = 'Error al guardar. Intenta de nuevo.'
+    console.error('[completar-perfil] submit', e)
+    error.value = e instanceof Error ? e.message : 'Error al guardar. Intenta de nuevo.'
   } finally {
     saving.value = false
   }

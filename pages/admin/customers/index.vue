@@ -343,6 +343,14 @@ const customerToDelete = ref(null)
 const showDetailsModal = ref(false)
 const detailsCustomer = ref(null)
 
+/** GET /api/customers devuelve { data: { success, ... } }; PUT/DELETE en [id] devuelven { success, ... } plano. */
+function customersApiPayload(res) {
+  if (res != null && typeof res.success === 'boolean') {
+    return res
+  }
+  return res?.data ?? res
+}
+
 // Computed properties
 const filteredCustomers = computed(() => {
   let filtered = customers.value
@@ -467,29 +475,31 @@ const saveCustomer = async (customerData) => {
   try {
     if (selectedCustomer.value) {
       // Actualizar cliente existente
-      const { data } = await $fetch(`/api/customers/${selectedCustomer.value.id_customer}`, {
+      const res = await $fetch(`/api/customers/${selectedCustomer.value.id_customer}`, {
         method: 'PUT',
         body: customerData
       })
-      if (data.success) {
+      const payload = customersApiPayload(res)
+      if (payload?.success) {
         console.log('Cliente actualizado exitosamente')
         await fetchCustomers()
         closeModal()
       } else {
-        console.error('Error actualizando cliente:', data.error)
+        console.error('Error actualizando cliente:', payload?.error)
       }
     } else {
       // Crear nuevo cliente
-      const { data } = await $fetch('/api/customers', {
+      const res = await $fetch('/api/customers', {
         method: 'POST',
         body: customerData
       })
-      if (data.success) {
+      const payload = customersApiPayload(res)
+      if (payload?.success) {
         console.log('Cliente creado exitosamente')
         await fetchCustomers()
         closeModal()
       } else {
-        console.error('Error creando cliente:', data.error)
+        console.error('Error creando cliente:', payload?.error)
       }
     }
   } catch (error) {
@@ -522,16 +532,17 @@ const deleteCustomer = async () => {
   if (!customerToDelete.value) return
   
   try {
-    const { data } = await $fetch(`/api/customers/${customerToDelete.value.id_customer}`, {
+    const res = await $fetch(`/api/customers/${customerToDelete.value.id_customer}`, {
       method: 'DELETE'
     })
-    if (data.success) {
+    const payload = customersApiPayload(res)
+    if (payload?.success) {
       console.log('Cliente eliminado exitosamente')
       await fetchCustomers()
       showConfirmModal.value = false
       customerToDelete.value = null
     } else {
-      console.error('Error eliminando cliente:', data.error)
+      console.error('Error eliminando cliente:', payload?.error)
     }
   } catch (error) {
     console.error('Error deleting customer:', error)

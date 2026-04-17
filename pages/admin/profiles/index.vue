@@ -313,7 +313,7 @@
     <UserDeleteModal
       v-if="showConfirmModal"
       :user="userToDelete"
-      @confirm="deleteUser"
+      :on-confirm="deleteUser"
       @close="showConfirmModal = false"
     />
   </div>
@@ -323,7 +323,8 @@
 definePageMeta({
   layout: 'admin'
 })
-const UserDeleteModal = resolveComponent('UserDeleteModal')
+
+const route = useRoute()
 
 // Estado reactivo
 const users = ref([])
@@ -487,15 +488,21 @@ const confirmDelete = (user) => {
 
 const deleteUser = async () => {
   if (!userToDelete.value) return
+  const deletedId = userToDelete.value.id
   try {
-    const res = await $fetch(`/api/profiles/${userToDelete.value.id}`, { method: 'DELETE' })
-    if (res?.data?.success) {
-      console.log('Usuario eliminado exitosamente')
-      await fetchUsers()
+    const res = await $fetch(`/api/profiles/${deletedId}`, { method: 'DELETE' })
+    const payload = res?.data ?? res
+    if (payload?.success) {
       showConfirmModal.value = false
       userToDelete.value = null
+      if (selectedUser.value?.id === deletedId) {
+        closeModal()
+      }
+      if (import.meta.client) {
+        window.location.assign(route.fullPath)
+      }
     } else {
-      console.error('Error eliminando usuario:', res?.data?.error || 'Respuesta inválida')
+      console.error('Error eliminando usuario:', payload?.error || 'Respuesta inválida')
     }
   } catch (error) {
     console.error('Error deleting user:', error)

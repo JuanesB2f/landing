@@ -158,7 +158,7 @@ export const useAuth = () => {
         .from('profiles')
         .select('*')
         .eq('id', session.user.id)
-        .single()
+        .maybeSingle()
       
       const profileTimeoutPromise = new Promise((_, reject) => 
         setTimeout(() => reject(new Error('Profile fetch timeout')), 5000) // Reducir de 10s a 5s

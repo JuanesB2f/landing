@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed inset-0 z-50 flex items-center justify-center p-4" @click.self="$emit('close')">
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4 isolate" @click.self="$emit('close')">
     <div class="ios-admin-overlay fixed inset-0 z-40" aria-hidden="true"></div>
     <div
       class="relative z-50 ios-admin-modal-panel max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl"
